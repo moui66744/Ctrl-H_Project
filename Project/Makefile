@@ -9,7 +9,6 @@ ANTLR_PATH = lib/antlr-4.10.1-complete.jar
 ANTLR4=java -Xmx500M -cp $(ANTLR_PATH) org.antlr.v4.Tool
 
 parser:
-	$(ANTLR4) $(GRAMMAR_NAME) -o /mnt/e/csrc/$(TARGET_PACKAGE) -package $(TARGET_PACKAGE) \
-	$(ANTLR_FLAGS) -Dlanguage=$(PARSER_TARGET_LANGUAGE)
-	rm -r $(TARGET_PACKAGE)/grammar
+	$(ANTLR4) $(GRAMMAR_NAME) -o src/$(TARGET_PACKAGE)/ -package $(TARGET_PACKAGE) \
+	$(ANTLR_FLAGS) -Dlanguage=$(PARSER_TARGET_LANGUAGE)  -Xexact-output-dir
 

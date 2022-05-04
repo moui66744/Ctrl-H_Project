@@ -858,7 +858,7 @@ public class JavaLexer extends Lexer {
 		"\u02d3\u02d7\u02dd\u02e0\u02e7\u02eb\u02f3\u02f6\u02fd\u0301\u0305\u030a"+
 		"\u030d\u0310\u0315\u0318\u031d\u0322\u032a\u0335\u0339\u033e\u0342\u0352"+
 		"\u035c\u0362\u0369\u036d\u0372\u037f\u03f9\u0402\u040a\u0415\u041f\u042d"+
-		"\u0001\u0006\u0000\u0000";
+		"\u0001\u0000\u0001\u0000";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {
