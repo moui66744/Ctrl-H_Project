@@ -2,30 +2,43 @@ package AstGenerator;
 
 import JavaParser.JavaLexer;
 import JavaParser.JavaParser;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.TokenSource;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
+import org.antlr.v4.runtime.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 public class AstInfo {
     JavaLexer lexer;
     JavaParser parser;
     CommonTokenStream tokenStream;
+    JavaParser.CompilationUnitContext root;
+    TokenStreamRewriter tokenStreamRewriter;
     public AstInfo(CharStream input) {
         lexer = new JavaLexer(input);
         tokenStream = new CommonTokenStream(lexer);
         parser = new JavaParser(tokenStream);
-        JavaParser.CompilationUnitContext tree = parser.compilationUnit();
+        root = parser.compilationUnit();
+        tokenStreamRewriter = new TokenStreamRewriter(tokenStream);
     }
-    public String getIdentEqualsTo(String identName) {
-        Token t = null;
-        return makeTokenInfo(t);
+    public AstInfo(File inputFile) throws IOException {
+        this(CharStreams.fromPath(Paths.get(inputFile.getPath())));
     }
 
-    String makeTokenInfo(Token token) {
-        return "Line:" + token.getLine() + " Offset:" + token.getCharPositionInLine() + "\n" + "content:"
-                + token.getText();
+    public AstInfo(String inputFileName) throws IOException {
+        this(CharStreams.fromFileName(inputFileName));
+    }
 
+    public JavaParser.CompilationUnitContext getRoot(){
+        return root;
+    }
+    public CommonTokenStream getTokenStream() {
+        return tokenStream;
+    }
+    public TokenStreamRewriter getTokenStreamRewriter() {
+        return tokenStreamRewriter;
+    }
+    public <T extends ParserRuleContext> void replace(T context, String text) {
+        tokenStreamRewriter.replace(context.start,context.stop, text);
     }
 }
