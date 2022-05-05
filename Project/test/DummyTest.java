@@ -22,11 +22,16 @@ public class DummyTest {
         }
         System.out.print("\n");
 
-//        test "while"
+//        test "while" and nested "while"
         i = 0;
         while (i < 5) {
             System.out.print(i);
             i++;
+            int j = 0;
+            while (j < 10) {
+                System.out.print(j);
+                j++;
+            }
         }
         System.out.print("\n");
 
@@ -49,8 +54,32 @@ public class DummyTest {
 //        test try-catch-throw
         try {
             i /= 0;
-        } catch (Exception e) {
+        } catch (IOException e1) {
+            System.out.println("error");
+        } catch (Exception e2) {
             throw new RuntimeException();
+        }
+
+        try {
+            i /= 0;
+        } finally {
+            i++;
+        }
+
+//        test "switch"
+        switch (i) {
+            case 1: {
+                fun1();
+                break;
+            }
+            case 2: {
+                func2();
+                break;
+            }
+            default: {
+                fun();
+                break;
+            }
         }
     }
 }
