@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="403193a9-408f-4f15-811d-133335f60af1" name="Changes" comment="" />
+    <list default="true" id="403193a9-408f-4f15-811d-133335f60af1" name="Changes" comment="实现语句查询&#10;1.增加StmtVisitor类, 用于语句查询&#10;2.增加SourcePosition类, 用于获取结点在源码中的位置&#10;3.完善DummyTest类, 以体现语句查询效果">
+      <change afterPath="$PROJECT_DIR$/Project/src/Test/SourcePosition.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Project/src/Test/StmtVisitor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AntlrASTGenTest/AntlrASTGenTest.iml" beforeDir="false" afterPath="$PROJECT_DIR$/AntlrASTGenTest/AntlrASTGenTest.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/ctrl-h.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/ctrl-h.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/test/DummyTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/Project/test/DummyTest.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,13 +20,39 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
   <component name="ProjectId" id="28PyXIPEiZgtxvuLwgWd0GeFdNI" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -25,6 +61,76 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="extract.method.default.visibility" value="private" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/Project/ctrl-h.iml" />
+    <property name="nodejs_package_manager_path" value="npm" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.16617793" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.StmtVisitor">
+    <configuration name="AstInfoTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test.AstInfoTest" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Replace" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test.Replace" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StmtVisitor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test.StmtVisitor" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.StmtVisitor" />
+        <item itemvalue="Application.AstInfoTest" />
+        <item itemvalue="Application.Replace" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -35,10 +141,37 @@
       <option name="presentableId" value="Default" />
       <updated>1651132556566</updated>
       <workItem from="1651132558687" duration="97000" />
+      <workItem from="1651377885040" duration="453000" />
+      <workItem from="1651378360286" duration="2413000" />
+      <workItem from="1651387187590" duration="6061000" />
+      <workItem from="1651394650153" duration="3911000" />
+      <workItem from="1651452475488" duration="92000" />
+      <workItem from="1651493447836" duration="5661000" />
+      <workItem from="1651643238028" duration="3079000" />
+      <workItem from="1651647459507" duration="625000" />
+      <workItem from="1651650954678" duration="6677000" />
+      <workItem from="1651713597532" duration="10183000" />
+      <workItem from="1651731059039" duration="12584000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="实现语句查询&#10;1.增加StmtVisitor类, 用于语句查询&#10;2.增加SourcePosition类, 用于获取结点在源码中的位置" />
+    <MESSAGE value="实现语句查询&#10;1.增加StmtVisitor类, 用于语句查询&#10;2.增加SourcePosition类, 用于获取结点在源码中的位置&#10;3.完善DummyTest类, 以体现语句查询效果" />
+    <option name="LAST_COMMIT_MESSAGE" value="实现语句查询&#10;1.增加StmtVisitor类, 用于语句查询&#10;2.增加SourcePosition类, 用于获取结点在源码中的位置&#10;3.完善DummyTest类, 以体现语句查询效果" />
   </component>
 </project>
