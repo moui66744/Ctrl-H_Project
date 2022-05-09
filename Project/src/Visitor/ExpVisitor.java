@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContext>> {
+
+    List<Pair<Token,Integer>> patternNext;
+    JavaParser.JavaParser.ExpressionContext patternExp;
+    TokenStream patternTokenStream;
     @Override
     protected List<JavaParser.ExpressionContext> aggregateResult(List<JavaParser.ExpressionContext> aggregate, List<JavaParser.ExpressionContext> nextResult) {
         if (aggregate == null) return nextResult;
@@ -79,6 +83,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
      * This method is used to filter the List of expression. User can choose two different mode for matching
      * This method will eventually call the other method with the same name
      */
+    @Deprecated
     public List<JavaParser.ExpressionContext> filter(List<JavaParser.ExpressionContext> input, String expr, TokenStream mainTokenStream){
         //parsing the expression
         CharStream charStream = CharStreams.fromString(expr);
@@ -87,7 +92,9 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         JavaParser javaParser = new JavaParser(tokenStream);
         try {
             JavaParser.ExpressionContext ctx = javaParser.expression();
-            return filter(input,ctx,tokenStream,mainTokenStream);
+            patternTokenStream = tokenStream;
+            patternExp = ctx;
+            return filter(input,mainTokenStream);
         }catch (RecognitionException e) {
             System.err.println("Invalid Expression");
         }
@@ -97,20 +104,19 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
     /**
      *
      * @param input : the list to be filtered
-     * @param ctx: the context node of the expression to be filtered with
      * @return
      *  return the list of expression after filter
      *
      */
-    public List<JavaParser.ExpressionContext> filter(List<JavaParser.ExpressionContext> input, JavaParser.ExpressionContext ctx, TokenStream patternTokenStream, TokenStream mainTokenStream) {
+    public List<JavaParser.ExpressionContext> filter(List<JavaParser.ExpressionContext> input, TokenStream mainTokenStream) {
         checkMode();//set the mode if the mode is null, the default mode is partial matching
         List<JavaParser.ExpressionContext> output = null;
-
+        var ctx = patternExp;
         if (matchMode == MatchMode.FullMatch)
             output = input.stream().filter(item -> item.getText().equals(ctx.getText())).collect(Collectors.toList());
         else if (matchMode == MatchMode.PartialMatch){
-            var next = patternPreCompile(ctx,patternTokenStream);
-            output = input.stream().filter(item -> subTokenOf(item, next,mainTokenStream)).collect(Collectors.toList());
+            if(patternNext == null )patternPreCompile(ctx,patternTokenStream);
+            output = input.stream().filter(item -> subTokenOf(item,mainTokenStream)).collect(Collectors.toList());
         }
         else
             // no suppose to be here
@@ -118,16 +124,31 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
 
         return output;
     }
+
+    public void patternPreCompile(String expr){
+        CharStream charStream = CharStreams.fromString(expr);
+        JavaLexer lexer = new JavaLexer(charStream);
+        CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+        JavaParser javaParser = new JavaParser(tokenStream);
+        try {
+            JavaParser.ExpressionContext ctx = javaParser.expression();
+            patternExp = ctx;
+            patternTokenStream = tokenStream;
+            patternPreCompile(ctx,tokenStream);
+        }catch (RecognitionException e) {
+            System.err.println("Invalid Expression");
+        }
+    }
+
     /**
      *
      * @param pattern: the input pattern
      * @param <T> : T is a sub-class of ParserRuleContext
-     * @return
-     *  return the next array for KMP matching
+     * 
      */
-    private <T extends ParserRuleContext > List<Pair<Token,Integer>> patternPreCompile(T pattern, TokenStream t) {
+    public <T extends ParserRuleContext > void patternPreCompile(T pattern, TokenStream t) {
         if (pattern == null){
-            return null;
+            return;
         }
         var next = new ArrayList<Pair<Token, Integer>>();
         var start = pattern.start;
@@ -146,10 +167,11 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
                 ++ x;
             }
         }
-        return next;
+        patternNext = next;
     }
-    private <T extends ParserRuleContext > boolean subTokenOf(T input, List<Pair<Token, Integer>> next, TokenStream mainTokenStream) {
+    private <T extends ParserRuleContext > boolean subTokenOf(T input, TokenStream mainTokenStream) {
         int tar = input.start.getTokenIndex();
+        List<Pair<Token,Integer>> next = patternNext;
         final int stop = input.stop.getTokenIndex() + 1;
         int pos = 0;
 
