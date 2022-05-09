@@ -36,12 +36,6 @@ public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<Jav
         return ret;
     }
 
-    public static List<ClassOrInterfaceInfo> getClassOrInterfaceDeclaration(ParserRuleContext root, String name) {
-        if (root == null) return new ArrayList<>();
-        List<ClassOrInterfaceInfo> classOrInterfaceInfos = getClassOrInterfaceDeclaration(root);
-        return ClassOrInterfaceInfo.classOrInterfaceInfoFilter(classOrInterfaceInfos, name);
-    }
-
     public static TerminalNode getName(JavaParser.ClassOrInterfaceDeclarationContext classOrInterfaceDeclarationContext) {
         TerminalNode name = null;
         try {
@@ -62,7 +56,7 @@ public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<Jav
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
         ClassOrInterfaceDeclarationVisitor classOrInterfaceDeclarationVisitor = new ClassOrInterfaceDeclarationVisitor();
         var root = astInfo.getRoot();
-        List<ClassOrInterfaceInfo> classOrInterfaceInfos = classOrInterfaceDeclarationVisitor.getClassOrInterfaceDeclaration(root, "DummyTest");
+        List<ClassOrInterfaceInfo> classOrInterfaceInfos = getClassOrInterfaceDeclaration(root);
         for (var iNode : classOrInterfaceInfos) {
             System.out.println(astInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
         }

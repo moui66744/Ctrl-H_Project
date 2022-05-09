@@ -86,24 +86,6 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
         return ret;
     }
 
-    public static List<MethodInfo> getMethodDeclaration(ParserRuleContext root, String name) {
-        if (root == null) return new ArrayList<>();
-        List<MethodInfo> methodInfos = getMethodDeclaration(root);
-        return MethodInfo.methodInfoFilter(methodInfos, name);
-    }
-
-    public static List<MethodInfo> getMethodDeclaration(ParserRuleContext root, JavaParser.TypeContext type) {
-        if (root == null) return new ArrayList<>();
-        List<MethodInfo> methodInfos = getMethodDeclaration(root);
-        return MethodInfo.methodInfoFilter(methodInfos, type);
-    }
-
-    public static List<MethodInfo> getMethodDeclaration(ParserRuleContext root, boolean voidBoolean) {
-        if (root == null) return new ArrayList<>();
-        List<MethodInfo> methodInfos = getMethodDeclaration(root);
-        return MethodInfo.methodInfoFilter(methodInfos, voidBoolean);
-    }
-
     public static JavaParser.FormalParameterDeclsContext getFormalParameters(ParserRuleContext method) {
 //        因为可能会出现多组参数，实际上只有第一组是当前函数的
 //        虽然递归过程中method参数并不总代表方法，但正式使用时，用户可以将其作为提示
@@ -144,7 +126,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
         MethodDeclVisitor methodDeclVisitor = new MethodDeclVisitor();
         var root = astInfo.getRoot();
-        List<MethodInfo> methodDecls = getMethodDeclaration(root, "main");
+        List<MethodInfo> methodDecls = getMethodDeclaration(root);
 //        JavaParser.BlockContext methodBody = getMethodBody(root);
 //        System.out.println(methodBody.getText());
 //        System.out.println(getFormalParameters(root).getText());

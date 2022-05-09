@@ -34,18 +34,6 @@ public class VariableDeclaratorVisitor {
         return ret;
     }
 
-    public static List<VariableInfo> getVariableDeclarator(ParserRuleContext root, String name) {
-        if (root == null) return new ArrayList<>();
-        List<VariableInfo> variableInfos = getVariableDeclarator(root);
-        return VariableInfo.variableInfoFilter(variableInfos, name);
-    }
-
-    public static List<VariableInfo> getVariableDeclarator(ParserRuleContext root, JavaParser.TypeContext type) {
-        if (root == null) return new ArrayList<>();
-        List<VariableInfo> variableInfos = getVariableDeclarator(root);
-        return VariableInfo.variableInfoFilter(variableInfos, type);
-    }
-
     public static JavaParser.TypeContext getType(JavaParser.VariableDeclaratorContext varDecls) {
         ParserRuleContext parent = (ParserRuleContext) varDecls.parent.parent;
         if (parent instanceof JavaParser.LocalVariableDeclarationContext localVariableDeclarationContext) {
@@ -61,7 +49,7 @@ public class VariableDeclaratorVisitor {
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
         MethodDeclVisitor methodDeclVisitor = new MethodDeclVisitor();
         var root = astInfo.getRoot();
-        List<VariableInfo> variableInfos = getVariableDeclarator(root,"i");
+        List<VariableInfo> variableInfos = getVariableDeclarator(root);
         for (var varDecls : variableInfos) {
             System.out.println(varDecls.Type.getText());
         }
