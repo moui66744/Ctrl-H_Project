@@ -1,7 +1,11 @@
 package runtime;
 
+import Visitor.StmtVisitor;
+import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class CLI {
@@ -80,7 +84,7 @@ public class CLI {
             .hasArg()
             .valueSeparator()
             .numberOfArgs(2)
-            .desc("Use value for given properties")
+            .desc("Use value for given properties.")
             .build();
         propertyTOpt = Option.builder()
             .option("T")
@@ -88,7 +92,7 @@ public class CLI {
             .hasArg()
             .valueSeparator()
             .numberOfArgs(2)
-            .desc("Text to Replace")
+            .desc("Text to Replace.")
             .build();
 
         // search/replace不能同时选择
@@ -111,30 +115,29 @@ public class CLI {
         options.addOptionGroup(stmt_decl_expr);
     }
 
-    public boolean parseArgs(String[] args) throws ParseException {
+    public void parseArgs(String[] args) throws ParseException, IllegalArgumentException {
         CommandLine cmd = parser.parse(options, args);
         if (cmd.hasOption(helpOpt)) {// 打印帮助信息
             helpFormatter.printHelp("ctrl-h", options);
-            return false;
+            throw new ParseException("");
         }
         // 路径
-        cliInfo.path = cmd.getOptionValue(pathOpt);
+        if ((cliInfo.path = cmd.getOptionValue(pathOpt)) == null) {
+            throw new ParseException("Please input -p to set search path.");
+        }
 
-        // 检查模式：查询 or 替换.
+        // 模式：查询 or 替换.
         if (cmd.hasOption(searchOpt)) {
             cliInfo.isReplace = false;
         } else if (cmd.hasOption(replaceOpt)) {
             cliInfo.isReplace = true;
-            if (cmd.hasOption(propertyTOpt)) {
-                Properties properties = cmd.getOptionProperties(propertyTOpt);
-                cliInfo.text = properties.getProperty("text");
-            } else {
-                System.out.println("Please input -Ttext=<value> to set text after replacing.");
-                return false;
+            // 替换文本
+            Properties properties = cmd.getOptionProperties(propertyTOpt);
+            if (properties == null || (cliInfo.text = properties.getProperty("text")) == null) {
+                throw new ParseException("Please input -Ttext=<value> to set text after replacing.");
             }
-        } else {
-            System.out.println("Please input -s or -r to choose mode: Search or Replace.");
-            return false;
+        } else {// -s/-r至少选择一个
+            throw new ParseException("Please input -s or -r to choose mode: Search or Replace.");
         }
 
         cliInfo.isQuiet = cmd.hasOption(quietOpt);
@@ -146,15 +149,35 @@ public class CLI {
             if (cmd.hasOption(propertyDOpt)) {
                 Properties properties = cmd.getOptionProperties(propertyDOpt);
                 cliInfo.cond = properties.getProperty("cond");
-                if (cliInfo.target.equals("for")) {
-                    cliInfo.forInit = properties.getProperty("forInit");
-                    cliInfo.forUpdate = properties.getProperty("forUpdate");
-                } else if (cliInfo.target.equals("if")) {
-                    // TODO: 解析ifType
-
-                } else if (cliInfo.target.equals("try")) {
-                    // TODO: 解析tryTry
-
+                switch (cliInfo.target) {
+                    case "for":
+                        cliInfo.forInit = properties.getProperty("forInit");
+                        cliInfo.forUpdate = properties.getProperty("forUpdate");
+                        break;
+                    case "if":
+                        try {
+                            String ifType = properties.getProperty("ifType");
+                            cliInfo.ifType = ifType == null ? StmtVisitor.IF_TYPE.DONT_CARE
+                                : StmtVisitor.IF_TYPE.valueOf(ifType);
+                        } catch (IllegalArgumentException e) {
+                            throw new IllegalArgumentException(
+                                "The ifType is illegal, options: DONT_CARE/WITH_ELSE/WITHOUT_ELSE"
+                            );
+                        }
+                        break;
+                    case "try":
+                        try {
+                            String tryType = properties.getProperty("tryType");
+                            cliInfo.tryType = tryType == null ? StmtVisitor.TRY_TYPE.DONT_CARE
+                                : StmtVisitor.TRY_TYPE.valueOf(tryType);
+                        } catch (IllegalArgumentException e) {
+                            throw new IllegalArgumentException(
+                                "The tryType is illegal, options: " +
+                                "DONT_CARE/WITH_CATCH_WITH_FINALLY/WITH_CATCH_WITHOUT_FINALLY/" +
+                                "WITH_CATCH_WITHOUT_FINALLY"
+                            );
+                        }
+                        break;
                 }
             }
         } else if (cmd.hasOption(declOpt)) {// 获取decl的具体查询信息
@@ -163,7 +186,7 @@ public class CLI {
                 Properties properties = cmd.getOptionProperties(propertyDOpt);
                 cliInfo.name = properties.getProperty("name");
                 cliInfo.type = properties.getProperty("type");
-                cliInfo.voidBoolean = Boolean.parseBoolean(properties.getProperty("is_void"));
+                cliInfo.voidBoolean = Boolean.parseBoolean(properties.getProperty("isVoid"));
             }
         } else if (cmd.hasOption(exprOpt)) {// 获取expr的具体查询信息
             cliInfo.target = "expr";// expr没有细分的类型
@@ -172,23 +195,31 @@ public class CLI {
                 cliInfo.expr = properties.getProperty("expr");
             }
         } else {
-            System.out.println("Please input -stmt or -decl or expr to choose query target");
-            return false;
+            throw new ParseException("Please input -stmt or -decl or -expr to choose query target");
         }
-        return true;
     }
 
-    public void exec() {
-        // TODO: 完成S/R任务的分派, 具体接口调用交给Search/Replace
-        // TODO: 查询
+    // 完成S/R任务的分派, 具体接口调用交给Search/Replace
+    public void exec() throws IOException {
+        // TODO: 查找
         var result = Search.execSearch(cliInfo);
-        // TODO: 输出查询结果
-        if (!cliInfo.isQuiet) {
-            Search.printSearchResults();
-        }
-        // TODO: 替换
+        // 替换
         if (cliInfo.isReplace) {
-            Replace.execReplace(cliInfo);
+            Replace.execReplace(result, cliInfo.text);
+            if (!cliInfo.isQuiet) {
+                // TODO: 输出替换前后的差别
+                Print.printDiff();
+                // 用户确认后进行替换
+                if (!cliInfo.noAsk) {// TODO: 用户没有输入-y, 需要等待确认
+
+                }
+                // TODO: 执行替换, 即将替换后的文本写入到文件
+
+            }
+        } else {
+            // 输出查询结果列表
+            Print.printResult();
+            // TODO: 交互式允许用户查看详细的查找结果
         }
 
 
@@ -201,33 +232,42 @@ public class CLI {
 //        }
     }
 
-    public static void main(String[] args) throws ParseException {
+    public static void main(String[] args) {
         // 模拟用户输入参数
         String[] Args = new String[]{
 //            "-h",
 
-            "-s",
-            "-stmt=for",
-            "-DforInit=int i = 0",
-            "-Dcond=i < n",
-            "-DforUpdate= i++",
-            "-p",
-            "Desktop/exp.java",
+//            "-s",
+//            "-stmt=for",
+//            "-DforInit=int i = 0",
+//            "-Dcond=i < n",
+//            "-DforUpdate= i++",
+//            "-p",
+//            "Desktop/exp.java",
 
 //            "-ryq",
 //            "-stmt=if",
 //            "-Dcond=(a > 0 && b == 0) || c < 0",
-//            // TODO: "-DifType="
+//            "-DifType=WITH_ELSE",
 //            "-Ttext=a + b + c == 0",
 //            "-p",
 //            "Desktop/exp.java",
 
+            "-s",
+            "-decl=a",
+            "-DisVoid=false",
+            "-p",
+            "Desktop/exp.java",
+
         };
         CLI cli = new CLI();
         cli.setOptions();
-        if (cli.parseArgs(Args)) {
+        try {
+            cli.parseArgs(Args);
+            System.out.println(cliInfo);
             cli.exec();
+        } catch (ParseException | IllegalArgumentException | IOException e) {
+            System.err.println(e.getMessage());
         }
-        System.out.println(cliInfo);
     }
 }
