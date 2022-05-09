@@ -1,4 +1,4 @@
-package Visitor;
+package Info;
 
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -21,9 +21,9 @@ public class DeclarationBaseInfo {
         Context = context;
     }
 
-    TerminalNode Name;
-    JavaParser.ModifierContext Modifier;
-    ParserRuleContext Context;
+    public TerminalNode Name;
+    public JavaParser.ModifierContext Modifier;
+    public ParserRuleContext Context;
 
     /**
      * 根据其名称进行过滤

@@ -1,4 +1,4 @@
-package Visitor;
+package Info;
 
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -21,7 +21,7 @@ public class VariableInfo extends DeclarationBaseInfo {
         Type = type;
     }
 
-    JavaParser.TypeContext Type;
+    public JavaParser.TypeContext Type;
 
     /**
      * 根据变量名对输入的变量信息类列表进行过滤
