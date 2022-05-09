@@ -13,7 +13,7 @@ public class AstInfo {
     JavaParser parser;
     CommonTokenStream tokenStream;
     JavaParser.CompilationUnitContext root;
-    TokenStreamRewriter tokenStreamRewriter;
+    static TokenStreamRewriter tokenStreamRewriter;
     public AstInfo(CharStream input) {
         lexer = new JavaLexer(input);
         tokenStream = new CommonTokenStream(lexer);
@@ -38,7 +38,7 @@ public class AstInfo {
     public TokenStreamRewriter getTokenStreamRewriter() {
         return tokenStreamRewriter;
     }
-    public <T extends ParserRuleContext> void replace(T context, String text) {
+    public static  <T extends ParserRuleContext> void replace(T context, String text) {
         tokenStreamRewriter.replace(context.start,context.stop, text);
     }
 }

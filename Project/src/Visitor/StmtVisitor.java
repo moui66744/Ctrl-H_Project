@@ -268,7 +268,8 @@ public class StmtVisitor extends JavaBaseVisitor<ArrayList<StatementContext>> {
      * @return: 满足条件的try语句结点.
      * @date 0222/05/06
      */
-    public ArrayList<StatementContext> tryStmtFilter(ArrayList<StatementContext> stmtList, TRY_TYPE tryType, String[] catchCond) {
+//    public ArrayList<StatementContext> tryStmtFilter(ArrayList<StatementContext> stmtList, TRY_TYPE tryType, String[] catchCond) {
+    public ArrayList<StatementContext> tryStmtFilter(ArrayList<StatementContext> stmtList, String catchCond, TRY_TYPE tryType) {
         // 根据try-catch-finally语句的类型过滤: 是否有catch/finally
         stmtList = (ArrayList<StatementContext>) stmtList.stream().filter(stmtCtx ->
             (tryType == TRY_TYPE.WITH_CATCH_WITH_FINALLY && stmtCtx.catches() != null && stmtCtx.finallyBlock() != null) ||
@@ -278,17 +279,23 @@ public class StmtVisitor extends JavaBaseVisitor<ArrayList<StatementContext>> {
         ).collect(Collectors.toList());
         // 根据catch的捕获条件过滤
         if (catchCond != null) {
-            for (int i=0; i<catchCond.length; i++) {
-                final int idx = i;
-                String s = catchCond[idx].replaceAll(" ", "");
-                stmtList = (ArrayList<StatementContext>) stmtList.stream().filter(stmtCtx -> {
-                    // 若没有catch语句, 或catch语句数量不足, 则过滤
-                    if (stmtCtx.catches() == null || stmtCtx.catches().catchClause(idx) == null) return false;
-                    // 否则保留
-                    else return s.equals(stmtCtx.catches().catchClause(idx).getText().split("[()]")[1]);
-                }).collect(Collectors.toList());
-            }
+            String s = catchCond.replaceAll("[ \\t\\n]", "");
+            stmtList = (ArrayList<StatementContext>) stmtList.stream().filter(stmtCtx ->
+                s.equals(stmtCtx.parExpression().expression().getText())
+            ).collect(Collectors.toList());
         }
+//        if (catchCond != null) {
+//            for (int i=0; i<catchCond.length; i++) {
+//                final int idx = i;
+//                String s = catchCond[idx].replaceAll(" ", "");
+//                stmtList = (ArrayList<StatementContext>) stmtList.stream().filter(stmtCtx -> {
+//                    // 若没有catch语句, 或catch语句数量不足, 则过滤
+//                    if (stmtCtx.catches() == null || stmtCtx.catches().catchClause(idx) == null) return false;
+//                    // 否则保留
+//                    else return s.equals(stmtCtx.catches().catchClause(idx).getText().split("[()]")[1]);
+//                }).collect(Collectors.toList());
+//            }
+//        }
         return stmtList;
     }
 
@@ -378,17 +385,17 @@ public class StmtVisitor extends JavaBaseVisitor<ArrayList<StatementContext>> {
         output(s6);
 
         System.out.println("\n\u001b[36;4m@ try statement test\u001b[0m");
-        System.out.println("# find all try statement, with two catch statement, without finally statement,");
-        System.out.println(" condition: [IOException e1, Exception e2]");
-        String[] c7 = new String[2];
-        c7[0] = "IOException e1";
-        c7[1] = "Exception e2";
-        ArrayList<StatementContext> s7 = stmtVisitor.tryStmtVisitor(root);
-        s7 = stmtVisitor.tryStmtFilter(s7, TRY_TYPE.WITH_CATCH_WITHOUT_FINALLY, c7);
-        output(s7);
+//        System.out.println("# find all try statement, with two catch statement, without finally statement,");
+//        System.out.println(" condition: [IOException e1, Exception e2]");
+//        String[] c7 = new String[2];
+//        c7[0] = "IOException e1";
+//        c7[1] = "Exception e2";
+//        ArrayList<StatementContext> s7 = stmtVisitor.tryStmtVisitor(root);
+//        s7 = stmtVisitor.tryStmtFilter(s7, c7, TRY_TYPE.WITH_CATCH_WITHOUT_FINALLY);
+//        output(s7);
         System.out.println("# find all try statement, without catch statement, with finally statement");
         ArrayList<StatementContext> s8 = stmtVisitor.tryStmtVisitor(root);
-        s8 = stmtVisitor.tryStmtFilter(s8, TRY_TYPE.WITHOUT_CATCH_WITH_FINALLY, null);
+        s8 = stmtVisitor.tryStmtFilter(s8, null, TRY_TYPE.WITHOUT_CATCH_WITH_FINALLY);
         output(s8);
 
         System.out.println("\n\u001b[36;4m@ throw statement test\u001b[0m");
