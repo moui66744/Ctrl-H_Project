@@ -1,4 +1,4 @@
-package Visitor;
+package Info;
 
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -39,11 +39,11 @@ public class MethodInfo extends DeclarationBaseInfo {
         Body = body;
     }
 
-    JavaParser.TypeContext Type;
-    boolean VoidBoolean;
-    JavaParser.FormalParameterDeclsContext FormalParameter;
-    JavaParser.TypeParametersContext TypeParameters;
-    JavaParser.BlockContext Body;
+    public JavaParser.TypeContext Type;
+    public boolean VoidBoolean;
+    public JavaParser.FormalParameterDeclsContext FormalParameter;
+    public JavaParser.TypeParametersContext TypeParameters;
+    public JavaParser.BlockContext Body;
 
     /**
      * 用方法名对方法进行过滤

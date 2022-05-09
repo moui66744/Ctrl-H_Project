@@ -1,4 +1,4 @@
-package Visitor;
+package Info;
 
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;

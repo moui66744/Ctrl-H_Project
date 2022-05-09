@@ -1,6 +1,7 @@
 package Visitor;
 
 import AstGenerator.AstInfo;
+import Info.VariableInfo;
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
