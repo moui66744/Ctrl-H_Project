@@ -1,4 +1,4 @@
-package Test;
+package Visitor;
 
 import AstGenerator.AstInfo;
 import JavaParser.JavaBaseVisitor;
@@ -8,7 +8,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDeclContext>> {
 

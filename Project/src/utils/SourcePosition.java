@@ -1,4 +1,4 @@
-package Test;
+package utils;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;

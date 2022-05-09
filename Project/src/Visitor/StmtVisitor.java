@@ -1,4 +1,4 @@
-package Test;
+package Visitor;
 
 import AstGenerator.AstInfo;
 import JavaParser.JavaBaseVisitor;
