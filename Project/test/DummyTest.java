@@ -3,7 +3,12 @@
 //test class declaration
 public class DummyTest {
     final int data = 0;
-    final int a [] /* test */ = {0, 1, 2, 3};
+    final int a[] /* test */ = {0, 1, 2, 3};
+
+    public static int retinput(int input) {
+        return input;
+    }
+
     //    test method declaration
     public static void main(String[] args) {
 

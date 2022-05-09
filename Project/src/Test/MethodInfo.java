@@ -55,4 +55,20 @@ public class MethodInfo extends DeclarationBaseInfo {
         }
         return ret;
     }
+
+    public static List<MethodInfo> methodInfoTypeStringFilter(List<MethodInfo> methodInfos, String type) {
+        if (Objects.equals(type, "void")) {
+            return methodInfoFilter(methodInfos, true);
+        }
+        List<MethodInfo> ret = new ArrayList<>();
+        for (var methodInfo : methodInfos) {
+            try {
+                if (Objects.equals(methodInfo.Type.getText(), type)) {
+                    ret.add(methodInfo);
+                }
+            } catch (Exception ignored) {
+            }
+        }
+        return ret;
+    }
 }

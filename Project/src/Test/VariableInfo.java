@@ -29,4 +29,14 @@ public class VariableInfo extends DeclarationBaseInfo {
         }
         return ret;
     }
+
+    public static List<VariableInfo> variableInfoTypeStringFilter(List<VariableInfo> variableInfos, String type) {
+        List<VariableInfo> ret = new ArrayList<>();
+        for (var variableInfo : variableInfos) {
+            if (Objects.equals(variableInfo.Type.getText(), type)) {
+                ret.add(variableInfo);
+            }
+        }
+        return ret;
+    }
 }
