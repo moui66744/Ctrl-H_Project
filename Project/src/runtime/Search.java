@@ -85,30 +85,37 @@ public class Search {
 
     private static List<ParserRuleContext> execExprSearch(AstInfo ast, String expr) {
         var exprVisitor = new ExpVisitor();
-        exprVisitor.patternPreCompile(expr);
         var res = exprVisitor.visitCompilationUnit(ast.getRoot());
-        res = exprVisitor.filter(res, ast.getTokenStream());
+        if(expr != null) {
+            exprVisitor.patternPreCompile(expr);
+            res = exprVisitor.filter(res, ast.getTokenStream());
+        }
         return new ArrayList<>(res);
     }
 
     private static List<ParserRuleContext> execClassOrInterfaceSearch(AstInfo ast, String name) {
-            var res = ClassOrInterfaceDeclarationVisitor.getClassOrInterfaceDeclaration(ast.getRoot());
+        var res = ClassOrInterfaceDeclarationVisitor.getClassOrInterfaceDeclaration(ast.getRoot());
+        if (name != null)
             res = ClassOrInterfaceInfo.classOrInterfaceInfoFilter(res, name);
-            return res.stream().map(item -> item.Context).collect(Collectors.toList());
+        return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 
     private static List<ParserRuleContext> execMethodSearch(AstInfo ast ,String name, String type ,boolean voidBoolean) {
         var res = MethodDeclVisitor.getMethodDeclaration(ast.getRoot());
-        res = MethodInfo.methodInfoFilter(res, name);
-        res = MethodInfo.methodInfoFilter(res, type);
+        if (name != null)
+            res = MethodInfo.methodInfoFilter(res, name);
+        if (name != null)
+            res = MethodInfo.methodInfoFilter(res, type);
         res = MethodInfo.methodInfoFilter(res, voidBoolean);
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 
     private static List<ParserRuleContext> execVarDeclSearch(AstInfo ast, String name ,String type) {
         var res = VariableDeclaratorVisitor.getVariableDeclarator(ast.getRoot());
-        res = VariableInfo.variableInfoFilter(res, name);
-        res = VariableInfo.variableInfoFilter(res, type);
+        if (name != null)
+            res = VariableInfo.variableInfoFilter(res, name);
+        if (type != null)
+            res = VariableInfo.variableInfoFilter(res, type);
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 }
