@@ -53,7 +53,10 @@ public class Search {
                 case "try" -> res = execTrySearch(astInfo, cliInfo.cond, cliInfo.tryType);
                 case "throw" -> res = execThrowSearch(astInfo, cliInfo.cond);
                 // TODO: 声明查询
-
+                case "class" -> res = execClassOrInterfaceSearch(astInfo, cliInfo.name);
+                case "interface" -> res = execClassOrInterfaceSearch(astInfo, cliInfo.name);
+                case "method" -> res = execMethodSearch(astInfo, cliInfo.name, cliInfo.type, cliInfo.voidBoolean);
+                case "variable" -> res =execVarDeclSearch(astInfo, cliInfo.name, cliInfo.type);
                 // TODO: 表达式查询
                 case "expr" -> res = execExprSearch(astInfo, cliInfo.expr);
             }
@@ -104,16 +107,12 @@ public class Search {
         return new ArrayList<>(stmtVisitor.throwStmtFilter(res, cond));
     }
 
-    private static List<ParserRuleContext> execExprSearch(String expr) {
+    private static List<ParserRuleContext> execExprSearch(AstInfo ast, String expr) {
         var exprVisitor = new ExpVisitor();
-        List<ParserRuleContext> result = new ArrayList<>();
         exprVisitor.patternPreCompile(expr);
-        for (var ast : astList) {
-            var res = exprVisitor.visitCompilationUnit(ast.getRoot());
-            res = exprVisitor.filter(res, ast.getTokenStream());
-            result.addAll(res);
-        }
-        return result;
+        var res = exprVisitor.visitCompilationUnit(ast.getRoot());
+        res = exprVisitor.filter(res, ast.getTokenStream());
+        return new ArrayList<>(res);
     }
 
     private static List<ParserRuleContext> execClassOrInterfaceSearch(AstInfo ast, String name) {
