@@ -10,136 +10,98 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Stream;
 
 public class Search {
     /*
     TODO: 要同时记录所属文件, 可以使用/完善utils/SourcePosition类
      */
-    static ArrayList<AstInfo> astList;
+    static List<AstInfo> astList;
 
-    private static ArrayList<AstInfo> readFile(String path) throws IOException {
-        File file = new File(path);
-        ArrayList<AstInfo> result = new ArrayList<>();
-        if (!file.isDirectory()){
-            if (file.getName().contains(".java"))
-                result.add(new AstInfo(path));
-        } else if (file.isDirectory()){
-            String [] s = file.list();
-            if (s == null)
-                throw new IOException("Empty Directory");
-            for (var f : s){
-                var fileItem = new File(path + f);
-                if (fileItem.isDirectory()){
-                    readFile(fileItem.getAbsolutePath());
-                } else {
-                    if (fileItem.getName().contains(".java"))
-                        result.add(new AstInfo(fileItem));
-                }
-            }
+    private static List<AstInfo> readFile(String path) throws IOException {
+        List<AstInfo> list = new ArrayList<>();
+        Stream<Path> walk = Files.walk(Paths.get(path));
+        for (String fileName : walk.map(Path::toString).filter(f -> f.endsWith(".java")).toList()) {
+            list.add(new AstInfo(fileName));
         }
-        if (result.size() == 0) {
-            throw new IOException("Invalid file name/path");
-        }
-        return result;
+        return list;
     }
 
-    public static ArrayList<ParserRuleContext> execSearch(CLIParseInfo cliInfo) throws IOException {
-        ArrayList<ParserRuleContext> result = null;
+    public static Map<String, List<ParserRuleContext>> execSearch(CLIParseInfo cliInfo) throws IOException {
+        Map<String, List<ParserRuleContext>> result = new HashMap<>();
 
         // 打开 路径下所有文件 / 文件
         astList = readFile(cliInfo.path);
 
-        switch (cliInfo.target) {
-            // 语句查询
-            case "if" -> result = execIfSearch(cliInfo.cond, cliInfo.ifType);
-            case "switch" -> result = execSwitchSearch(cliInfo.cond);
-            case "for" -> result = execForSearch(cliInfo.forInit, cliInfo.cond, cliInfo.forUpdate);
-            case "while" -> result = execWhileSearch(cliInfo.cond);
-            case "do_while" -> result = execDoWhileSearch(cliInfo.cond);
-            case "try" -> result = execTrySearch(cliInfo.cond, cliInfo.tryType);
-            case "throw" -> result = execThrowSearch(cliInfo.cond);
-            // TODO: 声明查询
-//            case "class" -> result = execClassOrInterfaceSearch(ast, cliInfo.name);
-//            case "interface" -> result = execClassOrInterfaceSearch(ast, cliInfo.name);
-//            case "method" -> result = execMethod
-//            case ""
-            // TODO: 表达式查询
-//            case "expr" -> result = execExprSearch(cliInfo.expr);
+        for (AstInfo astInfo: astList) {
+            List<ParserRuleContext> res = new ArrayList<>();
+            switch (cliInfo.target) {
+                // 语句查询
+                case "if" -> res = execIfSearch(astInfo, cliInfo.cond, cliInfo.ifType);
+                case "switch" -> res = execSwitchSearch(astInfo, cliInfo.cond);
+                case "for" -> res = execForSearch(astInfo, cliInfo.forInit, cliInfo.cond, cliInfo.forUpdate);
+                case "while" -> res = execWhileSearch(astInfo, cliInfo.cond);
+                case "do_while" -> res = execDoWhileSearch(astInfo, cliInfo.cond);
+                case "try" -> res = execTrySearch(astInfo, cliInfo.cond, cliInfo.tryType);
+                case "throw" -> res = execThrowSearch(astInfo, cliInfo.cond);
+                // TODO: 声明查询
+
+                // TODO: 表达式查询
+                case "expr" -> res = execExprSearch(astInfo, cliInfo.expr);
+            }
+            result.put(astInfo.getPath(), res);
         }
         return result;
     }
 
-    private static ArrayList<ParserRuleContext> execIfSearch(String cond, StmtVisitor.IF_TYPE ifType) {
+    private static List<ParserRuleContext> execIfSearch(AstInfo astInfo, String cond, StmtVisitor.IF_TYPE ifType) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.ifStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.ifStmtFilter(res, cond, ifType));
-        }
-        return result;
+        var res = stmtVisitor.ifStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.ifStmtFilter(res, cond, ifType));
     }
 
-    private static ArrayList<ParserRuleContext> execSwitchSearch(String cond) {
+    private static List<ParserRuleContext> execSwitchSearch(AstInfo astInfo, String cond) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.switchStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.switchStmtFilter(res, cond));
-        }
-        return result;
+        var res = stmtVisitor.switchStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.switchStmtFilter(res, cond));
     }
 
-    private static ArrayList<ParserRuleContext> execForSearch(String forInit, String cond, String forUpdate) {
+    private static List<ParserRuleContext> execForSearch(AstInfo astInfo, String forInit, String cond, String forUpdate) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.forStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.forStmtFilter(res, forInit, cond, forUpdate));
-        }
-        return result;
+        var res = stmtVisitor.forStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.forStmtFilter(res, forInit, cond, forUpdate));
     }
 
-    private static ArrayList<ParserRuleContext> execWhileSearch(String cond) {
+    private static List<ParserRuleContext> execWhileSearch(AstInfo astInfo, String cond) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.whileStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.whileStmtFilter(res, cond));
-        }
-        return result;
+        var res = stmtVisitor.whileStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.whileStmtFilter(res, cond));
     }
 
-    private static ArrayList<ParserRuleContext> execDoWhileSearch(String cond) {
+    private static List<ParserRuleContext> execDoWhileSearch(AstInfo astInfo, String cond) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.doWhileStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.doWhileStmtFilter(res, cond));
-        }
-        return result;
+        var res = stmtVisitor.doWhileStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.doWhileStmtFilter(res, cond));
     }
 
-    private static ArrayList<ParserRuleContext> execTrySearch(String cond, StmtVisitor.TRY_TYPE tryType) {
+    private static List<ParserRuleContext> execTrySearch(AstInfo astInfo, String cond, StmtVisitor.TRY_TYPE tryType) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.tryStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.tryStmtFilter(res, cond, tryType));
-        }
-        return result;
+        var res = stmtVisitor.tryStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.tryStmtFilter(res, cond, tryType));
     }
 
-    private static ArrayList<ParserRuleContext> execThrowSearch(String cond) {
+    private static List<ParserRuleContext> execThrowSearch(AstInfo astInfo, String cond) {
         StmtVisitor stmtVisitor = new StmtVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
-        for (AstInfo astInfo : astList) {
-            var res = stmtVisitor.throwStmtVisitor(astInfo.getRoot());
-            result.addAll(stmtVisitor.throwStmtFilter(res, cond));
-        }
-        return result;
+        var res = stmtVisitor.throwStmtVisitor(astInfo.getRoot());
+        return new ArrayList<>(stmtVisitor.throwStmtFilter(res, cond));
     }
 
     private static List<ParserRuleContext> execExprSearch(String expr) {

@@ -1,12 +1,21 @@
 package runtime;
 
+import AstGenerator.AstInfo;
 import Visitor.StmtVisitor;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 public class CLI {
     // 输入参数
@@ -205,7 +214,7 @@ public class CLI {
         var result = Search.execSearch(cliInfo);
         // 替换
         if (cliInfo.isReplace) {
-            Replace.execReplace(result, cliInfo.text);
+//            Replace.execReplace(result, cliInfo.text);
             if (!cliInfo.isQuiet) {
                 // TODO: 输出替换前后的差别
                 Print.printDiff();

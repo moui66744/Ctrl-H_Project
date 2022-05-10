@@ -9,11 +9,12 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class AstInfo {
+    String path;
     JavaLexer lexer;
     JavaParser parser;
     CommonTokenStream tokenStream;
     JavaParser.CompilationUnitContext root;
-    static TokenStreamRewriter tokenStreamRewriter;
+    TokenStreamRewriter tokenStreamRewriter;
     public AstInfo(CharStream input) {
         lexer = new JavaLexer(input);
         tokenStream = new CommonTokenStream(lexer);
@@ -27,8 +28,12 @@ public class AstInfo {
 
     public AstInfo(String inputFileName) throws IOException {
         this(CharStreams.fromFileName(inputFileName));
+        path = inputFileName;
     }
 
+    public String getPath() {
+        return path;
+    }
     public JavaParser.CompilationUnitContext getRoot(){
         return root;
     }
@@ -38,7 +43,7 @@ public class AstInfo {
     public TokenStreamRewriter getTokenStreamRewriter() {
         return tokenStreamRewriter;
     }
-    public static  <T extends ParserRuleContext> void replace(T context, String text) {
+    public <T extends ParserRuleContext> void replace(T context, String text) {
         tokenStreamRewriter.replace(context.start,context.stop, text);
     }
 }
