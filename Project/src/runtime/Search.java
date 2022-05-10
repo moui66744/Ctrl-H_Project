@@ -1,15 +1,18 @@
 package runtime;
 
 import AstGenerator.AstInfo;
+import Info.ClassOrInterfaceInfo;
+import Info.MethodInfo;
+import Info.VariableInfo;
 import JavaParser.JavaParser;
-import Visitor.ExpVisitor;
-import Visitor.StmtVisitor;
+import Visitor.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Search {
     /*
@@ -59,9 +62,9 @@ public class Search {
             case "try" -> result = execTrySearch(cliInfo.cond, cliInfo.tryType);
             case "throw" -> result = execThrowSearch(cliInfo.cond);
             // TODO: 声明查询
-
+//            case "class" -> result = execClassOrInterfaceSearch(cliInfo.name);
             // TODO: 表达式查询
-            case "expr" -> result = execExprSearch(cliInfo.expr);
+//            case "expr" -> result = execExprSearch(cliInfo.expr);
         }
         return result;
     }
@@ -136,9 +139,9 @@ public class Search {
         return result;
     }
 
-    private static ArrayList<ParserRuleContext> execExprSearch(String expr) {
+    private static List<ParserRuleContext> execExprSearch(String expr) {
         var exprVisitor = new ExpVisitor();
-        ArrayList<ParserRuleContext> result = new ArrayList<>();
+        List<ParserRuleContext> result = new ArrayList<>();
         exprVisitor.patternPreCompile(expr);
         for (var ast : astList) {
             var res = exprVisitor.visitCompilationUnit(ast.getRoot());
@@ -146,5 +149,26 @@ public class Search {
             result.addAll(res);
         }
         return result;
+    }
+
+    private static List<ParserRuleContext> execClassOrInterfaceSearch(AstInfo ast, String name) {
+            var res = ClassOrInterfaceDeclarationVisitor.getClassOrInterfaceDeclaration(ast.getRoot());
+            res = ClassOrInterfaceInfo.classOrInterfaceInfoFilter(res, name);
+            return res.stream().map(item -> item.Context).collect(Collectors.toList());
+    }
+
+    private static List<ParserRuleContext> MethodSearch(AstInfo ast ,String name, String type ,boolean voidBoolean) {
+        var res = MethodDeclVisitor.getMethodDeclaration(ast.getRoot());
+        res = MethodInfo.methodInfoFilter(res, name);
+        res = MethodInfo.methodInfoFilter(res, type);
+        res = MethodInfo.methodInfoFilter(res, voidBoolean);
+        return res.stream().map(item -> item.Context).collect(Collectors.toList());
+    }
+
+    private static List<ParserRuleContext> VarDeclSearch(AstInfo ast, String name ,String type) {
+        var res = VariableDeclaratorVisitor.getVariableDeclarator(ast.getRoot());
+        res = VariableInfo.variableInfoFilter(res, name);
+        res = VariableInfo.variableInfoFilter(res, type);
+        return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 }
