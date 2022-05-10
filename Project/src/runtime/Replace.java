@@ -8,19 +8,20 @@ import java.util.Map;
 
 public class Replace {
     public static void execReplace(
-        Map<String, List<ParserRuleContext>> resultMap,
+        Map<AstInfo, List<ParserRuleContext>> resultMap,
         String text,
         boolean isQuiet
     ) {
         int idx = 0;
-        for (AstInfo ast : IO.getAstList()) {
-            String path = ast.getPath();
-            for (ParserRuleContext parserRuleContext : resultMap.get(path)) {
+        for (Map.Entry<AstInfo, List<ParserRuleContext>> entry: resultMap.entrySet()) {
+            AstInfo ast = entry.getKey();
+            String filePath = ast.getPath();
+            for (ParserRuleContext parserRuleContext : entry.getValue()) {
                 ast.replace(parserRuleContext, text);
                 String before = ast.getText(parserRuleContext);
                 int row = parserRuleContext.start.getLine();
                 int col = parserRuleContext.start.getCharPositionInLine();
-                if (!isQuiet) Print.printDiff(++idx, path, row, col, before, text);
+                if (!isQuiet) Print.printDiff(++idx, filePath, row, col, before, text);
             }
         }
     }

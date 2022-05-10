@@ -7,16 +7,17 @@ import java.util.List;
 import java.util.Map;
 
 public class Print {
-    public static void printResult(Map<String, List<ParserRuleContext>> resultMap) {
+    public static void printResult(Map<AstInfo, List<ParserRuleContext>> resultMap) {
         // 输出序号/文件名/行号/列号/内容
         int idx = 0;
-        for (Map.Entry<String, List<ParserRuleContext>> entry: resultMap.entrySet()) {
-            String filePath = entry.getKey();
+        for (Map.Entry<AstInfo, List<ParserRuleContext>> entry: resultMap.entrySet()) {
+            AstInfo ast = entry.getKey();
+            String filePath = ast.getPath();
             for (ParserRuleContext parserRuleContext : entry.getValue()) {
                 int row = parserRuleContext.start.getLine();
                 int col = parserRuleContext.start.getCharPositionInLine();
-                System.out.printf("=====No.%d %s:%d:%d=====\n", ++idx, filePath, row, col);
-                System.out.println(parserRuleContext.getText());
+                System.out.printf("\n=====No.%d %s:%d:%d=====\n", ++idx, filePath, row, col);
+                System.out.println(ast.getText(parserRuleContext));
             }
         }
     }

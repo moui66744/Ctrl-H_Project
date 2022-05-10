@@ -7,7 +7,6 @@ import Info.VariableInfo;
 import Visitor.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,8 +14,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Search {
-    public static Map<String, List<ParserRuleContext>> execSearch(CLIParseInfo cliInfo) {
-        Map<String, List<ParserRuleContext>> result = new HashMap<>();
+    public static int cnt;
+    public static Map<AstInfo, List<ParserRuleContext>> execSearch(CLIParseInfo cliInfo) {
+        Map<AstInfo, List<ParserRuleContext>> result = new HashMap<>();
+        cnt = 0;
         for (AstInfo astInfo : IO.getAstList()) {
             List<ParserRuleContext> res = new ArrayList<>();
             switch (cliInfo.target) {
@@ -36,7 +37,8 @@ public class Search {
                 // 表达式查询
                 case "expr" -> res = execExprSearch(astInfo, cliInfo.expr);
             }
-            result.put(astInfo.getPath(), res);
+            result.put(astInfo, res);
+            cnt += res.size();
         }
         return result;
     }
