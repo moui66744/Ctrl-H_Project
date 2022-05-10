@@ -33,6 +33,9 @@ public class CLI {
 
     private static final CLIParseInfo cliInfo = new CLIParseInfo();
 
+    static long stime;
+    static long etime;
+
     /**
      * 设置输入参数
      */
@@ -208,6 +211,10 @@ public class CLI {
             System.out.println(result);
             // 输出查询结果列表
             Print.printResult(result);
+            // 结束时间
+            etime = System.currentTimeMillis();
+            // 计算执行时间
+            System.out.println("The execution time: " + (etime - stime) + " ms.");
             // 交互式允许用户查看详细的查找结果
             interact(result);
         }
@@ -248,6 +255,8 @@ public class CLI {
     }
 
     public static void main(String[] args) {
+        // 开始时间
+        stime = System.currentTimeMillis();
         // 模拟用户输入参数
         String[] Args = new String[]{
 //            "-h",
