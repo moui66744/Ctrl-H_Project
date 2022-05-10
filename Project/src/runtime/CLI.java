@@ -1,21 +1,14 @@
 package runtime;
 
-import AstGenerator.AstInfo;
 import Visitor.StmtVisitor;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import java.util.Scanner;
 
 public class CLI {
     // 输入参数
@@ -28,7 +21,6 @@ public class CLI {
     private Option quietOpt;
     private Option helpOpt;
     private Option pathOpt;
-//    private Option openOpt;
     private Option propertyDOpt;
     private Option propertyTOpt;
     private final OptionGroup stmt_decl_expr = new OptionGroup();
@@ -79,14 +71,6 @@ public class CLI {
         pathOpt = new Option("p", "path", true,
                 "The path of the search or replace.");
 
-//        openOpt = Option.builder()
-//                .option("o")
-//                .longOpt("open")
-//                .hasArg()
-//                .argName("I")
-//                .desc("Open the I-th result in the list of search results.")
-//                .build();
-
         propertyDOpt = Option.builder()
             .option("D")
             .argName("property=value")
@@ -117,7 +101,6 @@ public class CLI {
         options.addOption(helpOpt);
         options.addOption(yesOpt);
         options.addOption(quietOpt);
-//        options.addOption(openOpt);
         options.addOption(propertyDOpt);
         options.addOption(propertyTOpt);
         options.addOptionGroup(search_replace);
@@ -210,35 +193,58 @@ public class CLI {
 
     // 完成S/R任务的分派, 具体接口调用交给Search/Replace
     public void exec() throws IOException {
-        // TODO: 查找
+        // 打开 路径下所有文件 / 文件
+        IO.readFile(cliInfo.path);
+        // 查找
         var result = Search.execSearch(cliInfo);
         // 替换
         if (cliInfo.isReplace) {
-//            Replace.execReplace(result, cliInfo.text);
-            if (!cliInfo.isQuiet) {
-                // TODO: 输出替换前后的差别
-                Print.printDiff();
-                // 用户确认后进行替换
-                if (!cliInfo.noAsk) {// TODO: 用户没有输入-y, 需要等待确认
-
-                }
-                // TODO: 执行替换, 即将替换后的文本写入到文件
-
+            Replace.execReplace(result, cliInfo.text, cliInfo.isQuiet);
+            if (cliInfo.noAsk || confirm()) {// 用户确认
+                // 将替换后的文本写入到文件
+                IO.writeFile();
             }
         } else {
+            System.out.println(result);
             // 输出查询结果列表
-            Print.printResult();
-            // TODO: 交互式允许用户查看详细的查找结果
+            Print.printResult(result);
+            // 交互式允许用户查看详细的查找结果
+            interact(result);
         }
+    }
 
+    public static boolean confirm() {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Are you sure to replace all? [y/n]:");
+        String next = scan.next();
+        scan.close();
+        return next.equals("y") || next.equals("yes");
+    }
 
-//        if (cmd.hasOption(openOpt)) {
-//            String idx = cmd.getOptionValue(openOpt);
-//            // 打开输出中第idx个查询结果
-//            System.out.println(idx);
-////            系统调用示例: code -g <filename>:<row>:<column>
-////            Runtime.getRuntime().exec("cmd /c code -g C:/Users/86187/Desktop/dp.md:5");
-//        }
+    public static void interact(Map<String, List<ParserRuleContext>> resultMap) throws IOException {
+        Scanner scan = new Scanner(System.in);
+        while (true) {
+            System.out.println("Input No. before result to check context, or 'exit' to quit.");
+            System.out.print("ctrl-h>>>");
+            String next = scan.next();
+            if (next.equals("exit")) break;
+            if (!next.matches("[0-9]*")) {
+                System.out.println("Please input a number or 'exit'.");
+            }
+            int idx = Integer.parseInt(next);
+            // 打开第idx的结果
+            for (Map.Entry<String, List<ParserRuleContext>> entry: resultMap.entrySet()) {
+                List<ParserRuleContext> result = entry.getValue();
+                if (idx <= result.size()) {
+                    String fileName = entry.getKey();
+                    int row = result.get(idx-1).start.getLine();
+                    int col = result.get(idx-1).start.getCharPositionInLine();
+                    Runtime.getRuntime().exec("cmd /c code -g " + fileName + ":" + row + ":" + col);
+                    break;
+                }
+                idx -= result.size();
+            }
+        }
     }
 
     public static void main(String[] args) {
@@ -248,25 +254,19 @@ public class CLI {
 
 //            "-s",
 //            "-stmt=for",
-//            "-DforInit=int i = 0",
-//            "-Dcond=i < n",
+//            "-DforInit=i = 0",
+//            "-Dcond=i < 5",
 //            "-DforUpdate= i++",
 //            "-p",
-//            "Desktop/exp.java",
+//            "Project/test/DummyTest.java",
 
-//            "-ryq",
-//            "-stmt=if",
-//            "-Dcond=(a > 0 && b == 0) || c < 0",
-//            "-DifType=WITH_ELSE",
-//            "-Ttext=a + b + c == 0",
-//            "-p",
-//            "Desktop/exp.java",
-
-            "-s",
-            "-decl=a",
-            "-DisVoid=false",
+            "-r",
+            "-stmt=if",
+            "-Dcond=(a > 0 && b == 0) || c < 0",
+            "-DifType=WITH_ELSE",
+            "-Ttext=a + b + c == 0;",
             "-p",
-            "Desktop/exp.java",
+            "Project/test/DummyTest.java",
 
         };
         CLI cli = new CLI();

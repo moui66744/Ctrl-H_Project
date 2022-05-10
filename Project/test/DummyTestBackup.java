@@ -86,12 +86,5 @@ public class DummyTest {
                 break;
             }
         }
-
-        // replease test
-        if ((a > 0 && b == 0) || c < 0) {
-            doSth();
-        } else {
-            doSth();
-        }
     }
 }
