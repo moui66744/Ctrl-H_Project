@@ -46,4 +46,7 @@ public class AstInfo {
     public <T extends ParserRuleContext> void replace(T context, String text) {
         tokenStreamRewriter.replace(context.start,context.stop, text);
     }
+    public String getText(ParserRuleContext ctx) {
+        return this.tokenStream.getText(ctx.start, ctx.stop);
+    }
 }
