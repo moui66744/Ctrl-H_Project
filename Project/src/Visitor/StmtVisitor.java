@@ -174,19 +174,19 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (forInit != null) {// 根据for的初始化语句过滤
             String s = forInit.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.forControl().forInit().getText())
+                stmtCtx.forControl().forInit() != null && s.equals(stmtCtx.forControl().forInit().getText())
             ).toList();
         }
         if (forCond != null) {// 根据for的循环条件过滤
             String s = forCond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.forControl().expression().getText())
+                stmtCtx.forControl().expression() != null && s.equals(stmtCtx.forControl().expression().getText())
             ).toList();
         }
         if (forUpdate != null) {// 根据for的更新语句过滤
             String s = forUpdate.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.forControl().forUpdate().getText())
+                stmtCtx.forControl().forUpdate() != null && s.equals(stmtCtx.forControl().forUpdate().getText())
             ).toList();
         }
         return stmtList;
