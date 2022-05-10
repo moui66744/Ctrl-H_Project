@@ -9,6 +9,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
 
 public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDeclContext>> {
     /**

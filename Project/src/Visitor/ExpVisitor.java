@@ -13,12 +13,13 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContext>> {
 
     List<Pair<Token,Integer>> patternNext;
-    JavaParser.JavaParser.ExpressionContext patternExp;
+    JavaParser.ExpressionContext patternExp;
     TokenStream patternTokenStream;
     @Override
     protected List<JavaParser.ExpressionContext> aggregateResult(List<JavaParser.ExpressionContext> aggregate, List<JavaParser.ExpressionContext> nextResult) {

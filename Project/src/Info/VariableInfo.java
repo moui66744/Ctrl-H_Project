@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.List;
 import java.util.Objects;
 
 public class VariableInfo extends DeclarationBaseInfo {

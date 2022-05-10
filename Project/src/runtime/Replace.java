@@ -3,12 +3,12 @@ package runtime;
 import AstGenerator.AstInfo;
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class Replace {
-    public static void execReplace(ArrayList<ParserRuleContext> src, String text) {
+    public static void execReplace(List<ParserRuleContext> src, String text) {
         for (ParserRuleContext prc: src) {
-            AstInfo.replace(prc, text);
+//            AstInfo.replace(prc, text);
         }
     }
 }
