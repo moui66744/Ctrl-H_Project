@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContext>> {
 
     List<Pair<Token,Integer>> patternNext;
-    JavaParser.JavaParser.ExpressionContext patternExp;
+    JavaParser.ExpressionContext patternExp;
     TokenStream patternTokenStream;
     @Override
     protected List<JavaParser.ExpressionContext> aggregateResult(List<JavaParser.ExpressionContext> aggregate, List<JavaParser.ExpressionContext> nextResult) {
@@ -144,7 +144,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
      *
      * @param pattern: the input pattern
      * @param <T> : T is a sub-class of ParserRuleContext
-     * 
+     *
      */
     public <T extends ParserRuleContext > void patternPreCompile(T pattern, TokenStream t) {
         if (pattern == null){
