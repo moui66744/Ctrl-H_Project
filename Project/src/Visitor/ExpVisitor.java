@@ -145,7 +145,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
      *
      * @param pattern: the input pattern
      * @param <T> : T is a sub-class of ParserRuleContext
-     * 
+     *
      */
     public <T extends ParserRuleContext > void patternPreCompile(T pattern, TokenStream t) {
         if (pattern == null){
