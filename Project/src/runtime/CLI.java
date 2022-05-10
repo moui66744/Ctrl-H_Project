@@ -1,5 +1,6 @@
 package runtime;
 
+import AstGenerator.AstInfo;
 import Visitor.StmtVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
@@ -32,6 +33,9 @@ public class CLI {
     private final DefaultParser parser = new DefaultParser();
 
     private static final CLIParseInfo cliInfo = new CLIParseInfo();
+
+    static long stime;
+    static long etime;
 
     /**
      * 设置输入参数
@@ -192,13 +196,14 @@ public class CLI {
     }
 
     // 完成S/R任务的分派, 具体接口调用交给Search/Replace
-    public void exec() throws IOException {
+    public void exec() throws Exception {
         // 打开 路径下所有文件 / 文件
         IO.readFile(cliInfo.path);
         // 查找
         var result = Search.execSearch(cliInfo);
-        // 替换
-        if (cliInfo.isReplace) {
+        if (Search.cnt == 0) {// 没有匹配结果直接返回
+            throw new Exception("No matching results.");
+        } else if (cliInfo.isReplace) {// 替换
             Replace.execReplace(result, cliInfo.text, cliInfo.isQuiet);
             if (cliInfo.noAsk || confirm()) {// 用户确认
                 // 将替换后的文本写入到文件
@@ -208,6 +213,10 @@ public class CLI {
             System.out.println(result);
             // 输出查询结果列表
             Print.printResult(result);
+            // 结束时间
+            etime = System.currentTimeMillis();
+            // 计算执行时间
+            System.out.println("The execution time: " + (etime - stime) + " ms.");
             // 交互式允许用户查看详细的查找结果
             interact(result);
         }
@@ -221,22 +230,30 @@ public class CLI {
         return next.equals("y") || next.equals("yes");
     }
 
-    public static void interact(Map<String, List<ParserRuleContext>> resultMap) throws IOException {
+    public static void interact(Map<AstInfo, List<ParserRuleContext>> resultMap) throws IOException {
         Scanner scan = new Scanner(System.in);
         while (true) {
-            System.out.println("Input No. before result to check context, or 'exit' to quit.");
+            System.out.println("Input number before result to check context, or 'exit' to quit.");
             System.out.print("ctrl-h>>>");
             String next = scan.next();
             if (next.equals("exit")) break;
+            // 用户输入异常处理
+            // no a number
             if (!next.matches("[0-9]*")) {
-                System.out.println("Please input a number or 'exit'.");
+                System.out.println("Please input a positive integer or 'exit'.");
+                continue;
             }
+            // out of range
             int idx = Integer.parseInt(next);
+            if (idx < 1 || idx > Search.cnt) {
+                System.out.println("Please input a number from 1 to " + Search.cnt);
+                continue;
+            }
             // 打开第idx的结果
-            for (Map.Entry<String, List<ParserRuleContext>> entry: resultMap.entrySet()) {
+            for (Map.Entry<AstInfo, List<ParserRuleContext>> entry: resultMap.entrySet()) {
                 List<ParserRuleContext> result = entry.getValue();
                 if (idx <= result.size()) {
-                    String fileName = entry.getKey();
+                    String fileName = entry.getKey().getPath();
                     int row = result.get(idx-1).start.getLine();
                     int col = result.get(idx-1).start.getCharPositionInLine();
                     Runtime.getRuntime().exec("cmd /c code -g " + fileName + ":" + row + ":" + col);
@@ -248,6 +265,8 @@ public class CLI {
     }
 
     public static void main(String[] args) {
+        // 开始时间
+        stime = System.currentTimeMillis();
         // 模拟用户输入参数
         String[] Args = new String[]{
 //            "-h",
@@ -275,7 +294,9 @@ public class CLI {
             cli.parseArgs(Args);
             System.out.println(cliInfo);
             cli.exec();
-        } catch (ParseException | IllegalArgumentException | IOException e) {
+        } catch (IOException e) {
+            System.err.println("No such file or directory: " + e.getMessage());
+        } catch (Exception e) {
             System.err.println(e.getMessage());
         }
     }
