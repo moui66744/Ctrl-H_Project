@@ -1,5 +1,6 @@
 package Visitor;
 
+import AstGenerator.AstInfo;
 import JavaParser.JavaParser;
 import JavaParser.JavaLexer;
 import JavaParser.JavaVisitor;
@@ -11,6 +12,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.List;
@@ -156,7 +158,10 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         next.add(new Pair<>(start, 0));
         int now = 0;
         int x = 1;
-        while(start.getTokenIndex() + x < start.getTokenIndex()){
+        while(start.getTokenIndex() + x <= pattern.getStop().getTokenIndex()){
+            if (t.get(start.getTokenIndex() + x).getChannel() == Token.HIDDEN_CHANNEL){
+                x ++;
+            }
             if (t.get(start.getTokenIndex() + x).getText().equals(t.get(start.getTokenIndex() + now).getText())){
                 now ++;
                 x ++;
@@ -175,8 +180,9 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         List<Pair<Token,Integer>> next = patternNext;
         final int stop = input.stop.getTokenIndex() + 1;
         int pos = 0;
-
         while (tar < stop){
+            if (mainTokenStream.get(tar).getChannel() == Token.HIDDEN_CHANNEL)
+                tar ++;
             if (mainTokenStream.get(tar).getText().equals(next.get(pos).a.getText())){
                 ++tar;
                 ++pos;
@@ -192,3 +198,38 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         return false;
     }
 }
+
+
+
+class ExpVisitorTest {
+    static String inputFileName = "test/DummyTest.java";
+    public static void main(String [] argv) throws IOException {
+        AstInfo ast = new AstInfo(inputFileName);
+        ExpVisitor expVisitor = new ExpVisitor();
+        List<JavaParser.ExpressionContext> allExp = expVisitor.visitCompilationUnit(ast.getRoot());
+        //test 1: find all expression
+        for (var item :allExp){
+            System.out.println(item.getText());
+        }
+
+        System.out.println("//////////////////////////////\n Partial Match Filter");
+        expVisitor.patternPreCompile("10");
+        assert expVisitor.patternNext.size() == 3 ;
+
+        var PartialMatchResult = expVisitor.filter(allExp, ast.getTokenStream());
+        for (var item : PartialMatchResult) {
+            System.out.println(item.getText());
+        }
+        System.out.println("//////////////////////////////\n Full Match Filter");
+        expVisitor.setMatchMode(ExpVisitor.MatchMode.FullMatch);
+        expVisitor.patternPreCompile("1*2");
+        var fullMatchResult = expVisitor.filter(allExp, ast.getTokenStream());
+
+        for (var item : fullMatchResult) {
+            System.out.println(item.getText());
+        }
+
+
+    }
+}
+
