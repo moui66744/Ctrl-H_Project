@@ -32,8 +32,8 @@ public class Search {
                 // 声明查询
                 case "class" -> res = execClassOrInterfaceSearch(astInfo, cliInfo.name);
                 case "interface" -> res = execClassOrInterfaceSearch(astInfo, cliInfo.name);
-                case "method" -> res = execMethodSearch(astInfo, cliInfo.name, cliInfo.type, cliInfo.voidBoolean);
-                case "variable" -> res =execVarDeclSearch(astInfo, cliInfo.name, cliInfo.type);
+                case "method" -> res = execMethodSearch(astInfo, cliInfo.name, cliInfo.type);
+                case "variable" -> res = execVarDeclSearch(astInfo, cliInfo.name, cliInfo.type);
                 // 表达式查询
                 case "expr" -> res = execExprSearch(astInfo, cliInfo.expr);
             }
@@ -88,7 +88,7 @@ public class Search {
     private static List<ParserRuleContext> execExprSearch(AstInfo ast, String expr) {
         var exprVisitor = new ExpVisitor();
         var res = exprVisitor.visitCompilationUnit(ast.getRoot());
-        if(expr != null) {
+        if (expr != null) {
             exprVisitor.patternPreCompile(expr);
             res = exprVisitor.filter(res, ast.getTokenStream());
         }
@@ -102,22 +102,22 @@ public class Search {
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 
-    private static List<ParserRuleContext> execMethodSearch(AstInfo ast ,String name, String type ,boolean voidBoolean) {
+    private static List<ParserRuleContext> execMethodSearch(AstInfo ast, String name, String type) {
         var res = MethodDeclVisitor.getMethodDeclaration(ast.getRoot());
         if (name != null)
             res = MethodInfo.methodInfoFilter(res, name);
-        if (name != null)
-            res = MethodInfo.methodInfoFilter(res, type);
-        res = MethodInfo.methodInfoFilter(res, voidBoolean);
+        if (type != null)
+            res = MethodInfo.methodInfoTypeStringFilter(res, type);
+//        res = MethodInfo.methodInfoFilter(res, voidBoolean);
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 
-    private static List<ParserRuleContext> execVarDeclSearch(AstInfo ast, String name ,String type) {
+    private static List<ParserRuleContext> execVarDeclSearch(AstInfo ast, String name, String type) {
         var res = VariableDeclaratorVisitor.getVariableDeclarator(ast.getRoot());
         if (name != null)
             res = VariableInfo.variableInfoFilter(res, name);
         if (type != null)
-            res = VariableInfo.variableInfoFilter(res, type);
+            res = VariableInfo.variableInfoTypeStringFilter(res, type);
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 }
