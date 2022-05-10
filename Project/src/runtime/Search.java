@@ -62,7 +62,10 @@ public class Search {
             case "try" -> result = execTrySearch(cliInfo.cond, cliInfo.tryType);
             case "throw" -> result = execThrowSearch(cliInfo.cond);
             // TODO: 声明查询
-//            case "class" -> result = execClassOrInterfaceSearch(cliInfo.name);
+//            case "class" -> result = execClassOrInterfaceSearch(ast, cliInfo.name);
+//            case "interface" -> result = execClassOrInterfaceSearch(ast, cliInfo.name);
+//            case "method" -> result = execMethod
+//            case ""
             // TODO: 表达式查询
 //            case "expr" -> result = execExprSearch(cliInfo.expr);
         }
@@ -157,7 +160,7 @@ public class Search {
             return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 
-    private static List<ParserRuleContext> MethodSearch(AstInfo ast ,String name, String type ,boolean voidBoolean) {
+    private static List<ParserRuleContext> execMethodSearch(AstInfo ast ,String name, String type ,boolean voidBoolean) {
         var res = MethodDeclVisitor.getMethodDeclaration(ast.getRoot());
         res = MethodInfo.methodInfoFilter(res, name);
         res = MethodInfo.methodInfoFilter(res, type);
@@ -165,7 +168,7 @@ public class Search {
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 
-    private static List<ParserRuleContext> VarDeclSearch(AstInfo ast, String name ,String type) {
+    private static List<ParserRuleContext> execVarDeclSearch(AstInfo ast, String name ,String type) {
         var res = VariableDeclaratorVisitor.getVariableDeclarator(ast.getRoot());
         res = VariableInfo.variableInfoFilter(res, name);
         res = VariableInfo.variableInfoFilter(res, type);
