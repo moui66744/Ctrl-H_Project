@@ -32,6 +32,12 @@ public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<Jav
                     context);
         } catch (Exception ignored) {
         }
+        try {
+            return new ClassOrInterfaceInfo(context.interfaceDeclaration().annotationTypeDeclaration().Identifier(),
+                    null,// TODO: 2022/5/11
+                    context);
+        } catch (Exception ignored) {
+        }
         return null;
     }
 
