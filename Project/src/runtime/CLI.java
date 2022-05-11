@@ -213,7 +213,6 @@ public class CLI {
                 IO.writeFile();
             }
         } else {
-            System.out.println(result);
             etime_without_io = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY);
             // 输出查询结果列表
             Print.printResult(result);
@@ -296,12 +295,12 @@ public class CLI {
         cli.setOptions();
         try {
             cli.parseArgs(args);
-            System.out.println(cliInfo);
             cli.exec();
         } catch (IOException e) {
             System.err.println("No such file or directory: " + e.getMessage());
         } catch (Exception e) {
             System.err.println(e.getMessage());
+//            e.printStackTrace();
         }
     }
 }
