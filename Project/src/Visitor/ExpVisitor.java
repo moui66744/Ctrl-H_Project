@@ -114,6 +114,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
     public List<JavaParser.ExpressionContext> filter(List<JavaParser.ExpressionContext> input, TokenStream mainTokenStream) {
         checkMode();//set the mode if the mode is null, the default mode is partial matching
         List<JavaParser.ExpressionContext> output = null;
+        if (input == null) return null;
         var ctx = patternExp;
         if (matchMode == MatchMode.FullMatch)
             output = input.stream().filter(item -> item.getText().equals(ctx.getText())).collect(Collectors.toList());

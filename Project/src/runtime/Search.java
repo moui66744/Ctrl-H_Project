@@ -92,7 +92,8 @@ public class Search {
             exprVisitor.patternPreCompile(expr);
             res = exprVisitor.filter(res, ast.getTokenStream());
         }
-        return new ArrayList<>(res);
+        if(res != null)return new ArrayList<>(res);
+        return new ArrayList<>();
     }
 
     private static List<ParserRuleContext> execClassOrInterfaceSearch(AstInfo ast, String name) {
