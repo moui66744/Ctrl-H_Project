@@ -1211,6 +1211,7 @@ fragment
 EscapeSequence
 	:	'\\' [btnfr"'\\]
 	|	OctalEscape
+	| '\\' 'u'+ HexDigit HexDigit HexDigit HexDigit
 	;
 
 fragment
