@@ -15,17 +15,29 @@ import java.util.List;
 public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<JavaParser.ClassOrInterfaceDeclarationContext>> {
     /**
      * 通过所传入的类或声明内容所在子树的根节点，提取信息并生成对应的信息类
+     *
      * @param context: 待查询的类或接口子树的根节点
      * @return: 查询得到的该子树中的信息
      */
     public static ClassOrInterfaceInfo getClassOrInterfaceInfo(JavaParser.ClassOrInterfaceDeclarationContext context) {
-        return new ClassOrInterfaceInfo(context.classDeclaration().normalClassDeclaration().Identifier(),
-                null,// TODO: 2022/5/7
-                context);
+        try {
+            return new ClassOrInterfaceInfo(context.classDeclaration().normalClassDeclaration().Identifier(),
+                    null,// TODO: 2022/5/7
+                    context);
+        } catch (Exception ignored) {
+        }
+        try {
+            return new ClassOrInterfaceInfo(context.interfaceDeclaration().normalInterfaceDeclaration().Identifier(),
+                    null,// TODO: 2022/5/7
+                    context);
+        } catch (Exception ignored) {
+        }
+        return null;
     }
 
     /**
      * 从所给的根节点开始查询，获取其子树中所具有的所有类或接口声明并提取其基本信息生成对应的信息类，总结成列表输出
+     *
      * @param root: 所给的任意节点（待查询子树的根节点）
      * @return: 子树中所具有的所有类或接口声明列表
      */
@@ -50,6 +62,7 @@ public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<Jav
 
     /**
      * 通过所传入的类或声明内容所在子树的根节点，提取名称信息并返回对应的终结节点
+     *
      * @param classOrInterfaceDeclarationContext: 待查询的类或声明内容所在子树的根节点
      * @return: 其名称所在的终结节点
      */
@@ -68,7 +81,8 @@ public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<Jav
         }
         return name;
     }
-//
+
+    //
     public static void main(String[] args) throws IOException {
         //        main method is just for testing
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
