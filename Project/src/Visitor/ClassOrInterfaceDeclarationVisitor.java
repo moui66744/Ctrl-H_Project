@@ -47,7 +47,7 @@ public class ClassOrInterfaceDeclarationVisitor extends JavaBaseVisitor<List<Jav
         if (root instanceof JavaParser.ClassOrInterfaceDeclarationContext) { // 如果当前节点是一个类或接口声明
             // 将当前节点从ParserRuleContext转换成ClassOrInterfaceDeclarationContext的类型
             ClassOrInterfaceInfo classOrInterfaceInfo = getClassOrInterfaceInfo((JavaParser.ClassOrInterfaceDeclarationContext) root);
-            ret.add(classOrInterfaceInfo); // 作为返回列表中的一项
+            if (classOrInterfaceInfo != null) ret.add(classOrInterfaceInfo); // 作为返回列表中的一项
         }
         // 继续查询，且当前已找到节点的子树也包含在查询范围内
         if (root.children == null) return ret; // 没有孩子节点，返回
