@@ -6,6 +6,8 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
 
 import java.io.IOException;
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -35,7 +37,8 @@ public class CLI {
     private static final CLIParseInfo cliInfo = new CLIParseInfo();
 
     static long stime;
-    static long etime;
+    static long etime_without_io;
+    static long etime_with_io;
 
     /**
      * 设置输入参数
@@ -211,12 +214,14 @@ public class CLI {
             }
         } else {
             System.out.println(result);
+            etime_without_io = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY);
             // 输出查询结果列表
             Print.printResult(result);
             // 结束时间
-            etime = System.currentTimeMillis();
+            etime_with_io = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY);
             // 计算执行时间
-            System.out.println("The execution time: " + (etime - stime) + " ms.");
+            System.out.println("The execution time without IO: " + (etime_without_io - stime) + " ms.");
+            System.out.println("The execution time with IO: " + (etime_with_io - stime) + " ms.");
             // 交互式允许用户查看详细的查找结果
             interact(result);
         }
@@ -266,7 +271,7 @@ public class CLI {
 
     public static void main(String[] args) {
         // 开始时间
-        stime = System.currentTimeMillis();
+        stime = LocalTime.now().getLong(ChronoField.MILLI_OF_DAY);
         // 模拟用户输入参数
         String[] Args = new String[]{
 //            "-h",
@@ -286,12 +291,11 @@ public class CLI {
             "-Ttext=a + b + c == 0;",
             "-p",
             "Project/test/DummyTest.java",
-
         };
         CLI cli = new CLI();
         cli.setOptions();
         try {
-            cli.parseArgs(Args);
+            cli.parseArgs(args);
             System.out.println(cliInfo);
             cli.exec();
         } catch (IOException e) {
