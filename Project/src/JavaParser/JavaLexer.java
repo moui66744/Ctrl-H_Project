@@ -1,4 +1,4 @@
-// Generated from grammar/JavaLexer.g4 by ANTLR 4.10.1
+// Generated from grammar/Java.g4 by ANTLR 4.10.1
 package JavaParser;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -157,7 +157,7 @@ public class JavaLexer extends Lexer {
 	}
 
 	@Override
-	public String getGrammarFileName() { return "JavaLexer.g4"; }
+	public String getGrammarFileName() { return "Java.g4"; }
 
 	@Override
 	public String[] getRuleNames() { return ruleNames; }

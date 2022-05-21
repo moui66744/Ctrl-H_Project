@@ -1,4 +1,4 @@
-// Generated from grammar/JavaParser.g4 by ANTLR 4.10.1
+// Generated from grammar/Java.g4 by ANTLR 4.10.1
 package JavaParser;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  * @param <T> The return type of the visit operation. Use {@link Void} for
  * operations with no return type.
  */
-public interface JavaParserVisitor<T> extends ParseTreeVisitor<T> {
+public interface JavaVisitor<T> extends ParseTreeVisitor<T> {
 	/**
 	 * Visit a parse tree produced by {@link JavaParser#compilationUnit}.
 	 * @param ctx the parse tree

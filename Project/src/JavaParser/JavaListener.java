@@ -1,4 +1,4 @@
-// Generated from grammar/JavaParser.g4 by ANTLR 4.10.1
+// Generated from grammar/Java.g4 by ANTLR 4.10.1
 package JavaParser;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -6,7 +6,7 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * This interface defines a complete listener for a parse tree produced by
  * {@link JavaParser}.
  */
-public interface JavaParserListener extends ParseTreeListener {
+public interface JavaListener extends ParseTreeListener {
 	/**
 	 * Enter a parse tree produced by {@link JavaParser#compilationUnit}.
 	 * @param ctx the parse tree
