@@ -186,7 +186,7 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (forUpdate != null) {// 根据for的更新语句过滤
             String s = forUpdate.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                stmtCtx.forControl().forUpdate() != null && s.equals(stmtCtx.forControl().forUpdate().getText())
+                stmtCtx.forControl().forUpdate != null && s.equals(stmtCtx.forControl().forUpdate.getText())
             ).toList();
         }
         return stmtList;
@@ -273,9 +273,9 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
     public List<StatementContext> tryStmtFilter(List<StatementContext> stmtList, String catchCond, TRY_TYPE tryType) {
         // 根据try-catch-finally语句的类型过滤: 是否有catch/finally
         stmtList = stmtList.stream().filter(stmtCtx ->
-            (tryType == TRY_TYPE.WITH_CATCH_WITH_FINALLY && stmtCtx.catches() != null && stmtCtx.finallyBlock() != null) ||
-            (tryType == TRY_TYPE.WITH_CATCH_WITHOUT_FINALLY && stmtCtx.catches() != null && stmtCtx.finallyBlock() == null) ||
-            (tryType == TRY_TYPE.WITHOUT_CATCH_WITH_FINALLY && stmtCtx.catches() == null && stmtCtx.finallyBlock() != null) ||
+            (tryType == TRY_TYPE.WITH_CATCH_WITH_FINALLY && stmtCtx.catchClause() != null && stmtCtx.finallyBlock() != null) ||
+            (tryType == TRY_TYPE.WITH_CATCH_WITHOUT_FINALLY && stmtCtx.catchClause() != null && stmtCtx.finallyBlock() == null) ||
+            (tryType == TRY_TYPE.WITHOUT_CATCH_WITH_FINALLY && stmtCtx.catchClause() == null && stmtCtx.finallyBlock() != null) ||
             (tryType == TRY_TYPE.DONT_CARE)
         ).toList();
         // 根据catch的捕获条件过滤
