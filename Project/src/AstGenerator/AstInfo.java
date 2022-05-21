@@ -40,6 +40,14 @@ public class AstInfo {
     public CommonTokenStream getTokenStream() {
         return tokenStream;
     }
+
+    public JavaLexer getLexer() {
+        return lexer;
+    }
+    public JavaParser getParser() {
+        return parser;
+    }
+
     public TokenStreamRewriter getTokenStreamRewriter() {
         return tokenStreamRewriter;
     }
