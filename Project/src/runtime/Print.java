@@ -16,7 +16,7 @@ public class Print {
             for (ParserRuleContext parserRuleContext : entry.getValue()) {
                 int row = parserRuleContext.start.getLine();
                 int col = parserRuleContext.start.getCharPositionInLine();
-                System.out.printf("\n=====No.%d %s:%d:%d=====\n", ++idx, filePath, row, col);
+                System.out.printf("\n\33[1;34m=====No.%d %s:%d:%d=====\33[0m\n", ++idx, filePath, row, col);
                 System.out.println(ast.getText(parserRuleContext));
             }
         }

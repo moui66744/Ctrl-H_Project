@@ -1,7 +1,7 @@
 .PHONY: env parser
 
 TARGET_LANGUAGE ?= Java
-GRAMMAR_NAME ?= grammar/$(TARGET_LANGUAGE).g4
+GRAMMAR_NAME ?= $(shell find grammar -name *.g4)
 PARSER_TARGET_LANGUAGE ?= Java
 TARGET_PACKAGE ?= $(TARGET_LANGUAGE)Parser
 ANTLR_FLAGS += -visitor  -listener
