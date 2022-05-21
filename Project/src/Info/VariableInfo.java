@@ -17,12 +17,12 @@ public class VariableInfo extends DeclarationBaseInfo {
      * @param context: 所在子树的根节点
      * @param type: 变量类型
      */
-    public VariableInfo(TerminalNode name, JavaParser.ModifierContext modifier, ParserRuleContext context, JavaParser.TypeContext type) {
+    public VariableInfo(TerminalNode name, JavaParser.ModifierContext modifier, ParserRuleContext context, JavaParser.TypeTypeContext type) {
         super(name, modifier, context);
         Type = type;
     }
 
-    public JavaParser.TypeContext Type;
+    public JavaParser.TypeTypeContext Type;
 
     /**
      * 根据变量名对输入的变量信息类列表进行过滤
@@ -40,7 +40,7 @@ public class VariableInfo extends DeclarationBaseInfo {
      * @param type: 用于过滤的变量类型条件
      * @return: 过滤后的变量声明信息类列表
      */
-    public static List<VariableInfo> variableInfoFilter(List<VariableInfo> variableInfos, JavaParser.TypeContext type) {
+    public static List<VariableInfo> variableInfoFilter(List<VariableInfo> variableInfos, JavaParser.TypeTypeContext type) {
         List<VariableInfo> ret = new ArrayList<>();
         for (var variableInfo : variableInfos) { // 对列表中的每个变量声明信息类实例
             if (Objects.equals(variableInfo.Type, type)) { // TODO: 2022/5/9 如果其与所需的类型符合

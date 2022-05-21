@@ -1,7 +1,7 @@
 package runtime;
 
 import AstGenerator.AstInfo;
-import Info.ClassOrInterfaceInfo;
+import Info.ClassInfo;
 import Info.MethodInfo;
 import Info.VariableInfo;
 import Visitor.*;
@@ -97,9 +97,9 @@ public class Search {
     }
 
     private static List<ParserRuleContext> execClassOrInterfaceSearch(AstInfo ast, String name) {
-        var res = ClassOrInterfaceDeclarationVisitor.getClassOrInterfaceDeclaration(ast.getRoot());
+        var res = ClassDeclarationVisitor.getClassDeclaration(ast.getRoot());
         if (name != null)
-            res = ClassOrInterfaceInfo.classOrInterfaceInfoFilter(res, name);
+            res = ClassInfo.classInfoFilter(res, name);
         return res.stream().map(item -> item.Context).collect(Collectors.toList());
     }
 

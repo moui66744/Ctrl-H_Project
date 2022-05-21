@@ -18,10 +18,10 @@ public class VariableDeclaratorVisitor {
      * @return: 包含了提取后的信息的变量声明信息类
      */
     private static VariableInfo getVariableInfo(JavaParser.VariableDeclaratorContext context) {
-        return new VariableInfo(context.variableDeclaratorId().Identifier(), // 变量名称所在的标识符终结节点
+        return new VariableInfo(context.variableDeclaratorId().identifier().IDENTIFIER(), // 变量名称所在的标识符终结节点
                 null,// TODO: 2022/5/7 修饰符
                 context, // 变量声明所在的子树的根节点
-                getType(context)); // 变量类型信息所在子树的根节点
+                getType(context)); // 变量类型所在结点
     }
 
     /**
@@ -52,13 +52,13 @@ public class VariableDeclaratorVisitor {
      * @param varDecls: 变量声明节点
      * @return: 被声明的变量的类型
      */
-    public static JavaParser.TypeContext getType(JavaParser.VariableDeclaratorContext varDecls) {
+    public static JavaParser.TypeTypeContext getType(JavaParser.VariableDeclaratorContext varDecls) {
         ParserRuleContext parent = (ParserRuleContext) varDecls.parent.parent; // 向上查询两次父节点
         if (parent instanceof JavaParser.LocalVariableDeclarationContext localVariableDeclarationContext) { // 根据语法树，此时如果是本地临时变量则其下已经可以查询到变量类型了
-            return localVariableDeclarationContext.type();
+            return localVariableDeclarationContext.typeType();
         } else { // 否则说明其是类的成员变量，需要再找一次父节点才能获取其类型信息
-            JavaParser.MemberDeclarationContext memberDeclarationContext = (JavaParser.MemberDeclarationContext) parent.parent;
-            return memberDeclarationContext.type();
+            JavaParser.FieldDeclarationContext fieldDeclarationContext = (JavaParser.FieldDeclarationContext) parent;
+            return fieldDeclarationContext.typeType();
         }
     }
 
@@ -68,8 +68,10 @@ public class VariableDeclaratorVisitor {
         MethodDeclVisitor methodDeclVisitor = new MethodDeclVisitor();
         var root = astInfo.getRoot();
         List<VariableInfo> variableInfos = getVariableDeclarator(root);
-        for (var varDecls : variableInfos) {
-            System.out.println(varDecls.Type.getText());
+        List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i");
+        List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int");
+        for (var varDecls : variableInfos2) {
+            System.out.println(varDecls.Name.getText());
         }
 
     }
