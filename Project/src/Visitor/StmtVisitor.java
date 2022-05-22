@@ -1,10 +1,9 @@
 package Visitor;
 
 import JavaParser.JavaBaseVisitor;
+import JavaParser.JavaParser;
 import JavaParser.JavaParser.CompilationUnitContext;
 import JavaParser.JavaParser.StatementContext;
-import org.antlr.v4.runtime.tree.ParseTree;
-import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,26 +44,47 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
     }
 
     private STMT target;        // 查询语句类型
-    
-    /**
-     * 访问到叶子节点时的行为.
-     * @param node: AST叶子结点
-     * @return 叶子节点返回结果
-     * @date 2022/05/05
-     * */
+
     @Override
-    public List<StatementContext> visitTerminal(TerminalNode node) {
-        List<StatementContext> result = new ArrayList<>();
-        ParseTree parent = node.getParent();
-        if ((target == STMT.IF && node.getText().equals("if")) ||
-            (target == STMT.SWITCH && node.getText().equals("switch")) ||
-            (target == STMT.FOR && node.getText().equals("for")) ||
-            (target == STMT.WHILE && node.getText().equals("while") && ((StatementContext)parent).WHILE() != null) ||
-            (target == STMT.DO_WHILE && node.getText().equals("do")) ||
-            (target == STMT.TRY && node.getText().equals("try")) ||
-            (target == STMT.THROW && node.getText().equals("throw"))
-        ) result.add((StatementContext) parent);// 如果 查询语句类型 与 叶子结点相匹配, 则说明父结点是 待查询语句
-        return result;
+    public List<StatementContext> visitIfStmt(JavaParser.IfStmtContext ctx) {
+        if (target == STMT.IF) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitIfStmt(ctx);
+    }
+
+    @Override
+    public List<StatementContext> visitForStmt(JavaParser.ForStmtContext ctx) {
+        if (target == STMT.FOR) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitForStmt(ctx);
+    }
+
+    @Override
+    public List<StatementContext> visitWhileStmt(JavaParser.WhileStmtContext ctx) {
+        if (target == STMT.WHILE) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitWhileStmt(ctx);
+    }
+
+    @Override
+    public List<StatementContext> visitDoWhileStmt(JavaParser.DoWhileStmtContext ctx) {
+        if (target == STMT.DO_WHILE) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitDoWhileStmt(ctx);
+    }
+
+    @Override
+    public List<StatementContext> visitTryStmt(JavaParser.TryStmtContext ctx) {
+        if (target == STMT.TRY) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitTryStmt(ctx);
+    }
+
+    @Override
+    public List<StatementContext> visitSwitchStmt(JavaParser.SwitchStmtContext ctx) {
+        if (target == STMT.SWITCH) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitSwitchStmt(ctx);
+    }
+
+    @Override
+    public List<StatementContext> visitThrowStmt(JavaParser.ThrowStmtContext ctx) {
+        if (target == STMT.THROW) return new ArrayList<>(List.of((StatementContext) ctx.getParent()));
+        return super.visitThrowStmt(ctx);
     }
 
     /**
@@ -105,15 +125,15 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
     public List<StatementContext> ifStmtFilter(List<StatementContext> stmtList, String cond, IF_TYPE ifType, boolean filterMode) {
         // 根据if语句的类型过滤
         stmtList = stmtList.stream().filter(stmtCtx ->
-            (ifType == IF_TYPE.WITH_ELSE && stmtCtx.ELSE() != null) ||   // 有else语句
-            (ifType == IF_TYPE.WITHOUT_ELSE && stmtCtx.ELSE() == null) ||// 无else语句
-            (ifType == IF_TYPE.DONT_CARE)                                // 不关心是否有else语句
+            (ifType == IF_TYPE.WITH_ELSE && stmtCtx.ifStmt().ELSE() != null) ||     // 有else语句
+            (ifType == IF_TYPE.WITHOUT_ELSE && stmtCtx.ifStmt().ELSE() == null) ||  // 无else语句
+            (ifType == IF_TYPE.DONT_CARE)                                           // 不关心是否有else语句
         ).toList();
         // 根据if语句的判断条件过滤, 如果条件一致则保留
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.ifStmt().parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -143,7 +163,7 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.switchStmt().parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -175,19 +195,19 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (forInit != null) {// 根据for的初始化语句过滤
             String s = forInit.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == (stmtCtx.forControl().forInit() != null && s.equals(stmtCtx.forControl().forInit().getText()))
+                filterMode == (stmtCtx.forStmt().forControl().forInit() != null && s.equals(stmtCtx.forStmt().forControl().forInit().getText()))
             ).toList();
         }
         if (forCond != null) {// 根据for的循环条件过滤
             String s = forCond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == (stmtCtx.forControl().expression() != null && s.equals(stmtCtx.forControl().expression().getText()))
+                filterMode == (stmtCtx.forStmt().forControl().expression() != null && s.equals(stmtCtx.forStmt().forControl().expression().getText()))
             ).toList();
         }
         if (forUpdate != null) {// 根据for的更新语句过滤
             String s = forUpdate.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == (stmtCtx.forControl().forUpdate != null && s.equals(stmtCtx.forControl().forUpdate.getText()))
+                filterMode == (stmtCtx.forStmt().forControl().forUpdate != null && s.equals(stmtCtx.forStmt().forControl().forUpdate.getText()))
             ).toList();
         }
         return stmtList;
@@ -217,7 +237,7 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.whileStmt().parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -247,7 +267,7 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.doWhileStmt().parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -276,16 +296,17 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
     public List<StatementContext> tryStmtFilter(List<StatementContext> stmtList, String catchCond, TRY_TYPE tryType, boolean filterMode) {
         // 根据try-catch-finally语句的类型过滤: 是否有catch/finally
         stmtList = stmtList.stream().filter(stmtCtx ->
-            (tryType == TRY_TYPE.WITH_CATCH_WITH_FINALLY && stmtCtx.catchClause() != null && stmtCtx.finallyBlock() != null) ||
-            (tryType == TRY_TYPE.WITH_CATCH_WITHOUT_FINALLY && stmtCtx.catchClause() != null && stmtCtx.finallyBlock() == null) ||
-            (tryType == TRY_TYPE.WITHOUT_CATCH_WITH_FINALLY && stmtCtx.catchClause() == null && stmtCtx.finallyBlock() != null) ||
+            (tryType == TRY_TYPE.WITH_CATCH_WITH_FINALLY && stmtCtx.tryStmt().catchClause().size() != 0 && stmtCtx.tryStmt().finallyBlock() != null) ||
+            (tryType == TRY_TYPE.WITH_CATCH_WITHOUT_FINALLY && stmtCtx.tryStmt().catchClause().size() != 0 && stmtCtx.tryStmt().finallyBlock() == null) ||
+            (tryType == TRY_TYPE.WITHOUT_CATCH_WITH_FINALLY && stmtCtx.tryStmt().catchClause().size() == 0 && stmtCtx.tryStmt().finallyBlock() != null) ||
             (tryType == TRY_TYPE.DONT_CARE)
         ).toList();
         // 根据catch的捕获条件过滤
         if (catchCond != null) {
             String s = catchCond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == (
+                stmtCtx.tryStmt().catchClause().size() != 0 && s.equals(stmtCtx.tryStmt().catchClause(0).getText().split("[()]]")[1]))
             ).toList();
         }
         return stmtList;
@@ -314,7 +335,7 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (expr != null) {
             String s = expr.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                filterMode == s.equals(stmtCtx.expression(0).getText())
+                filterMode == s.equals(stmtCtx.throwStmt().expression().getText())
             ).toList();
         }
         return stmtList;
