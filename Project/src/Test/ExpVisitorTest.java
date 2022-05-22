@@ -21,14 +21,14 @@ public class ExpVisitorTest {
         System.out.println("//////////////////////////////\n Partial Match Filter");
         expVisitor.patternPreCompile("1 *    2");
 
-        var PartialMatchResult = expVisitor.filter(allExp, ast.getTokenStream());
+        var PartialMatchResult = expVisitor.filter(allExp, ast.getTokenStream(), true);
         for (var item : PartialMatchResult) {
             System.out.println(item.getText());
         }
         System.out.println("//////////////////////////////\n Full Match Filter");
         expVisitor.setMatchMode(ExpVisitor.MatchMode.FullMatch);
         expVisitor.patternPreCompile("1*2");
-        var fullMatchResult = expVisitor.filter(allExp, ast.getTokenStream());
+        var fullMatchResult = expVisitor.filter(allExp, ast.getTokenStream(), true);
 
         for (var item : fullMatchResult) {
             System.out.println(item.getText());

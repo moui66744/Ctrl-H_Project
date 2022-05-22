@@ -68,8 +68,8 @@ public class VariableDeclaratorVisitor {
         MethodDeclVisitor methodDeclVisitor = new MethodDeclVisitor();
         var root = astInfo.getRoot();
         List<VariableInfo> variableInfos = getVariableDeclarator(root);
-        List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i");
-        List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int");
+        List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i", true);
+        List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int", true);
         for (var varDecls : variableInfos2) {
             System.out.println(varDecls.Name.getText());
         }

@@ -53,7 +53,7 @@ public class ClassDeclarationVisitor extends JavaBaseVisitor<List<JavaParser.Cla
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
         var root = astInfo.getRoot();
         List<ClassInfo> classInfos = getClassDeclaration(root);
-        List<ClassInfo> classInfos1 = ClassInfo.classInfoFilter(classInfos, "DummyTest");
+        List<ClassInfo> classInfos1 = ClassInfo.classInfoFilter(classInfos, "DummyTest", true);
         for (var iNode : classInfos1) {
             System.out.println(astInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
         }

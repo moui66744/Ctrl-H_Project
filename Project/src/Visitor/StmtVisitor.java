@@ -1,15 +1,13 @@
 package Visitor;
 
-import AstGenerator.AstInfo;
 import JavaParser.JavaBaseVisitor;
-import JavaParser.JavaParser.*;
+import JavaParser.JavaParser.CompilationUnitContext;
+import JavaParser.JavaParser.StatementContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 用于查询语句Statement的类.
@@ -100,10 +98,11 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * @param stmtList: if语句结点列表
      * @param cond: if语句的判断条件, 若为空, 则本项不作为查询条件
      * @param ifType: if语句的类型, 是否有else语句
-     * @return: 满足条件的if语句结点
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的if语句结点
      * @date 2022/05/06
      */
-    public List<StatementContext> ifStmtFilter(List<StatementContext> stmtList, String cond, IF_TYPE ifType) {
+    public List<StatementContext> ifStmtFilter(List<StatementContext> stmtList, String cond, IF_TYPE ifType, boolean filterMode) {
         // 根据if语句的类型过滤
         stmtList = stmtList.stream().filter(stmtCtx ->
             (ifType == IF_TYPE.WITH_ELSE && stmtCtx.ELSE() != null) ||   // 有else语句
@@ -114,7 +113,7 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -135,15 +134,16 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * 过滤满足条件的switch语句结点
      * @param stmtList: switch语句结点列表
      * @param cond: switch语句的判断条件. 若为空, 则本项不作为查询条件
-     * @return: 满足条件的switch语句结点
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的switch语句结点
      * @date 2022/05/06
      */
-    public List<StatementContext> switchStmtFilter(List<StatementContext> stmtList, String cond) {
+    public List<StatementContext> switchStmtFilter(List<StatementContext> stmtList, String cond, boolean filterMode) {
         // 根据switch语句的判断条件过滤
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -167,26 +167,27 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * @param forInit: for语句的初始化语句. 若为空, 则本项不作为查询条件
      * @param forCond: for语句循环结束的判断条件. 若为空, 则本项不作为查询条件
      * @param forUpdate: for语句的循环更新语句. 若为空, 则本项不作为查询条件
-     * @return: 满足条件的for语句结点
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的for语句结点
      * @date 2022/05/06
      */
-    public List<StatementContext> forStmtFilter(List<StatementContext> stmtList, String forInit, String forCond, String forUpdate) {
+    public List<StatementContext> forStmtFilter(List<StatementContext> stmtList, String forInit, String forCond, String forUpdate, boolean filterMode) {
         if (forInit != null) {// 根据for的初始化语句过滤
             String s = forInit.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                stmtCtx.forControl().forInit() != null && s.equals(stmtCtx.forControl().forInit().getText())
+                filterMode == (stmtCtx.forControl().forInit() != null && s.equals(stmtCtx.forControl().forInit().getText()))
             ).toList();
         }
         if (forCond != null) {// 根据for的循环条件过滤
             String s = forCond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                stmtCtx.forControl().expression() != null && s.equals(stmtCtx.forControl().expression().getText())
+                filterMode == (stmtCtx.forControl().expression() != null && s.equals(stmtCtx.forControl().expression().getText()))
             ).toList();
         }
         if (forUpdate != null) {// 根据for的更新语句过滤
             String s = forUpdate.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                stmtCtx.forControl().forUpdate != null && s.equals(stmtCtx.forControl().forUpdate.getText())
+                filterMode == (stmtCtx.forControl().forUpdate != null && s.equals(stmtCtx.forControl().forUpdate.getText()))
             ).toList();
         }
         return stmtList;
@@ -207,15 +208,16 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * 过滤满足条件的while语句结点.
      * @param stmtList: while语句结点列表
      * @param cond: while语句循环结束的判断条件. 若为空, 则本项不作为查询条件
-     * @return: 满足条件的while语句结点
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的while语句结点
      * @date 2022/05/06
      */
-    public List<StatementContext> whileStmtFilter(List<StatementContext> stmtList, String cond) {
+    public List<StatementContext> whileStmtFilter(List<StatementContext> stmtList, String cond, boolean filterMode) {
         // 根据while语句的循环条件过滤
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -236,15 +238,16 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * 过滤满足条件的do-while语句结点
      * @param stmtList: do-while语句结点列表
      * @param cond: do-while语句循环结束的判断条件. 若为空, 则本项不作为查询条件
-     * @return: 满足条件的do-while语句结点
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的do-while语句结点
      * @date 2022/05/06
      */
-    public List<StatementContext> doWhileStmtFilter(List<StatementContext> stmtList, String cond) {
+    public List<StatementContext> doWhileStmtFilter(List<StatementContext> stmtList, String cond, boolean filterMode) {
         // 根据do-while语句的循环条件过滤
         if (cond != null) {
             String s = cond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
             ).toList();
         }
         return stmtList;
@@ -265,12 +268,12 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * 过滤满足条件的try语句结点.
      * @param stmtList: 所有try语句结点列表
      * @param tryType: try语句的类型, 是否有catch/finally语句
-     * @param catchCond: catch语句的捕获条件, 每个捕获条件依次对应. 若为空, 则本项不作为查询条件
-     * @return: 满足条件的try语句结点.
+     * @param catchCond: catch语句的捕获条件, 若为空, 则本项不作为查询条件
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的try语句结点.
      * @date 0222/05/06
      */
-//    public List<StatementContext> tryStmtFilter(List<StatementContext> stmtList, TRY_TYPE tryType, String[] catchCond) {
-    public List<StatementContext> tryStmtFilter(List<StatementContext> stmtList, String catchCond, TRY_TYPE tryType) {
+    public List<StatementContext> tryStmtFilter(List<StatementContext> stmtList, String catchCond, TRY_TYPE tryType, boolean filterMode) {
         // 根据try-catch-finally语句的类型过滤: 是否有catch/finally
         stmtList = stmtList.stream().filter(stmtCtx ->
             (tryType == TRY_TYPE.WITH_CATCH_WITH_FINALLY && stmtCtx.catchClause() != null && stmtCtx.finallyBlock() != null) ||
@@ -282,21 +285,9 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
         if (catchCond != null) {
             String s = catchCond.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.parExpression().expression().getText())
+                filterMode == s.equals(stmtCtx.parExpression().expression().getText())
             ).toList();
         }
-//        if (catchCond != null) {
-//            for (int i=0; i<catchCond.length; i++) {
-//                final int idx = i;
-//                String s = catchCond[idx].replaceAll(" ", "");
-//                stmtList = (List<StatementContext>) stmtList.stream().filter(stmtCtx -> {
-//                    // 若没有catch语句, 或catch语句数量不足, 则过滤
-//                    if (stmtCtx.catches() == null || stmtCtx.catches().catchClause(idx) == null) return false;
-//                    // 否则保留
-//                    else return s.equals(stmtCtx.catches().catchClause(idx).getText().split("[()]")[1]);
-//                }).collect(Collectors.toList());
-//            }
-//        }
         return stmtList;
     }
 
@@ -315,14 +306,15 @@ public class StmtVisitor extends JavaBaseVisitor<List<StatementContext>> {
      * 过滤满足条件的throw语句结点
      * @param stmtList: throw语句结点列表
      * @param expr: throw语句抛出的表达式. 若为null, 则本项不作为过滤条件
-     * @return: 满足条件的throw语句结点
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @return 满足条件的throw语句结点
      */
-    public List<StatementContext> throwStmtFilter(List<StatementContext> stmtList, String expr) {
+    public List<StatementContext> throwStmtFilter(List<StatementContext> stmtList, String expr, boolean filterMode) {
         // 根据throw语句抛出的表达式过滤
         if (expr != null) {
             String s = expr.replaceAll("[ \\t\\n]", "");
             stmtList = stmtList.stream().filter(stmtCtx ->
-                s.equals(stmtCtx.expression(0).getText())
+                filterMode == s.equals(stmtCtx.expression(0).getText())
             ).toList();
         }
         return stmtList;

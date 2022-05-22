@@ -137,8 +137,8 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
 //        JavaParser.BlockContext methodBody = getMethodBody(root);
 //        System.out.println(methodBody.getText());
 //        System.out.println(getFormalParameters(root).getText());
-        List<MethodInfo> methodInfos = MethodInfo.methodInfoFilter(methodDecls, "retinput");
-        List<MethodInfo> methodInfos1 = MethodInfo.methodInfoTypeStringFilter(methodDecls, "int");
+        List<MethodInfo> methodInfos = MethodInfo.methodInfoFilter(methodDecls, "retinput", true);
+        List<MethodInfo> methodInfos1 = MethodInfo.methodInfoTypeStringFilter(methodDecls, "int", true);
         for (var iNode : methodInfos) {
             System.out.println(iNode.Name.getText());
             System.out.println(iNode.FormalParameter.getText());

@@ -50,10 +50,11 @@ public class MethodInfo extends DeclarationBaseInfo {
      *
      * @param methodInfos: 待过滤的方法列表
      * @param name:        使用方法名来过滤
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
      * @return: 过滤后的所有方法列表
      */
-    public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, String name) {
-        return declarationBaseInfoFilter(methodInfos, name); // 调用父类中的过滤方法
+    public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, String name, boolean filterMode) {
+        return declarationBaseInfoFilter(methodInfos, name, filterMode); // 调用父类中的过滤方法
     }
 
     /**
@@ -61,14 +62,15 @@ public class MethodInfo extends DeclarationBaseInfo {
      *
      * @param methodInfos: 待过滤的方法列表
      * @param type:        使用方法类型进行过滤
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
      * @return: 过滤后的所有方法列表
      */
-    public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, JavaParser.TypeTypeOrVoidContext type) {
+    public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, JavaParser.TypeTypeOrVoidContext type, boolean filterMode) {
         // TODO: 2022/5/9 由于输入是一个子树，实际上似乎并不能直接使用equals进行匹配，需要进一步了解ANTLR的匹配机制
         List<MethodInfo> ret = new ArrayList<>();
         try { // 因为可能存在Type为空的方法，其不能进行equals操作，所以使用try-catch
             for (var methodInfo : methodInfos) {
-                if (Objects.equals(methodInfo.Type, type)) { // 方法的类型和所给类型一致
+                if (filterMode == Objects.equals(methodInfo.Type, type)) { // 方法的类型和所给类型一致
                     ret.add(methodInfo); // 通过过滤，作为返回列表中的一项
                 }
             }
@@ -102,16 +104,17 @@ public class MethodInfo extends DeclarationBaseInfo {
      *                     注：1、不能包含空格
      *                     2、支持void类型，参数type取"void"即可
      *                     3、数组目前也会匹配到，因为int a[]中的type项仍是int
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
      * @return: 过滤后的所有方法列表
      */
-    public static List<MethodInfo> methodInfoTypeStringFilter(List<MethodInfo> methodInfos, String type) {
+    public static List<MethodInfo> methodInfoTypeStringFilter(List<MethodInfo> methodInfos, String type, boolean filterMode) {
 //        if (Objects.equals(type, "void")) { // 如果所给的类型是void
 //            return methodInfoFilter(methodInfos, true); // 使用VoidBoolean为真的条件即可过滤得到结果
 //        }
         List<MethodInfo> ret = new ArrayList<>();
         for (var methodInfo : methodInfos) { // 对输入列表中的每一个进行判断
             try { // 因为可能存在Type为空的方法，其不能进行equals操作，所以使用try-catch
-                if (Objects.equals(methodInfo.Type.getText(), type)) { // 该方法的返回类型在字符串上与所需类型一致
+                if (filterMode == Objects.equals(methodInfo.Type.getText(), type)) { // 该方法的返回类型在字符串上与所需类型一致
                     ret.add(methodInfo); // 通过过滤，作为返回列表中的一项
                 }
             } catch (Exception ignored) {
