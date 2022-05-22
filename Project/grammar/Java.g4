@@ -31,7 +31,7 @@
 
 grammar Java;
 
-options { tokenVocab=JavaLexer; }
+//options { tokenVocab=JavaLexer; }
 
 compilationUnit
     : packageDeclaration? importDeclaration* typeDeclaration*
@@ -481,25 +481,77 @@ localTypeDeclaration
 
 statement
     : blockLabel=block
-    | ASSERT expression (':' expression)? ';'
-    | IF parExpression statement (ELSE statement)?
-    | FOR '(' forControl ')' statement
-    | WHILE parExpression statement
-    | DO statement WHILE parExpression ';'
-    | TRY block (catchClause+ finallyBlock? | finallyBlock)
-    | TRY resourceSpecification block catchClause* finallyBlock?
-    | SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}'
-    | SYNCHRONIZED parExpression block
-    | RETURN expression? ';'
-    | THROW expression ';'
-    | BREAK identifier? ';'
-    | CONTINUE identifier? ';'
-    | YIELD expression ';' // Java17
-    | SEMI
+    | assertStmt//ASSERT expression (':' expression)? ';'
+    | ifStmt//IF parExpression statement (ELSE statement)?
+    | forStmt//FOR '(' forControl ')' statement
+    | whileStmt//WHILE parExpression statement
+    | doWhileStmt//DO statement WHILE parExpression ';'
+    | tryStmt//TRY block (catchClause+ finallyBlock? | finallyBlock)
+    | tryWithRescource //TRY resourceSpecification block catchClause* finallyBlock?
+    | switchStmt//SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}'
+    | synchronizedStmt//SYNCHRONIZED parExpression block
+    | returnStmt //RETURN expression? ';'
+    | throwStmt//THROW expression ';'
+    | breakStmt//BREAK identifier? ';'
+    | continueStmt//CONTINUE identifier? ';'
+    | yieldStmt//YIELD expression ';' // Java17
+    | emptyStmt//SEMI
     | statementExpression=expression ';'
-    | switchExpression ';'? // Java17
-    | identifierLabel=identifier ':' statement
+    | switchExpStmt//switchExpression ';'? // Java17
+    | labelStmt //identifierLabel=identifier ':' statement
     ;
+
+assertStmt:
+    ASSERT expression (':' expression)? ';';
+
+ifStmt:
+    IF parExpression statement (ELSE statement)?;
+
+forStmt:
+    FOR '(' forControl ')' statement;
+
+whileStmt:
+    WHILE parExpression statement;
+
+doWhileStmt:
+	DO statement WHILE parExpression ';';
+
+tryStmt:
+	TRY block (catchClause+ finallyBlock? | finallyBlock);
+
+tryWithRescource :
+	TRY resourceSpecification block catchClause* finallyBlock?;
+
+switchStmt:
+	SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}';
+
+synchronizedStmt:
+	SYNCHRONIZED parExpression block;
+
+returnStmt :
+	RETURN expression? ';';
+
+throwStmt:
+	THROW expression ';';
+
+breakStmt:
+	BREAK identifier? ';';
+
+continueStmt:
+	CONTINUE identifier? ';';
+
+yieldStmt:
+	YIELD expression ';' ;// Java17
+
+emptyStmt:
+	SEMI;
+
+switchExpStmt:
+	switchExpression ';'? ;// Java17
+
+labelStmt :
+	identifierLabel=identifier ':' statement;
+
 
 catchClause
     : CATCH '(' variableModifier* catchType identifier ')' block
