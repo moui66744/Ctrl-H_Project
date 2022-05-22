@@ -33,7 +33,7 @@ grammar JavaQuery;
 
 
 queryInput
-    : blockStatement
+    : statement
     | decl
     | expression
     | importDeclaration
@@ -527,6 +527,7 @@ statement
     | statementExpression=expression ';'
     | switchExpStmt//switchExpression ';'? // Java17
     | labelStmt //identifierLabel=identifier ':' statement
+    | caseStmt
     ;
 
 assertStmt:
@@ -551,7 +552,7 @@ tryWithRescource :
 	TRY resourceSpecification block catchClause* finallyBlock?;
 
 switchStmt:
-	SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}';
+	SWITCH parExpression block;
 
 synchronizedStmt:
 	SYNCHRONIZED parExpression block;
@@ -579,7 +580,9 @@ switchExpStmt:
 
 labelStmt :
 	identifierLabel=identifier ':' statement;
-
+caseStmt
+    : CASE expression ':' block
+    ;
 
 catchClause
     : CATCH '(' variableModifier* catchType identifier ')' block
@@ -635,7 +638,7 @@ enhancedForControl
 // EXPRESSIONS
 
 parExpression
-    : '(' expression ')'
+    : '(' (expression)? ')'
     ;
 
 expressionList
