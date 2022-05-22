@@ -7661,11 +7661,11 @@ public class JavaQueryParser extends Parser {
 		public ParExpressionContext parExpression() {
 			return getRuleContext(ParExpressionContext.class,0);
 		}
-		public List<StatementContext> statement() {
-			return getRuleContexts(StatementContext.class);
+		public List<BlockContext> block() {
+			return getRuleContexts(BlockContext.class);
 		}
-		public StatementContext statement(int i) {
-			return getRuleContext(StatementContext.class,i);
+		public BlockContext block(int i) {
+			return getRuleContext(BlockContext.class,i);
 		}
 		public TerminalNode ELSE() { return getToken(JavaQueryParser.ELSE, 0); }
 		public IfStmtContext(ParserRuleContext parent, int invokingState) {
@@ -7690,6 +7690,7 @@ public class JavaQueryParser extends Parser {
 	public final IfStmtContext ifStmt() throws RecognitionException {
 		IfStmtContext _localctx = new IfStmtContext(_ctx, getState());
 		enterRule(_localctx, 178, RULE_ifStmt);
+		int _la;
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
@@ -7698,19 +7699,19 @@ public class JavaQueryParser extends Parser {
 			setState(1165);
 			parExpression();
 			setState(1166);
-			statement();
+			block();
 			setState(1169);
 			_errHandler.sync(this);
-			switch ( getInterpreter().adaptivePredict(_input,130,_ctx) ) {
-			case 1:
+			_la = _input.LA(1);
+			if (_la==ELSE) {
 				{
 				setState(1167);
 				match(ELSE);
 				setState(1168);
-				statement();
+				block();
 				}
-				break;
 			}
+
 			}
 		}
 		catch (RecognitionException re) {
@@ -7731,8 +7732,8 @@ public class JavaQueryParser extends Parser {
 			return getRuleContext(ForControlContext.class,0);
 		}
 		public TerminalNode RPAREN() { return getToken(JavaQueryParser.RPAREN, 0); }
-		public StatementContext statement() {
-			return getRuleContext(StatementContext.class,0);
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
 		}
 		public ForStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -7768,7 +7769,7 @@ public class JavaQueryParser extends Parser {
 			setState(1174);
 			match(RPAREN);
 			setState(1175);
-			statement();
+			block();
 			}
 		}
 		catch (RecognitionException re) {
@@ -7787,8 +7788,8 @@ public class JavaQueryParser extends Parser {
 		public ParExpressionContext parExpression() {
 			return getRuleContext(ParExpressionContext.class,0);
 		}
-		public StatementContext statement() {
-			return getRuleContext(StatementContext.class,0);
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
 		}
 		public WhileStmtContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -7820,7 +7821,7 @@ public class JavaQueryParser extends Parser {
 			setState(1178);
 			parExpression();
 			setState(1179);
-			statement();
+			block();
 			}
 		}
 		catch (RecognitionException re) {
@@ -7836,8 +7837,8 @@ public class JavaQueryParser extends Parser {
 
 	public static class DoWhileStmtContext extends ParserRuleContext {
 		public TerminalNode DO() { return getToken(JavaQueryParser.DO, 0); }
-		public StatementContext statement() {
-			return getRuleContext(StatementContext.class,0);
+		public BlockContext block() {
+			return getRuleContext(BlockContext.class,0);
 		}
 		public TerminalNode WHILE() { return getToken(JavaQueryParser.WHILE, 0); }
 		public ParExpressionContext parExpression() {
@@ -7872,7 +7873,7 @@ public class JavaQueryParser extends Parser {
 			setState(1181);
 			match(DO);
 			setState(1182);
-			statement();
+			block();
 			setState(1183);
 			match(WHILE);
 			setState(1184);
@@ -13851,15 +13852,15 @@ public class JavaQueryParser extends Parser {
 		"\u0003\u00eew\u0000\u0488\u0486\u0001\u0000\u0000\u0000\u0488\u0489\u0001"+
 		"\u0000\u0000\u0000\u0489\u048a\u0001\u0000\u0000\u0000\u048a\u048b\u0005"+
 		"U\u0000\u0000\u048b\u00b1\u0001\u0000\u0000\u0000\u048c\u048d\u0005\u0017"+
-		"\u0000\u0000\u048d\u048e\u0003\u00e8t\u0000\u048e\u0491\u0003\u00aeW\u0000"+
-		"\u048f\u0490\u0005\u0010\u0000\u0000\u0490\u0492\u0003\u00aeW\u0000\u0491"+
+		"\u0000\u0000\u048d\u048e\u0003\u00e8t\u0000\u048e\u0491\u0003\u00a4R\u0000"+
+		"\u048f\u0490\u0005\u0010\u0000\u0000\u0490\u0492\u0003\u00a4R\u0000\u0491"+
 		"\u048f\u0001\u0000\u0000\u0000\u0491\u0492\u0001\u0000\u0000\u0000\u0492"+
 		"\u00b3\u0001\u0000\u0000\u0000\u0493\u0494\u0005\u0016\u0000\u0000\u0494"+
 		"\u0495\u0005O\u0000\u0000\u0495\u0496\u0003\u00e2q\u0000\u0496\u0497\u0005"+
-		"P\u0000\u0000\u0497\u0498\u0003\u00aeW\u0000\u0498\u00b5\u0001\u0000\u0000"+
+		"P\u0000\u0000\u0497\u0498\u0003\u00a4R\u0000\u0498\u00b5\u0001\u0000\u0000"+
 		"\u0000\u0499\u049a\u00053\u0000\u0000\u049a\u049b\u0003\u00e8t\u0000\u049b"+
-		"\u049c\u0003\u00aeW\u0000\u049c\u00b7\u0001\u0000\u0000\u0000\u049d\u049e"+
-		"\u0005\u000e\u0000\u0000\u049e\u049f\u0003\u00aeW\u0000\u049f\u04a0\u0005"+
+		"\u049c\u0003\u00a4R\u0000\u049c\u00b7\u0001\u0000\u0000\u0000\u049d\u049e"+
+		"\u0005\u000e\u0000\u0000\u049e\u049f\u0003\u00a4R\u0000\u049f\u04a0\u0005"+
 		"3\u0000\u0000\u04a0\u04a1\u0003\u00e8t\u0000\u04a1\u04a2\u0005U\u0000"+
 		"\u0000\u04a2\u00b9\u0001\u0000\u0000\u0000\u04a3\u04a4\u00050\u0000\u0000"+
 		"\u04a4\u04ae\u0003\u00a4R\u0000\u04a5\u04a7\u0003\u00d2i\u0000\u04a6\u04a5"+

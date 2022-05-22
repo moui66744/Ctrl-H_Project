@@ -533,16 +533,16 @@ assertStmt:
     ASSERT expression (':' expression)? ';';
 
 ifStmt:
-    IF parExpression statement (ELSE statement)?;
+    IF parExpression block (ELSE block)?;
 
 forStmt:
-    FOR '(' forControl ')' statement;
+    FOR '(' forControl ')' block;
 
 whileStmt:
-    WHILE parExpression statement;
+    WHILE parExpression block;
 
 doWhileStmt:
-	DO statement WHILE parExpression ';';
+	DO block WHILE parExpression ';';
 
 tryStmt:
 	TRY block (catchClause+ finallyBlock? | finallyBlock);
