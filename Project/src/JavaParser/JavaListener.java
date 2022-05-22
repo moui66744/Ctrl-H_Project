@@ -838,6 +838,176 @@ public interface JavaListener extends ParseTreeListener {
 	 */
 	void exitStatement(JavaParser.StatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JavaParser#assertStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterAssertStmt(JavaParser.AssertStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#assertStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitAssertStmt(JavaParser.AssertStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#ifStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStmt(JavaParser.IfStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#ifStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStmt(JavaParser.IfStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#forStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterForStmt(JavaParser.ForStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#forStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitForStmt(JavaParser.ForStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#whileStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStmt(JavaParser.WhileStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#whileStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStmt(JavaParser.WhileStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#doWhileStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterDoWhileStmt(JavaParser.DoWhileStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#doWhileStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitDoWhileStmt(JavaParser.DoWhileStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#tryStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterTryStmt(JavaParser.TryStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#tryStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitTryStmt(JavaParser.TryStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#tryWithRescource}.
+	 * @param ctx the parse tree
+	 */
+	void enterTryWithRescource(JavaParser.TryWithRescourceContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#tryWithRescource}.
+	 * @param ctx the parse tree
+	 */
+	void exitTryWithRescource(JavaParser.TryWithRescourceContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#switchStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchStmt(JavaParser.SwitchStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#switchStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchStmt(JavaParser.SwitchStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#synchronizedStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterSynchronizedStmt(JavaParser.SynchronizedStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#synchronizedStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitSynchronizedStmt(JavaParser.SynchronizedStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#returnStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnStmt(JavaParser.ReturnStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#returnStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnStmt(JavaParser.ReturnStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#throwStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterThrowStmt(JavaParser.ThrowStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#throwStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitThrowStmt(JavaParser.ThrowStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#breakStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterBreakStmt(JavaParser.BreakStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#breakStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitBreakStmt(JavaParser.BreakStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#continueStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterContinueStmt(JavaParser.ContinueStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#continueStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitContinueStmt(JavaParser.ContinueStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#yieldStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterYieldStmt(JavaParser.YieldStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#yieldStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitYieldStmt(JavaParser.YieldStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#emptyStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterEmptyStmt(JavaParser.EmptyStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#emptyStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitEmptyStmt(JavaParser.EmptyStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#switchExpStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchExpStmt(JavaParser.SwitchExpStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#switchExpStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchExpStmt(JavaParser.SwitchExpStmtContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link JavaParser#labelStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterLabelStmt(JavaParser.LabelStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#labelStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitLabelStmt(JavaParser.LabelStmtContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JavaParser#catchClause}.
 	 * @param ctx the parse tree
 	 */

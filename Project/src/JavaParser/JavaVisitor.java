@@ -509,6 +509,108 @@ public interface JavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStatement(JavaParser.StatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JavaParser#assertStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAssertStmt(JavaParser.AssertStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#ifStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfStmt(JavaParser.IfStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#forStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForStmt(JavaParser.ForStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#whileStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileStmt(JavaParser.WhileStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#doWhileStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDoWhileStmt(JavaParser.DoWhileStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#tryStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTryStmt(JavaParser.TryStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#tryWithRescource}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTryWithRescource(JavaParser.TryWithRescourceContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#switchStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSwitchStmt(JavaParser.SwitchStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#synchronizedStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSynchronizedStmt(JavaParser.SynchronizedStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#returnStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturnStmt(JavaParser.ReturnStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#throwStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitThrowStmt(JavaParser.ThrowStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#breakStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBreakStmt(JavaParser.BreakStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#continueStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitContinueStmt(JavaParser.ContinueStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#yieldStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitYieldStmt(JavaParser.YieldStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#emptyStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEmptyStmt(JavaParser.EmptyStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#switchExpStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSwitchExpStmt(JavaParser.SwitchExpStmtContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link JavaParser#labelStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitLabelStmt(JavaParser.LabelStmtContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JavaParser#catchClause}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
