@@ -641,6 +641,12 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitLabelStmt(JavaQueryParser.LabelStmtContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JavaQueryParser#caseStmt}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCaseStmt(JavaQueryParser.CaseStmtContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JavaQueryParser#catchClause}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

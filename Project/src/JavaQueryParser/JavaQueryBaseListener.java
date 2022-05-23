@@ -1276,6 +1276,18 @@ public class JavaQueryBaseListener implements JavaQueryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCaseStmt(JavaQueryParser.CaseStmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCaseStmt(JavaQueryParser.CaseStmtContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterCatchClause(JavaQueryParser.CatchClauseContext ctx) { }
 	/**
 	 * {@inheritDoc}

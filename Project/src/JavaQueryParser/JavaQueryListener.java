@@ -1058,6 +1058,16 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitLabelStmt(JavaQueryParser.LabelStmtContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JavaQueryParser#caseStmt}.
+	 * @param ctx the parse tree
+	 */
+	void enterCaseStmt(JavaQueryParser.CaseStmtContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaQueryParser#caseStmt}.
+	 * @param ctx the parse tree
+	 */
+	void exitCaseStmt(JavaQueryParser.CaseStmtContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JavaQueryParser#catchClause}.
 	 * @param ctx the parse tree
 	 */
