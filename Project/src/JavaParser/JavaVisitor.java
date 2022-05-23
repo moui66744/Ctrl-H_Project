@@ -647,6 +647,12 @@ public interface JavaVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitResource(JavaParser.ResourceContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JavaParser#switchContent}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSwitchContent(JavaParser.SwitchContentContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JavaParser#switchBlockStatementGroup}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

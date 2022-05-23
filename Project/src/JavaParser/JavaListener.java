@@ -1068,6 +1068,16 @@ public interface JavaListener extends ParseTreeListener {
 	 */
 	void exitResource(JavaParser.ResourceContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JavaParser#switchContent}.
+	 * @param ctx the parse tree
+	 */
+	void enterSwitchContent(JavaParser.SwitchContentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaParser#switchContent}.
+	 * @param ctx the parse tree
+	 */
+	void exitSwitchContent(JavaParser.SwitchContentContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JavaParser#switchBlockStatementGroup}.
 	 * @param ctx the parse tree
 	 */

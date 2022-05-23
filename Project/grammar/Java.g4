@@ -523,7 +523,7 @@ tryWithRescource :
 	TRY resourceSpecification block catchClause* finallyBlock?;
 
 switchStmt:
-	SWITCH parExpression '{' switchBlockStatementGroup* switchLabel* '}';
+	SWITCH parExpression '{' switchContent '}';
 
 synchronizedStmt:
 	SYNCHRONIZED parExpression block;
@@ -581,6 +581,11 @@ resource
 /** Matches cases then statements, both of which are mandatory.
  *  To handle empty cases at the end, we add switchLabel* to statement.
  */
+
+ switchContent
+    : switchBlockStatementGroup* switchLabel*
+    ;
+
 switchBlockStatementGroup
     : switchLabel+ blockStatement+
     ;
