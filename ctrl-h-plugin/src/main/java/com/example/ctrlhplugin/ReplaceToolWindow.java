@@ -1,15 +1,8 @@
 package com.example.ctrlhplugin;
 
 
-import com.intellij.formatting.FormatterImpl;
-import com.intellij.formatting.FormatterTestUtils;
-import com.intellij.formatting.FormattingContext;
-import com.intellij.formatting.FormattingMode;
-import com.intellij.ide.projectView.impl.PsiFileUrl;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.*;
-import com.intellij.openapi.editor.highlighter.EditorHighlighter;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -18,102 +11,24 @@ import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.VfsUtil;
-import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.psi.*;
 import com.intellij.psi.codeStyle.CodeStyleManager;
-import com.intellij.psi.formatter.FormatterUtil;
-import com.intellij.psi.formatter.FormattingDocumentModelImpl;
-import com.intellij.psi.impl.source.PsiFileImpl;
-import com.intellij.psi.impl.source.codeStyle.CodeFormatterFacade;
-import com.intellij.testFramework.propertyBased.PsiIndexConsistencyTester;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.JBColor;
-import com.intellij.ui.StatusPanel;
 import com.intellij.ui.components.*;
 import com.intellij.util.ui.JBUI;
-import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 public class ReplaceToolWindow {
 
 //    面板设计
-    //    数据存储
-
-    static class SearchResult {
-        String file;
-        int lineStart;
-        int columnStart;
-        int offsetStart;
-        int offsetEnd;
-
-        /**
-         * @param file        文件位置
-         * @param lineStart   实际仅用于展示
-         * @param columnStart 实际仅用于展示
-         * @param offsetStart 流式偏移量
-         * @param offsetEnd   流式偏移量
-         */
-        public SearchResult(String file, int lineStart, int columnStart, int offsetStart, int offsetEnd) {
-            // TODO: 2022/5/21 不检查 lineStart & columnStart 是否能和 offsetStart 对应
-            this.file = file;
-            this.lineStart = lineStart;
-            this.columnStart = columnStart;
-            this.offsetStart = offsetStart;
-            this.offsetEnd = offsetEnd;
-        }
-
-        /**
-         * @return 字符串形式显示，用于放在列表栏中
-         */
-        public String getStringInfo() {
-            // TODO: 2022/5/21 此处暂定不打印终末位置
-            return "File: " + file + " \t" +
-                    "Line: " + lineStart + " \t" +
-                    "Offset: " + columnStart;
-        }
-    }
-
-    /**
-     * 用于存储所有搜索到的结果
-     */
-    static class SearchResults {
-        List<SearchResult> results;
-
-        /**
-         * 构造函数
-         */
-        public SearchResults() {
-            results = new ArrayList<>();
-        }
-
-        /**
-         * @param searchResult 需要新增的 SearchResult 对象
-         */
-        public void addSearchResult(SearchResult searchResult) {
-            results.add(searchResult);
-        }
-
-        /**
-         * @return 将其中包含的所有列表信息用字符串向量的形式返回，以便用于显示在列表中
-         */
-        public Vector<String> getStringInfos() {
-            Vector<String> strings = new Vector<>();
-            for (var result : results) {
-                strings.add(result.getStringInfo());
-            }
-            return strings;
-        }
-    }
 
     /**
      * 构造函数
@@ -160,7 +75,7 @@ public class ReplaceToolWindow {
         // 使用列表选择来触发跳转事件
         resultsList.addListSelectionListener(e -> {
             // TODO: 2022/5/21 切换列表才能触发事件，没有点击列表触发事件的方法，即第二次点击已被选中的物体不能构成跳转，可能需要靠 addComponentListener 实现
-            if (!e.getValueIsAdjusting() && resultsList.getSelectedIndex() >= 0) {
+            if (!e.getValueIsAdjusting() && resultsList.getSelectedIndex() >= 0 && resultsList.getSelectedIndices().length == 1) {
                 // getValueIsAdjusting 用于确保仅触发一次
                 // getSelectionIndex 用于确保在 Replace 重置引起的 List 变动时不会触发一下函数
                 // TODO: 2022/5/21 此处只取第一个，但实际上不知道第一个是什么，如果打开了多个工程不清楚是否会有问题
@@ -169,9 +84,10 @@ public class ReplaceToolWindow {
                 int index = resultsList.getSelectedIndex();
                 // 根据选取的序号返回所选的搜索结果
                 SearchResult result = searchResults.results.get(index);
-                new FileChooserDescriptor(true, false, false, false, false, false);
+//                new FileChooserDescriptor(true, false, false, false, false, false);
                 // 打开对应的文件
-                File file = new File(result.file);
+//                File file = new File(project.getBasePath() + result.file.substring(1));
+                File file = new File(project.getBasePath() + "/" + result.file);
                 VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
                 assert virtualFile != null;
                 OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
@@ -183,7 +99,8 @@ public class ReplaceToolWindow {
                 // 获取其中的插入符/光标
                 CaretModel caretModel = editor.getCaretModel();
                 // 将光标设置到搜索结果的对应位置
-                caretModel.moveToLogicalPosition(new LogicalPosition(result.lineStart, result.columnStart));
+//                caretModel.moveToLogicalPosition(new LogicalPosition(result.lineStart, result.columnStart));
+                caretModel.moveToOffset(result.offsetStart);
                 // 确保其在视野范围内
                 editor.getScrollingModel().scrollToCaret(ScrollType.CENTER_DOWN);
 
@@ -251,31 +168,56 @@ public class ReplaceToolWindow {
         replaceSelectedButton.addActionListener(e -> {
             // TODO: 2022/5/22 替换完成后，是否需要进行重新扫描？
             // TODO: 2022/5/22 未选择的情况下需要处理（文本框和列表都需要）
-            String replaceText = replaceTextArea.getText();
-            int index = resultsList.getSelectedIndex();
-            SearchResult result = searchResults.results.get(index);
-            // TODO: 2022/5/22 此处实际应该是调用对应的函数得到字符串
-            Project project = ProjectManager.getInstance().getOpenProjects()[0];
+            if (resultsList.getSelectedIndices().length == 1) {
+                String replaceText = replaceTextArea.getText();
+                int index = resultsList.getSelectedIndex();
+                SearchResult result = searchResults.results.get(index);
+                // TODO: 2022/5/22 此处实际应该是调用对应的函数得到字符串
+                Project project = ProjectManager.getInstance().getOpenProjects()[0];
 //            new FileChooserDescriptor(true, false, false, false, false, false);
-            File file = new File(result.file);
-            VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
-            assert virtualFile != null;
-            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-            Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-            assert editor != null;
+                File file = new File(project.getBasePath() + "/" + result.file);
+                VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
+                assert virtualFile != null;
+                OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+                Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+                assert editor != null;
 
-            Document document = editor.getDocument();
-            WriteCommandAction.runWriteCommandAction(project, () -> document.replaceString(result.offsetStart, result.offsetEnd, replaceText));
-            editor.getCaretModel().getPrimaryCaret().moveToOffset(result.offsetStart);
-            editor.getSelectionModel().setSelection(result.offsetStart, result.offsetStart + replaceText.length());
+                Document document = editor.getDocument();
+                WriteCommandAction.runWriteCommandAction(project, () -> document.replaceString(result.offsetStart, result.offsetEnd, replaceText));
+                editor.getCaretModel().getPrimaryCaret().moveToOffset(result.offsetStart);
+                editor.getSelectionModel().setSelection(result.offsetStart, result.offsetStart + replaceText.length());
 
-            // TODO: 2022/5/22 暂未成功实现代码格式化
-            PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
-            assert psiFile != null;
-            PsiElement reformat = CodeStyleManager.getInstance(project).reformat(psiFile);
+                // TODO: 2022/5/22 暂未成功实现代码格式化
+                PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
+                assert psiFile != null;
+                PsiElement reformat = CodeStyleManager.getInstance(project).reformat(psiFile);
 
-            searchResults.results.remove(index);
-            resultsList.setListData(searchResults.getStringInfos());
+                searchResults.results.remove(index);
+                resultsList.setListData(searchResults.getStringInfos());
+            } else if (resultsList.getSelectedIndices().length > 1) {
+                String replaceText = replaceTextArea.getText();
+                Project project = ProjectManager.getInstance().getOpenProjects()[0];
+                List<SearchResult> unselectedResults = new ArrayList<>();
+                int tmpSelectedIndex = 0;
+                for (var index : resultsList.getSelectedIndices()) {
+                    SearchResult result = searchResults.results.get(index);
+                    File file = new File(project.getBasePath() + "/" + result.file);
+                    VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
+                    assert virtualFile != null;
+                    OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
+                    Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+                    assert editor != null;
+
+                    Document document = editor.getDocument();
+                    WriteCommandAction.runWriteCommandAction(project, () -> document.replaceString(result.offsetStart, result.offsetEnd, replaceText));
+                    editor.getCaretModel().getPrimaryCaret().moveToOffset(result.offsetStart);
+                    editor.getCaretModel().getPrimaryCaret().removeSelection();
+                    unselectedResults.addAll(searchResults.results.subList(tmpSelectedIndex, index));
+                    tmpSelectedIndex = index + 1;
+                }
+                searchResults.results = unselectedResults;
+                resultsList.setListData(searchResults.getStringInfos());
+            }
 
         });
 
@@ -288,7 +230,7 @@ public class ReplaceToolWindow {
             Project project = ProjectManager.getInstance().getOpenProjects()[0];
 
             for (var result : searchResults.results) {
-                File file = new File(result.file);
+                File file = new File(project.getBasePath() + "/" + result.file);
                 VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
                 assert virtualFile != null;
                 OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
@@ -327,11 +269,12 @@ public class ReplaceToolWindow {
 //        仅供测试用的初始化部分放在这里，最终投入使用时不会使用这一部分
         searchResults = new SearchResults();
 //        searchResults.addSearchResult(new SearchResult("D:/TestEnv/src/HelloWorld.java", 5, 3));
-        // TODO: 2022/5/21 这里相对路径没弄明白，先用绝对路径
-        searchResults.addSearchResult(new SearchResult("D:/TestEnv/src/HelloWorld.java", 1, 37, 63, 67));
-        searchResults.addSearchResult(new SearchResult("D:/TestEnv/src/OpenFile.java", 3, 4, 40, 46));
-        searchResults.addSearchResult(new SearchResult("D:/TestEnv/src/Test.java", 2, 8, 73, 107));
-        searchResults.addSearchResult(new SearchResult("D:/TestEnv/src/Test.java", 2, 27, 92, 105));
+        Project project = ProjectManager.getInstance().getOpenProjects()[0];
+//        Messages.showInfoMessage(project.getBasePath(), "Path");
+        searchResults.addSearchResult(new SearchResult("./src/HelloWorld.java", 1, 37, 63, 67));
+        searchResults.addSearchResult(new SearchResult("./src/OpenFile.java", 3, 4, 40, 46));
+        searchResults.addSearchResult(new SearchResult("./src/Test.java", 2, 8, 73, 107));
+        searchResults.addSearchResult(new SearchResult("./src/Test.java", 2, 27, 92, 105));
         resultsList.setListData(searchResults.getStringInfos());
         languageComboBox.addItem("Java");
         languageComboBox.addItem("C");
