@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class InterfaceInfo extends DeclarationBaseInfo {
     public InterfaceInfo(TerminalNode name, JavaParser.ModifierContext modifier, ParserRuleContext context) {
-        super(name, modifier, context);
+        super(name.getText(), modifier, context);
     }
 
     /**
@@ -19,7 +19,7 @@ public class InterfaceInfo extends DeclarationBaseInfo {
      * @param interfaceInfos: 待过滤的类或接口声明的列表
      * @param name: 作为过滤条件的名称
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的类或接口声明的列表
+     * @return 过滤后的类或接口声明的列表
      */
     public static List<InterfaceInfo> interfaceInfoFilter(List<InterfaceInfo> interfaceInfos, String name, boolean filterMode) {
         return declarationBaseInfoFilter(interfaceInfos,name, filterMode); //调用其父类的方法

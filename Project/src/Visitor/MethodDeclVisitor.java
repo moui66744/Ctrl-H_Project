@@ -16,7 +16,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
      * 通过所传入的方法声明内容所在子树的根节点，提取信息并生成对应的信息类
      *
      * @param member: 方法声明内容所在子树的根节点
-     * @return: 提取的信息形成的信息类
+     * @return 提取的信息形成的信息类
      */
     private static MethodInfo getMethodInfo(JavaParser.MemberDeclarationContext member) {
         try { // 当其为泛型方法时
@@ -62,7 +62,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
      * 从所给的根节点开始查询，获取其子树中所具有的所有方法声明并提取其基本信息生成对应的信息类，总结成列表输出
      *
      * @param root: 待查询的子树的根节点，支持将任意节点作为子树根节点进行查询
-     * @return: 所有方法声明组成的信息类列表
+     * @return 所有方法声明组成的信息类列表
      */
     public static List<MethodInfo> getMethodDeclaration(ParserRuleContext root) {
         List<MethodInfo> ret = new ArrayList<>();
@@ -85,7 +85,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
 //     * 通过所传入的方法声明内容所在子树的根节点，提取其函数参数，并返回参数所在子树的根节点
 //     *
 //     * @param method: 方法所在子树的根节点
-//     * @return: 获取到的其参数子树的根节点
+//     * @return 获取到的其参数子树的根节点
 //     */
 //    public static JavaParser.FormalParametersContext getFormalParameters(ParserRuleContext method) {
 ////        因为可能会出现多组参数，实际上只有第一组是当前函数的
@@ -109,7 +109,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
      * 通过所传入的方法声明内容所在子树的根节点，提取其函数体，并返回函数体所在子树的根节点
      *
      * @param method: 待查找的方法这一子树的根节点
-     * @return: 获取到的其函数体所在子树的根节点
+     * @return 获取到的其函数体所在子树的根节点
      */
     public static JavaParser.BlockContext getMethodBody(ParserRuleContext method) {
 //        实际上是寻找第一个block
@@ -140,7 +140,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
         List<MethodInfo> methodInfos = MethodInfo.methodInfoFilter(methodDecls, "retinput", true);
         List<MethodInfo> methodInfos1 = MethodInfo.methodInfoTypeStringFilter(methodDecls, "int", true);
         for (var iNode : methodInfos) {
-            System.out.println(iNode.Name.getText());
+            System.out.println(iNode.name);
             System.out.println(iNode.FormalParameter.getText());
 //            System.out.println(astInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
         }

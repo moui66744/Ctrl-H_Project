@@ -1,6 +1,7 @@
 package Visitor;
 
 import AstGenerator.AstInfo;
+import Info.ClassInfo;
 import Info.InterfaceInfo;
 import JavaParser.JavaBaseVisitor;
 import JavaParser.JavaParser;
@@ -8,14 +9,40 @@ import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class InterfaceDeclarationVisitor extends JavaBaseVisitor<List<JavaParser.InterfaceDeclarationContext>> {
+public class InterfaceDeclarationVisitor extends JavaBaseVisitor<List<ClassInfo>> {
+
+    @Override
+    protected List<ClassInfo> aggregateResult(List<ClassInfo> aggregate, List<ClassInfo> nextResult) {
+        if (aggregate == null) return nextResult;
+        if (nextResult == null) return aggregate;
+        aggregate.addAll(nextResult);
+        return aggregate;
+    }
+
+    @Override
+    public List<ClassInfo> visitLocalTypeDeclaration(JavaParser.LocalTypeDeclarationContext ctx) {
+        if (ctx.interfaceDeclaration() == null) {
+            return super.visitLocalTypeDeclaration(ctx);
+        } else {
+            return new ArrayList<>(Collections.singleton(new ClassInfo(ctx.interfaceDeclaration(), ctx.classOrInterfaceModifier())));
+        }
+    }
+
+    @Override
+    public List<ClassInfo> visitTypeDeclaration(JavaParser.TypeDeclarationContext ctx) {
+        if (ctx.interfaceDeclaration() != null )
+            return new ArrayList<>(Collections.singleton(new ClassInfo(ctx.interfaceDeclaration(), ctx.classOrInterfaceModifier())));
+        return super.visitTypeDeclaration(ctx);
+    }
+
     /**
      * 通过所传入的类或声明内容所在子树的根节点，提取信息并生成对应的信息类
      *
      * @param context: 待查询的类或接口子树的根节点
-     * @return: 查询得到的该子树中的信息
+     * @return 查询得到的该子树中的信息
      */
     public static InterfaceInfo getInterfaceInfo(JavaParser.InterfaceDeclarationContext context) {
         return new InterfaceInfo(context.identifier().IDENTIFIER(),
@@ -27,7 +54,7 @@ public class InterfaceDeclarationVisitor extends JavaBaseVisitor<List<JavaParser
      * 从所给的根节点开始查询，获取其子树中所具有的所有类或接口声明并提取其基本信息生成对应的信息类，总结成列表输出
      *
      * @param root: 所给的任意节点（待查询子树的根节点）
-     * @return: 子树中所具有的所有类或接口声明列表
+     * @return 子树中所具有的所有类或接口声明列表
      */
     public static List<InterfaceInfo> getInterfaceDeclaration(ParserRuleContext root) {
         List<InterfaceInfo> ret = new ArrayList<>();
@@ -50,11 +77,12 @@ public class InterfaceDeclarationVisitor extends JavaBaseVisitor<List<JavaParser
 
     public static void main(String[] args) throws IOException {
         //        main method is just for testing
-        AstInfo astInfo = new AstInfo("test/DummyTestInterface.java");
+        AstInfo astInfo = new AstInfo("test/DummyTest.java");
         var root = astInfo.getRoot();
-        List<InterfaceInfo> interfaceInfos = getInterfaceDeclaration(root);
-        List<InterfaceInfo> interfaceInfos1 = InterfaceInfo.interfaceInfoFilter(interfaceInfos, "DummyTestInterface", true);
-        for (var iNode : interfaceInfos1) {
+        InterfaceDeclarationVisitor visitor = new InterfaceDeclarationVisitor();
+        List<ClassInfo> interfaceInfos = visitor.visitCompilationUnit(root);
+//        List<InterfaceInfo> interfaceInfos1 = InterfaceInfo.interfaceInfoFilter(interfaceInfos, "DummyTestInterface", true);
+        for (var iNode : interfaceInfos) {
             System.out.println(astInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
         }
 

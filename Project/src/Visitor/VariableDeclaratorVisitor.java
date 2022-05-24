@@ -15,7 +15,7 @@ public class VariableDeclaratorVisitor {
      * 通过传入的变量声明内容所在的子树的根节点，提取信息并生成对应的信息类
      *
      * @param context: 待提取信息的变量声明内容所在子树的根节点
-     * @return: 包含了提取后的信息的变量声明信息类
+     * @return 包含了提取后的信息的变量声明信息类
      */
     private static VariableInfo getVariableInfo(JavaParser.VariableDeclaratorContext context) {
         return new VariableInfo(context.variableDeclaratorId().identifier().IDENTIFIER(), // 变量名称所在的标识符终结节点
@@ -28,7 +28,7 @@ public class VariableDeclaratorVisitor {
      * 从所给的根节点开始查询，获取其子树中所具有的所有变量声明并提取其基本信息生成对应的信息类，总结成列表输出
      *
      * @param root: 待查询的子树的根节点
-     * @return: 包含子树中所有变量声明机器信息的变量声明信息类列表
+     * @return 包含子树中所有变量声明机器信息的变量声明信息类列表
      */
     public static List<VariableInfo> getVariableDeclarator(ParserRuleContext root) {
         List<VariableInfo> ret = new ArrayList<>();
@@ -50,7 +50,7 @@ public class VariableDeclaratorVisitor {
      * 获取当前变量声明的类型
      *
      * @param varDecls: 变量声明节点
-     * @return: 被声明的变量的类型
+     * @return 被声明的变量的类型
      */
     public static JavaParser.TypeTypeContext getType(JavaParser.VariableDeclaratorContext varDecls) {
         ParserRuleContext parent = (ParserRuleContext) varDecls.parent.parent; // 向上查询两次父节点
@@ -71,7 +71,7 @@ public class VariableDeclaratorVisitor {
         List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i", true);
         List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int", true);
         for (var varDecls : variableInfos2) {
-            System.out.println(varDecls.Name.getText());
+            System.out.println(varDecls.name);
         }
 
     }

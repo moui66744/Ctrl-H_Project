@@ -18,7 +18,7 @@ public class VariableInfo extends DeclarationBaseInfo {
      * @param type: 变量类型
      */
     public VariableInfo(TerminalNode name, JavaParser.ModifierContext modifier, ParserRuleContext context, JavaParser.TypeTypeContext type) {
-        super(name, modifier, context);
+        super(name.getText(), modifier, context);
         Type = type;
     }
 
@@ -29,7 +29,7 @@ public class VariableInfo extends DeclarationBaseInfo {
      * @param variableInfos: 待过滤的变量声明信息类列表
      * @param name: 用于过滤的变量名条件
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的变量声明信息类列表
+     * @return 过滤后的变量声明信息类列表
      */
     public static List<VariableInfo> variableInfoFilter(List<VariableInfo> variableInfos, String name, boolean filterMode) {
         return declarationBaseInfoFilter(variableInfos, name, filterMode); // 直接调用父类方法
@@ -40,7 +40,7 @@ public class VariableInfo extends DeclarationBaseInfo {
      * @param variableInfos: 待过滤的变量声明信息类列表
      * @param type: 用于过滤的变量类型条件
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的变量声明信息类列表
+     * @return 过滤后的变量声明信息类列表
      */
     public static List<VariableInfo> variableInfoFilter(List<VariableInfo> variableInfos, JavaParser.TypeTypeContext type, boolean filterMode) {
         List<VariableInfo> ret = new ArrayList<>();
@@ -57,7 +57,7 @@ public class VariableInfo extends DeclarationBaseInfo {
      * @param variableInfos: 待过滤的变量声明信息类列表
      * @param type: 用于过滤的变量类型条件（字符串类型）
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的变量声明信息类列表
+     * @return 过滤后的变量声明信息类列表
      */
     public static List<VariableInfo> variableInfoTypeStringFilter(List<VariableInfo> variableInfos, String type, boolean filterMode) {
         List<VariableInfo> ret = new ArrayList<>();

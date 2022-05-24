@@ -32,11 +32,10 @@ public class MethodInfo extends DeclarationBaseInfo {
                       JavaParser.TypeParametersContext typeParameters,
                       JavaParser.BlockContext body) {
         // TODO: 2022/5/21 并不是所有 methodBody 都是 block，但为了统一性先这样构造
-        super(name, modifier, context);
+        super(name.getText(), modifier, context);
         Type = type;
         FormalParameter = formalParamater;
         TypeParameters = typeParameters;
-        Name = name;
         Body = body;
     }
 
@@ -51,7 +50,7 @@ public class MethodInfo extends DeclarationBaseInfo {
      * @param methodInfos: 待过滤的方法列表
      * @param name:        使用方法名来过滤
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的所有方法列表
+     * @return 过滤后的所有方法列表
      */
     public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, String name, boolean filterMode) {
         return declarationBaseInfoFilter(methodInfos, name, filterMode); // 调用父类中的过滤方法
@@ -63,7 +62,7 @@ public class MethodInfo extends DeclarationBaseInfo {
      * @param methodInfos: 待过滤的方法列表
      * @param type:        使用方法类型进行过滤
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的所有方法列表
+     * @return 过滤后的所有方法列表
      */
     public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, JavaParser.TypeTypeOrVoidContext type, boolean filterMode) {
         // TODO: 2022/5/9 由于输入是一个子树，实际上似乎并不能直接使用equals进行匹配，需要进一步了解ANTLR的匹配机制
@@ -84,7 +83,7 @@ public class MethodInfo extends DeclarationBaseInfo {
 //     *
 //     * @param methodInfos: 待过滤的方法列表
 //     * @param voidBoolean: 根据当前方法是否是void来进行过滤
-//     * @return: 过滤后的所有方法列表
+//     * @return 过滤后的所有方法列表
 //     */
 //    public static List<MethodInfo> methodInfoFilter(List<MethodInfo> methodInfos, boolean voidBoolean) {
 //        List<MethodInfo> ret = new ArrayList<>();
@@ -105,7 +104,7 @@ public class MethodInfo extends DeclarationBaseInfo {
      *                     2、支持void类型，参数type取"void"即可
      *                     3、数组目前也会匹配到，因为int a[]中的type项仍是int
      * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
-     * @return: 过滤后的所有方法列表
+     * @return 过滤后的所有方法列表
      */
     public static List<MethodInfo> methodInfoTypeStringFilter(List<MethodInfo> methodInfos, String type, boolean filterMode) {
 //        if (Objects.equals(type, "void")) { // 如果所给的类型是void
