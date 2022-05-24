@@ -445,13 +445,13 @@ public class JavaQueryParser extends Parser {
 			return getRuleContext(TypeParametersContext.class,0);
 		}
 		public TerminalNode EXTENDS() { return getToken(JavaQueryParser.EXTENDS, 0); }
-		public TypeTypeContext typeType() {
-			return getRuleContext(TypeTypeContext.class,0);
+		public List<TypeListContext> typeList() {
+			return getRuleContexts(TypeListContext.class);
+		}
+		public TypeListContext typeList(int i) {
+			return getRuleContext(TypeListContext.class,i);
 		}
 		public TerminalNode IMPLEMENTS() { return getToken(JavaQueryParser.IMPLEMENTS, 0); }
-		public TypeListContext typeList() {
-			return getRuleContext(TypeListContext.class,0);
-		}
 		public ClassLikeDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -500,7 +500,7 @@ public class JavaQueryParser extends Parser {
 				setState(315);
 				match(EXTENDS);
 				setState(316);
-				typeType();
+				typeList();
 				}
 			}
 
@@ -13403,8 +13403,8 @@ public class JavaQueryParser extends Parser {
 		"\u0001\u0000\u0000\u0000\u0136\u0137\u0003\b\u0004\u0000\u0137\u0139\u0003"+
 		"\n\u0005\u0000\u0138\u013a\u0003\u001a\r\u0000\u0139\u0138\u0001\u0000"+
 		"\u0000\u0000\u0139\u013a\u0001\u0000\u0000\u0000\u013a\u013d\u0001\u0000"+
-		"\u0000\u0000\u013b\u013c\u0005\u0012\u0000\u0000\u013c\u013e\u0003\u011a"+
-		"\u008d\u0000\u013d\u013b\u0001\u0000\u0000\u0000\u013d\u013e\u0001\u0000"+
+		"\u0000\u0000\u013b\u013c\u0005\u0012\u0000\u0000\u013c\u013e\u0003\u0118"+
+		"\u008c\u0000\u013d\u013b\u0001\u0000\u0000\u0000\u013d\u013e\u0001\u0000"+
 		"\u0000\u0000\u013e\u0141\u0001\u0000\u0000\u0000\u013f\u0140\u0005\u0019"+
 		"\u0000\u0000\u0140\u0142\u0003\u0118\u008c\u0000\u0141\u013f\u0001\u0000"+
 		"\u0000\u0000\u0141\u0142\u0001\u0000\u0000\u0000\u0142\u0143\u0001\u0000"+
