@@ -35,7 +35,7 @@ public class DeclarationBaseInfo {
         NATIVE
     }
 
-    public ModifierType javaTerminalNodeToModifierType(TerminalNode t) {
+    public static ModifierType javaTerminalNodeToModifierType(TerminalNode t) {
         return switch (t.getSymbol().getType()) {
             case JavaLexer.FINAL -> ModifierType.FINAL;
             case JavaLexer.VOLATILE -> ModifierType.VOLATILE;
@@ -49,7 +49,7 @@ public class DeclarationBaseInfo {
         };
     }
 
-    public ModifierType javaQueryTerminalNodeToModifierType(TerminalNode t) {
+    public static ModifierType javaQueryTerminalNodeToModifierType(TerminalNode t) {
         return switch (t.getSymbol().getType()) {
             case JavaQueryLexer.FINAL -> ModifierType.FINAL;
             case JavaQueryLexer.VOLATILE -> ModifierType.VOLATILE;
@@ -63,9 +63,9 @@ public class DeclarationBaseInfo {
         };
     }
 
-    public DeclarationBaseInfo(String name, List<TerminalNode> nodes, ParserRuleContext ctx, boolean a) {
+    public DeclarationBaseInfo(String name, List<TerminalNode> nodes, ParserRuleContext ctx, boolean a){
         this.name = name;
-        this.modifiers = new HashSet<>(nodes.stream().map(this::javaTerminalNodeToModifierType).collect(Collectors.toUnmodifiableSet()));
+        this.modifiers = new HashSet<>(nodes.stream().map(DeclarationBaseInfo::javaTerminalNodeToModifierType).collect(Collectors.toUnmodifiableSet()));
         this.Context = ctx;
     }
 
@@ -99,12 +99,11 @@ public class DeclarationBaseInfo {
 
     /**
      * 根据其名称进行过滤
-     *
      * @param declarationBaseInfos: 待过滤的列表
-     * @param name:                 作为过滤条件的名称
-     * @param filterMode:           过滤模式. true: 正向过滤; false: 反向过滤
-     * @param <T>:                  某种作为信息基类的子类型
+     * @param name: 作为过滤条件的名称
+     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
      * @return 过滤后的列表
+     * @param <T>: 某种作为信息基类的子类型
      */
     public static <T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilter(List<T> declarationBaseInfos, String name, boolean filterMode) {
         List<T> ret = new ArrayList<>();
