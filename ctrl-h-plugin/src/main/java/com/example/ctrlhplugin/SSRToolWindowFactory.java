@@ -20,6 +20,6 @@ public class SSRToolWindowFactory implements ToolWindowFactory {
         ReplaceToolWindow replaceToolWindow = new ReplaceToolWindow(toolWindow);
         Content replace = contentFactory.createContent(replaceToolWindow.getContent(), "Replace", false);
         toolWindow.getContentManager().addContent(replace);
-        Messages.showInfoMessage("Make sure the folder \"TestEnv\" is placed here:\nD:\\\n(absolute path)\n This tip is shown only in the test version.","Test Tips");
+//        Messages.showInfoMessage("Make sure the folder \"TestEnv\" is placed here:\nD:\\\n(absolute path)\n This tip is shown only in the test version.","Test Tips");
     }
 }

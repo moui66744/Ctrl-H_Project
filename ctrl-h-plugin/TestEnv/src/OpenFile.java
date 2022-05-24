@@ -1,6 +1,6 @@
 import java.io.*;
 
-class OpenFIle {
+class OpenFile {
     public static void main(String[] args) throws IOException {
         File file = new File("./src/HelloWorld.java");
         FileReader fileReader = new FileReader(file);
