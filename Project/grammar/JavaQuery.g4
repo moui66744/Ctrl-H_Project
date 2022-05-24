@@ -51,7 +51,7 @@ decl
     ;
 
 classLikeDecl
-    : modifiers classLikeKeyWord (typeParameters) ?
+    : modifiers classLikeKeyWord (typeParameters) ? identifier
     (EXTENDS typeList )?
     (IMPLEMENTS typeList) ?
     block
