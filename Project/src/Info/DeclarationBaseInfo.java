@@ -110,10 +110,12 @@ public class DeclarationBaseInfo {
         return ret;
     }
     public static<T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilterByName(List<T> t,String name){
+        if (t == null) return null;
         return t.stream().filter(item-> item.nameMatch(name)).collect(Collectors.toList());
     }
 
     public static<T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilterByModifier(List<T> t,List<ModifierType> mod){
+        if (t == null) return null;
         return t.stream().filter(item-> item.modifierMatch(mod)).collect(Collectors.toList());
     }
 }
