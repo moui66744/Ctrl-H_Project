@@ -23,7 +23,8 @@ public class DeclarationBaseInfo {
 
     public Set<ModifierType> modifiers;
     public ParserRuleContext Context;
-    public enum ModifierType{
+
+    public enum ModifierType {
         PUBLIC,
         PRIVATE,
         PROTECTED,
@@ -33,6 +34,7 @@ public class DeclarationBaseInfo {
         VOLATILE,
         NATIVE
     }
+
     public ModifierType javaTerminalNodeToModifierType(TerminalNode t) {
         return switch (t.getSymbol().getType()) {
             case JavaLexer.FINAL -> ModifierType.FINAL;
@@ -46,6 +48,7 @@ public class DeclarationBaseInfo {
             default -> throw new IllegalStateException("Unexpected value: " + t.getSymbol().getType());
         };
     }
+
     public ModifierType javaQueryTerminalNodeToModifierType(TerminalNode t) {
         return switch (t.getSymbol().getType()) {
             case JavaQueryLexer.FINAL -> ModifierType.FINAL;
@@ -60,44 +63,48 @@ public class DeclarationBaseInfo {
         };
     }
 
-    public DeclarationBaseInfo(String name, List<TerminalNode> nodes, ParserRuleContext ctx, boolean a){
+    public DeclarationBaseInfo(String name, List<TerminalNode> nodes, ParserRuleContext ctx, boolean a) {
         this.name = name;
         this.modifiers = new HashSet<>(nodes.stream().map(this::javaTerminalNodeToModifierType).collect(Collectors.toUnmodifiableSet()));
         this.Context = ctx;
     }
+
     public DeclarationBaseInfo(String name, List<JavaParser.ModifierContext> modifiers, ParserRuleContext context) {
         this.name = name;
         this.modifiers = new HashSet<>();
         this.Context = context;
         if (modifiers == null) return;
-        for (var item : modifiers){
-            if (item.classOrInterfaceModifier() == null){
+        for (var item : modifiers) {
+            if (item.classOrInterfaceModifier() == null) {
                 this.modifiers.add(javaTerminalNodeToModifierType((TerminalNode) item.getChild(0)));
             } else {
                 if (item.classOrInterfaceModifier().annotation() != null) continue;
-                this.modifiers.add(javaTerminalNodeToModifierType((TerminalNode)item.classOrInterfaceModifier().getChild(0)));
+                this.modifiers.add(javaTerminalNodeToModifierType((TerminalNode) item.classOrInterfaceModifier().getChild(0)));
             }
         }
     }
+
     public DeclarationBaseInfo(String name, JavaParser.ModifierContext modifiers, ParserRuleContext context) {
-        this(name, new ArrayList<>(Collections.singleton(modifiers)),context);
+        this(name, modifiers != null ? new ArrayList<>(Collections.singleton(modifiers)) : null, context);
     }
 
-    public boolean modifierMatch(List<ModifierType> s ){
+    public boolean modifierMatch(List<ModifierType> s) {
         if (modifiers == null) return s == null || s.size() == 0;
         return modifiers.containsAll(s);
     }
 
-    public boolean nameMatch(String s){
+    public boolean nameMatch(String s) {
         return this.name.equals(s);
     }
+
     /**
      * 根据其名称进行过滤
+     *
      * @param declarationBaseInfos: 待过滤的列表
-     * @param name: 作为过滤条件的名称
-     * @param filterMode: 过滤模式. true: 正向过滤; false: 反向过滤
+     * @param name:                 作为过滤条件的名称
+     * @param filterMode:           过滤模式. true: 正向过滤; false: 反向过滤
+     * @param <T>:                  某种作为信息基类的子类型
      * @return 过滤后的列表
-     * @param <T>: 某种作为信息基类的子类型
      */
     public static <T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilter(List<T> declarationBaseInfos, String name, boolean filterMode) {
         List<T> ret = new ArrayList<>();
@@ -109,13 +116,14 @@ public class DeclarationBaseInfo {
         }
         return ret;
     }
-    public static<T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilterByName(List<T> t,String name){
+
+    public static <T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilterByName(List<T> t, String name) {
         if (t == null) return null;
-        return t.stream().filter(item-> item.nameMatch(name)).collect(Collectors.toList());
+        return t.stream().filter(item -> item.nameMatch(name)).collect(Collectors.toList());
     }
 
-    public static<T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilterByModifier(List<T> t,List<ModifierType> mod){
+    public static <T extends DeclarationBaseInfo> List<T> declarationBaseInfoFilterByModifier(List<T> t, List<ModifierType> mod) {
         if (t == null) return null;
-        return t.stream().filter(item-> item.modifierMatch(mod)).collect(Collectors.toList());
+        return t.stream().filter(item -> item.modifierMatch(mod)).collect(Collectors.toList());
     }
 }

@@ -21,7 +21,8 @@ public class VariableDeclaratorVisitor {
         return new VariableInfo(context.variableDeclaratorId().identifier().IDENTIFIER(), // 变量名称所在的标识符终结节点
                 null,// TODO: 2022/5/7 修饰符
                 context, // 变量声明所在的子树的根节点
-                getType(context)); // 变量类型所在结点
+                getType(context).getText(),
+                context.variableInitializer() != null ? context.variableInitializer().getText() : null); // 变量类型所在结点
     }
 
     /**
@@ -65,12 +66,11 @@ public class VariableDeclaratorVisitor {
     public static void main(String[] args) throws IOException {
         //        main method is just for testing
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
-        MethodDeclVisitor methodDeclVisitor = new MethodDeclVisitor();
         var root = astInfo.getRoot();
         List<VariableInfo> variableInfos = getVariableDeclarator(root);
-        List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i", true);
-        List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int", true);
-        for (var varDecls : variableInfos2) {
+//        List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i", true);
+//        List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int", true);
+        for (var varDecls : variableInfos) {
             System.out.println(varDecls.name);
         }
 

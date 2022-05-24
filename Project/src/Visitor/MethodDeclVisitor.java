@@ -9,7 +9,6 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
 
 public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDeclarationContext>> {
     /**
@@ -24,9 +23,9 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
                 return new MethodInfo(member.genericMethodDeclaration().methodDeclaration().identifier().IDENTIFIER(), // 方法名称标识符所在的终结节点
                         null,// TODO: 2022/5/7 修饰符
                         member, // 该子树的根节点
-                        member.genericMethodDeclaration().methodDeclaration().typeTypeOrVoid(), // 方法类型
-                        member.genericMethodDeclaration().methodDeclaration().formalParameters(), // 方法的参数
-                        member.genericMethodDeclaration().typeParameters(), // 方法的typeParameters
+                        member.genericMethodDeclaration().methodDeclaration().typeTypeOrVoid().getText(), // 方法类型
+                        member.genericMethodDeclaration().methodDeclaration().formalParameters().getText(), // 方法的参数
+                        member.genericMethodDeclaration().typeParameters().getText(), // 方法的typeParameters
                         member.genericMethodDeclaration().methodDeclaration().methodBody().block()); // 方法的主体
             }
         } catch (Exception ignored) {
@@ -36,8 +35,8 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
                 return new MethodInfo(member.methodDeclaration().identifier().IDENTIFIER(), // 方法名称标识符所在的终结节点
                         null,// TODO: 2022/5/7 修饰符
                         member, // 该子树的根节点
-                        member.methodDeclaration().typeTypeOrVoid(), // 方法类型
-                        member.methodDeclaration().formalParameters(), // 方法的参数
+                        member.methodDeclaration().typeTypeOrVoid().getText(), // 方法类型
+                        member.methodDeclaration().formalParameters().getText(), // 方法的参数
                         null, // 方法的typeParameters
                         member.methodDeclaration().methodBody().block()); // 方法的主体
             }
@@ -49,7 +48,7 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
                         null,// TODO: 2022/5/7 修饰符
                         member, // 该子树的根节点
                         null, // 方法类型
-                        member.constructorDeclaration().formalParameters(), // 方法的参数
+                        member.constructorDeclaration().formalParameters().getText(), // 方法的参数
                         null, // 方法的typeParameters
                         member.constructorDeclaration().constructorBody); // 方法的主体
             }
@@ -81,53 +80,6 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
         return ret;
     }
 
-//    /**
-//     * 通过所传入的方法声明内容所在子树的根节点，提取其函数参数，并返回参数所在子树的根节点
-//     *
-//     * @param method: 方法所在子树的根节点
-//     * @return 获取到的其参数子树的根节点
-//     */
-//    public static JavaParser.FormalParametersContext getFormalParameters(ParserRuleContext method) {
-////        因为可能会出现多组参数，实际上只有第一组是当前函数的
-////        虽然递归过程中method参数并不总代表方法，但正式使用时，用户可以将其作为提示
-//        if (method == null) return null;
-//        if (method instanceof JavaParser.FormalParameterDeclsContext) { // 如果当前节点是参数声明，则返回
-//            return (JavaParser.FormalParameterDeclsContext) method;
-//        }
-//        JavaParser.FormalParameterDeclsContext ret = null;
-//        if (method.children == null) return ret; // 没有孩子节点，则不可能出现参数声明
-//        for (var iChild : method.children) {
-//            if (iChild instanceof ParserRuleContext) { // 孩子节点是否不为终结节点
-//                ret = getFormalParameters((ParserRuleContext) iChild); // 查询每个孩子节点中是否有参数声明
-//                if (ret != null) return ret;
-//            }
-//        }
-//        return ret;
-//    }
-
-    /**
-     * 通过所传入的方法声明内容所在子树的根节点，提取其函数体，并返回函数体所在子树的根节点
-     *
-     * @param method: 待查找的方法这一子树的根节点
-     * @return 获取到的其函数体所在子树的根节点
-     */
-    public static JavaParser.BlockContext getMethodBody(ParserRuleContext method) {
-//        实际上是寻找第一个block
-        if (method == null) return null;
-        if (method instanceof JavaParser.BlockContext) { // 如果当前节点是语句块声明，则返回
-            return (JavaParser.BlockContext) method;
-        }
-        JavaParser.BlockContext ret = null;
-        if (method.children == null) return ret; // 没有孩子节点，则不可能出现语句块声明
-        for (var iChild : method.children) {
-            if (iChild instanceof ParserRuleContext) { // 孩子节点不为终结节点
-                ret = getMethodBody((ParserRuleContext) iChild); // 查询每个孩子节点中是否有语句块声明
-                if (ret != null) return ret;
-            }
-        }
-        return ret;
-    }
-
     public static void main(String[] args) throws IOException {
 //        main method is just for testing
         AstInfo astInfo = new AstInfo("test/DummyTest.java");
@@ -137,11 +89,11 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
 //        JavaParser.BlockContext methodBody = getMethodBody(root);
 //        System.out.println(methodBody.getText());
 //        System.out.println(getFormalParameters(root).getText());
-        List<MethodInfo> methodInfos = MethodInfo.methodInfoFilter(methodDecls, "retinput", true);
-        List<MethodInfo> methodInfos1 = MethodInfo.methodInfoTypeStringFilter(methodDecls, "int", true);
-        for (var iNode : methodInfos) {
+//        List<MethodInfo> methodInfos = MethodInfo.methodInfoFilter(methodDecls, "retinput", true);
+//        List<MethodInfo> methodInfos1 = MethodInfo.methodInfoTypeStringFilter(methodDecls, "int", true);
+        for (var iNode : methodDecls) {
             System.out.println(iNode.name);
-            System.out.println(iNode.FormalParameter.getText());
+            System.out.println(iNode.formalParameters);
 //            System.out.println(astInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
         }
     }
