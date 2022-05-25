@@ -18,6 +18,14 @@ public class DummyTest extends Class1 implements impl1, impl2 {
         int i;
         return input;
     }
+    public static int retinput(String input) {
+        int i;
+        return input;
+    }
+    public static int retinput(boolean input) {
+        int i;
+        return input;
+    }
 
     //    test method declaration
     public static void main(String[] args) {
@@ -35,6 +43,7 @@ public class DummyTest extends Class1 implements impl1, impl2 {
         for (i = 0; i < 5; i++) {
             if (a == 0) {
                 a = 0;
+                b = 0;
             }
             System.out.print(i);
         }
