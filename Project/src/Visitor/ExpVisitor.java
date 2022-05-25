@@ -175,6 +175,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         List<Pair<Token,Integer>> next = patternNext;
         final int stop = ctx.stop.getTokenIndex() + 1;
         int pos = 0;
+        ctx.start.getTokenSource();
         while (tar != stop){
             if (stream.get(tar).getChannel() == Token.HIDDEN_CHANNEL){
                 ++tar;
@@ -196,6 +197,10 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
     public List<JavaParser.ExpressionContext> filterByExp(List<JavaParser.ExpressionContext> input, String pattern, TokenStream mainTokenStream){
         patternPreCompile(pattern);
         return filter(input,mainTokenStream);
+    }
+    public List<JavaParser.ExpressionContext> filterByExp(List<JavaParser.ExpressionContext> input, String pattern){
+//        patternPreCompile(pattern);
+        return input.stream().filter(item -> item.getText().equals(pattern)).collect(Collectors.toList());
     }
 }
 
