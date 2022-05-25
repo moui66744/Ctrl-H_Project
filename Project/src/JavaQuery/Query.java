@@ -86,6 +86,8 @@ public class Query {
             result = queryReturn(ctx, (JavaQueryParser.ReturnStmtContext) qTypeCtx);
         } else if ((qTypeCtx = qAssertStmtCtx(qCtx)) != null) {
             result = queryAssert(ctx, (JavaQueryParser.AssertStmtContext) qTypeCtx);
+        } else if ((qTypeCtx = qExpressionStmtCtx(qCtx)) != null) {
+            result = queryExprStmt(ctx, (JavaQueryParser.ExpressionContext) qTypeCtx);
         } else if ((qTypeCtx = qImportDecl(qCtx)) != null) {
             result = queryImport(ctx, (JavaQueryParser.ImportDeclarationContext) qTypeCtx);
         } else if ((qTypeCtx = qClassLikeDecl(qCtx)) != null) {
@@ -94,6 +96,8 @@ public class Query {
             result = queryMethodDecl(ctx, (JavaQueryParser.MethodDeclContext) qTypeCtx);
         } else if ((qTypeCtx = qVarDecl(qCtx)) != null) {
             result = queryVarDecl(ctx, (JavaQueryParser.VarDeclContext) qTypeCtx);
+        } else if ((qTypeCtx = qExpr(qCtx)) != null) {
+            result = queryExpr(ctx, (JavaQueryParser.ExpressionContext) qTypeCtx);
         }
 
         else {
@@ -156,6 +160,9 @@ public class Query {
     private JavaQueryParser.AssertStmtContext qAssertStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().assertStmt();
     }
+    private JavaQueryParser.ExpressionContext qExpressionStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+        return qCtx.statement() == null ? null : qCtx.statement().statementExpression;
+    }
     private JavaQueryParser.ImportDeclarationContext qImportDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.importDeclaration();
     }
@@ -168,6 +175,10 @@ public class Query {
     private JavaQueryParser.VarDeclContext qVarDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().varDecl();
     }
+    private JavaQueryParser.ExpressionContext qExpr(JavaQueryParser.QueryInputContext qCtx) {
+        return qCtx.expression();
+    }
+
     // *********************************************************************************
     // ****************************** 处理QueryInput的查询 ******************************
     // *********************************************************************************
@@ -502,6 +513,13 @@ public class Query {
         return stmtCtxs.stream().map(stmt -> (ParserRuleContext) stmt).toList();
     }
 
+    private List<ParserRuleContext> queryExprStmt(
+            ParserRuleContext ctx,
+            JavaQueryParser.ExpressionContext queryExprCtx
+    ) {
+        return queryExpr(ctx, queryExprCtx);
+    }
+
     private List<ParserRuleContext> queryImport(
         ParserRuleContext ctx,
         JavaQueryParser.ImportDeclarationContext queryImportDeclCtx
@@ -693,12 +711,21 @@ public class Query {
         return result;
     }
 
+    private List<ParserRuleContext> queryExpr(
+            ParserRuleContext ctx,
+            JavaQueryParser.ExpressionContext qExprCtx
+    ) {
+        ExpVisitor expVisitor = new ExpVisitor();
+        return expVisitor.filterByExp(expVisitor.visit(ctx), qExprCtx.getText())
+                .stream().map(c -> (ParserRuleContext) c).toList();
+    }
+
 
     public static void main(String[] args) throws IOException {
         AstInfo astInfo = new AstInfo("Project/test/DummyTest.java");
 
         String[] needle = {
-"""
+""" 
 if (a == 0) {
     if (b == 0) {
     }
@@ -776,8 +803,16 @@ public interface inter1 extends inter2 {
 }
 """,
 """
-int retinput(int input) {
-    int i
+int retinput() {
+}
+""",
+"""
+for (i = 0; i < 5; i++) {
+    if (a == 0) {
+        a = 0;
+        b = 0;
+    }
+    System.out.println(i);
 }
 """,
         };
