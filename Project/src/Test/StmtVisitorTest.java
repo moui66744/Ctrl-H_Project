@@ -28,7 +28,7 @@ public class StmtVisitorTest {
 
         System.out.println("\n\u001b[36;4m@ if statement test\u001b[0m");
         System.out.println("# find all if with else, condition: i == 0");
-        String c1 = "i == 0";
+        String c1 = "aaaa=0";
         List<JavaParser.StatementContext> s1 = stmtVisitor.ifStmtVisitor(root);
         s1 = stmtVisitor.ifStmtFilter(s1, c1, StmtVisitor.IF_TYPE.WITH_ELSE);
         output(s1);

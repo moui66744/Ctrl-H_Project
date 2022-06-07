@@ -4,65 +4,40 @@ import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.List;
-import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class VariableInfo extends DeclarationBaseInfo {
+    public String type;
+    public String variableInitializer;
+
     /**
      * 用于存储变量的声明信息
-     * @param name: 变量名
+     *
+     * @param name:     变量名
      * @param modifier: 修饰符
-     * @param context: 所在子树的根节点
-     * @param type: 变量类型
+     * @param context:  所在子树的根节点
+     * @param type:     变量类型
      */
-    public VariableInfo(TerminalNode name, JavaParser.ModifierContext modifier, ParserRuleContext context, JavaParser.TypeContext type) {
-        super(name, modifier, context);
-        Type = type;
+    public VariableInfo(TerminalNode name, JavaParser.ModifierContext modifier, ParserRuleContext context, String type, String variableInitializer) {
+        super(name.getText(), modifier, context);
+        this.type = type;
+        this.variableInitializer = variableInitializer;
     }
 
-    public JavaParser.TypeContext Type;
-
-    /**
-     * 根据变量名对输入的变量信息类列表进行过滤
-     * @param variableInfos: 待过滤的变量声明信息类列表
-     * @param name: 用于过滤的变量名条件
-     * @return: 过滤后的变量声明信息类列表
-     */
-    public static List<VariableInfo> variableInfoFilter(List<VariableInfo> variableInfos, String name) {
-        return declarationBaseInfoFilter(variableInfos, name); // 直接调用父类方法
+    public boolean typeMatch(String s) {
+        return this.type.equals(s);
     }
 
-    /**
-     * 根据变量类型对输入的变量信息列表进行过滤
-     * @param variableInfos: 待过滤的变量声明信息类列表
-     * @param type: 用于过滤的变量类型条件
-     * @return: 过滤后的变量声明信息类列表
-     */
-    public static List<VariableInfo> variableInfoFilter(List<VariableInfo> variableInfos, JavaParser.TypeContext type) {
-        List<VariableInfo> ret = new ArrayList<>();
-        for (var variableInfo : variableInfos) { // 对列表中的每个变量声明信息类实例
-            if (Objects.equals(variableInfo.Type, type)) { // TODO: 2022/5/9 如果其与所需的类型符合
-                ret.add(variableInfo); // 通过过滤，将其作为待返回列表的一部分
-            }
-        }
-        return ret;
+    public static List<VariableInfo> variableInfoFilterByType(List<VariableInfo> t, String type) {
+        return t.stream().filter(item -> item.typeMatch(type)).collect(Collectors.toList());
     }
 
-    /**
-     * 根据变量类型的字符串对输入的变量信息列表进行过滤
-     * @param variableInfos: 待过滤的变量声明信息类列表
-     * @param type: 用于过滤的变量类型条件（字符串类型）
-     * @return: 过滤后的变量声明信息类列表
-     */
-    public static List<VariableInfo> variableInfoTypeStringFilter(List<VariableInfo> variableInfos, String type) {
-        List<VariableInfo> ret = new ArrayList<>();
-        for (var variableInfo : variableInfos) { // 对列表中的每个变量声明信息类实例
-            if (Objects.equals(variableInfo.Type.getText(), type)) { // 其类型的字符串形式是否与过滤条件符合
-                ret.add(variableInfo); // 通过过滤，将其作为待返回列表的一部分
-            }
-        }
-        return ret;
+    public static List<VariableInfo> variableInfoFilterByName(List<VariableInfo> t, String name) {
+        return declarationBaseInfoFilterByName(t, name);
+    }
+
+    public static List<VariableInfo> variableInfoFilterByModifier(List<VariableInfo> t, List<ModifierType> mod) {
+        return declarationBaseInfoFilterByModifier(t, mod);
     }
 }

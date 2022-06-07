@@ -8,9 +8,9 @@ import java.util.Map;
 
 public class Replace {
     public static void execReplace(
-        Map<AstInfo, List<ParserRuleContext>> resultMap,
-        String text,
-        boolean isQuiet
+            Map<AstInfo, List<ParserRuleContext>> resultMap,
+            String text,
+            boolean isQuiet
     ) {
         int idx = 0;
         for (Map.Entry<AstInfo, List<ParserRuleContext>> entry: resultMap.entrySet()) {
