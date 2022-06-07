@@ -1208,12 +1208,12 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitMethodCall(JavaQueryParser.MethodCallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JavaQueryParser#expression}.
+	 * Enter a parse tree produced by .
 	 * @param ctx the parse tree
 	 */
 	void enterExpression(JavaQueryParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JavaQueryParser#expression}.
+	 * Exit a parse tree produced by .
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(JavaQueryParser.ExpressionContext ctx);
@@ -1288,12 +1288,12 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitSwitchLabeledRule(JavaQueryParser.SwitchLabeledRuleContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link JavaQueryParser#guardedPattern}.
+	 * Enter a parse tree produced by .
 	 * @param ctx the parse tree
 	 */
 	void enterGuardedPattern(JavaQueryParser.GuardedPatternContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link JavaQueryParser#guardedPattern}.
+	 * Exit a parse tree produced by .
 	 * @param ctx the parse tree
 	 */
 	void exitGuardedPattern(JavaQueryParser.GuardedPatternContext ctx);

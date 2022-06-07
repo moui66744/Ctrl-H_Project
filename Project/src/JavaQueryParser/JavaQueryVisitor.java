@@ -731,7 +731,7 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodCall(JavaQueryParser.MethodCallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JavaQueryParser#expression}.
+	 * Visit a parse tree produced by .
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -779,7 +779,7 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSwitchLabeledRule(JavaQueryParser.SwitchLabeledRuleContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link JavaQueryParser#guardedPattern}.
+	 * Visit a parse tree produced by .
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

@@ -1,15 +1,10 @@
 package Info;
 
 import JavaParser.JavaParser;
-import JavaParser.JavaParser.FormalParametersContext;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.stringtemplate.v4.ST;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MethodInfo extends DeclarationBaseInfo {
@@ -58,6 +53,10 @@ public class MethodInfo extends DeclarationBaseInfo {
         return this.typeParameters.equals(s);
     }
 
+    public JavaParser.MethodBodyContext getMethodBody() {
+        return ((JavaParser.MemberDeclarationContext)(this.Context)).methodDeclaration().methodBody();
+    }
+
     public static List<MethodInfo> methodInfoFilterByType(List<MethodInfo> t, String type) {
         if (t == null) return null;
         return t.stream().filter(item -> item.typeMatch(type)).collect(Collectors.toList());
@@ -71,5 +70,13 @@ public class MethodInfo extends DeclarationBaseInfo {
     public static List<MethodInfo> methodInfoFilterByTypeParamters(List<MethodInfo> t, String typeParameters) {
         if (t == null) return null;
         return t.stream().filter(item -> item.typeParametersMatch(typeParameters)).collect(Collectors.toList());
+    }
+
+    public static List<MethodInfo> methodInfoFilterByName(List<MethodInfo> t, String name) {
+        return declarationBaseInfoFilterByName(t, name);
+    }
+
+    public static List<MethodInfo> methodInfoFilterByModifier(List<MethodInfo> t, List<ModifierType> mod) {
+        return declarationBaseInfoFilterByModifier(t, mod);
     }
 }

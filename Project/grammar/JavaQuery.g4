@@ -51,7 +51,7 @@ decl
     ;
 
 classLikeDecl
-    : modifiers classLikeKeyWord (typeParameters) ? identifier
+    : modifiers classLikeKeyWord identifier (typeParameters) ?
     (EXTENDS typeList )?
     (IMPLEMENTS typeList) ?
     block
@@ -81,15 +81,10 @@ importDeclaration
 
 
 modifier
-    : classOrInterfaceModifier
-    | NATIVE
+    : NATIVE
     | SYNCHRONIZED
     | TRANSIENT
     | VOLATILE
-    ;
-
-classOrInterfaceModifier
-    : annotation
     | PUBLIC
     | PROTECTED
     | PRIVATE
@@ -99,6 +94,10 @@ classOrInterfaceModifier
     | STRICTFP
     | SEALED // Java17
     | NON_SEALED // Java17
+    ;
+
+classOrInterfaceModifier
+    : annotation
     ;
 
 variableModifier

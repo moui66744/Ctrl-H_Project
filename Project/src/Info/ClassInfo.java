@@ -1,6 +1,7 @@
 package Info;
 
 import JavaParser.JavaParser;
+import JavaQueryParser.JavaQueryParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RuleContext;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -22,6 +23,15 @@ public class ClassInfo extends DeclarationBaseInfo {
         INTERFACE,
         ENUM
     }
+
+    public JavaParser.ClassBodyContext getClassBody() {
+        return ((JavaParser.TypeDeclarationContext)(this.Context)).classDeclaration().classBody();
+    }
+
+    public JavaParser.InterfaceBodyContext getInterfaceBody() {
+        return ((JavaParser.TypeDeclarationContext)(this.Context)).interfaceDeclaration().interfaceBody();
+    }
+
     public boolean typeParametersMatch(){
         return true;
     }

@@ -33,4 +33,11 @@ public class VariableInfo extends DeclarationBaseInfo {
         return t.stream().filter(item -> item.typeMatch(type)).collect(Collectors.toList());
     }
 
+    public static List<VariableInfo> variableInfoFilterByName(List<VariableInfo> t, String name) {
+        return declarationBaseInfoFilterByName(t, name);
+    }
+
+    public static List<VariableInfo> variableInfoFilterByModifier(List<VariableInfo> t, List<ModifierType> mod) {
+        return declarationBaseInfoFilterByModifier(t, mod);
+    }
 }
