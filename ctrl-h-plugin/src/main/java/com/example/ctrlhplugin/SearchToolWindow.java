@@ -20,6 +20,7 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -35,8 +36,9 @@ public class SearchToolWindow {
      * @param toolWindow 系统构造面板时似乎会需要用到这一参数
      */
     public SearchToolWindow(ToolWindow toolWindow) {
-        initTest();
-        // TODO: 2022/5/21 投入使用时注释掉initTest
+//        initTest();
+        this.languageComboBox.addItem("Java");
+        this.languageComboBox.addItem("C");
     }
 
     SearchResults searchResults;
@@ -151,7 +153,15 @@ public class SearchToolWindow {
             directoryTextField.setEnabled(true);
         });
 
-
+        findButton.addActionListener(e -> {
+//            searchResults = ReadResult.getSearchResultsByCsv(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.csv");
+            try {
+                searchResults=ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.json");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            resultsList.setListData(searchResults.getStringInfos());
+        });
     }
 
     //    总面板

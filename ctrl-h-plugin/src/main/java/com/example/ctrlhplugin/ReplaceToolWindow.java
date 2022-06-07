@@ -23,6 +23,7 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,8 +37,9 @@ public class ReplaceToolWindow {
      * @param toolWindow 系统构造面板时似乎会需要用到这一参数
      */
     public ReplaceToolWindow(ToolWindow toolWindow) {
-        initTest();
-        // TODO: 2022/5/21 投入使用时注释掉initTest
+//        initTest();
+        languageComboBox.addItem("Java");
+        languageComboBox.addItem("C");
     }
 
     SearchResults searchResults;
@@ -162,6 +164,21 @@ public class ReplaceToolWindow {
             directoryButton.setFont(new Font(directoryButton.getFont().getName(), Font.BOLD, directoryButton.getFont().getSize()));
             inProjectButton.setFont(new Font(inProjectButton.getFont().getName(), Font.PLAIN, inProjectButton.getFont().getSize()));
             directoryTextField.setEnabled(true);
+        });
+        findButton.addActionListener(e -> {
+//            searchResults = ReadResult.getSearchResultsByCsv(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.csv");
+            try {
+                searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.json");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            resultsList.setListData(searchResults.getStringInfos());
+//            try {
+//                SearchResults query = FindAction.findAllByQuery(searchTextArea.getText(), ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + directoryTextField.getText());
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
+
         });
 
         // 给 replace selected button 添加动作
