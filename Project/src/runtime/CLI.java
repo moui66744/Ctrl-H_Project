@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class CLI {
     // 输入参数
     private Option pathOpt;
-    private Option guiOpt;
+    private Option cmdOpt;
     private final Options options = new Options();
     // 输入参数解析
     private final DefaultParser parser = new DefaultParser();
@@ -25,7 +25,10 @@ public class CLI {
     public void setOptions() {
         pathOpt = new Option("p", "path", true,
                 "The path of the search or replace.");
+        cmdOpt = new Option("t","terminal",true,
+                "use the terminal,with the query language");
         options.addOption(pathOpt);
+        options.addOption(cmdOpt);
     }
 
     public void parseArgs(String[] args) throws ParseException, IllegalArgumentException {
@@ -34,20 +37,38 @@ public class CLI {
         if ((cliInfo.path = cmd.getOptionValue(pathOpt)) == null) {
             throw new ParseException("Please input -p to set search path.");
         }
+        if(cmd.hasOption(cmdOpt)) {
+            cliInfo.cmd = true;
+            if ((cliInfo.queryInput = cmd.getOptionValue(cmdOpt)) == null) {
+                throw new ParseException("Input Query Language");
+            }
+        } else {
+            cliInfo.cmd = false;
+        }
     }
 
     // 完成S/R任务的分派, 具体接口调用交给Search/Replace
     public void exec() throws Exception {
         // 打开 路径下所有文件 / 文件
         IO.readFile(cliInfo.path);
-        String queryLanguage = inputQueryLanguage();
+        String queryLanguage;
+        if (cliInfo.cmd)
+            queryLanguage = cliInfo.queryInput;
+        else
+            queryLanguage= inputQueryLanguage();
         System.out.println(queryLanguage);
         QueryTreeInfo queryTreeInfo = new QueryTreeInfo(queryLanguage);
         // 查找
         var result = Search.execSearch(cliInfo, queryTreeInfo);
         if (Search.cnt == 0) {// 没有匹配结果直接返回
             throw new Exception("No matching results.");
-        } else {
+        } else if (cliInfo.cmd){
+            Print.printJsonFile(result);
+
+            //for debug
+            Print.printJson(result);
+        }
+        else {
             // 输出查询结果列表
             Print.printResult(result);
             // 交互式允许用户查看详细的查找结果
@@ -134,7 +155,9 @@ public class CLI {
         // 模拟用户输入参数
         String[] Args = new String[]{
                 "-p",
-                "Project/test/DummyTest.java",
+                "test//DummyTest.java",
+                "-t",
+                "if(){}"
         };
         CLI cli = new CLI();
         cli.setOptions();
