@@ -19,7 +19,8 @@ public class Search {
         for (AstInfo astInfo : IO.getAstList()) {
             List<ParserRuleContext> res = new Query().query(astInfo.getRoot(), queryTreeInfo.getRoot());
             result.put(astInfo, res);
-            cnt += res.size();
+            if (res != null)
+                cnt += res.size();
         }
         return result;
     }

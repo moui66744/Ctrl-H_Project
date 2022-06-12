@@ -57,8 +57,9 @@ public class Print {
         System.out.println(makeJson(resultMap));
     }
 
-    public static void printJsonFile(Map<AstInfo,List<ParserRuleContext>> resultMap) throws IOException {
-        File f = new File("out/res.json");
+    public static void printJsonFile(Map<AstInfo,List<ParserRuleContext>> resultMap, String Path) throws IOException {
+        File f ;
+        if (Path != null)f= new File(Path); else f = new File("out/res.json");
         FileOutputStream fileOutputStream = new FileOutputStream(f);
         fileOutputStream.write(makeJson(resultMap).getBytes());
     }
