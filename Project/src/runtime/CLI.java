@@ -15,6 +15,8 @@ public class CLI {
     // 输入参数
     private Option pathOpt;
     private Option cmdOpt;
+
+    private Option dirOpt;
     private final Options options = new Options();
     // 输入参数解析
     private final DefaultParser parser = new DefaultParser();
@@ -27,8 +29,11 @@ public class CLI {
                 "The path of the search or replace.");
         cmdOpt = new Option("t","terminal",true,
                 "use the terminal,with the query language");
+        dirOpt = new Option("d", "dir", true,
+                            "specified the out put directory of query result");
         options.addOption(pathOpt);
         options.addOption(cmdOpt);
+        options.addOption(dirOpt);
     }
 
     public void parseArgs(String[] args) throws ParseException, IllegalArgumentException {
@@ -44,6 +49,11 @@ public class CLI {
             }
         } else {
             cliInfo.cmd = false;
+        }
+        if (cmd.hasOption(dirOpt)) {
+            if ((cliInfo.outputDir = cmd.getOptionValue(dirOpt)) == null) {
+                throw new ParseException("no output dir");
+            }
         }
     }
 
@@ -63,7 +73,7 @@ public class CLI {
         if (Search.cnt == 0) {// 没有匹配结果直接返回
             throw new Exception("No matching results.");
         } else if (cliInfo.cmd){
-            Print.printJsonFile(result);
+            Print.printJsonFile(result,cliInfo.outputDir);
 
             //for debug
             Print.printJson(result);
@@ -157,12 +167,13 @@ public class CLI {
                 "-p",
                 "test//DummyTest.java",
                 "-t",
-                "if(){}"
+                "if(){}",
+                "-d","out/res.json"
         };
         CLI cli = new CLI();
         cli.setOptions();
         try {
-            cli.parseArgs(Args);
+            cli.parseArgs(args);
             cli.exec();
         } catch (IOException e) {
             System.err.println("No such file or directory: " + e.getMessage());
