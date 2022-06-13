@@ -18,9 +18,10 @@ public class Search {
         cnt = 0;
         for (AstInfo astInfo : IO.getAstList()) {
             List<ParserRuleContext> res = new Query().query(astInfo.getRoot(), queryTreeInfo.getRoot());
-            result.put(astInfo, res);
-            if (res != null)
+            if (res != null) {
+                result.put(astInfo, res);
                 cnt += res.size();
+            }
         }
         return result;
     }
