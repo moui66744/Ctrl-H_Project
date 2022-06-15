@@ -28,6 +28,16 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitSubQuery(JavaQueryParser.SubQueryContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JavaQueryParser#queryLabel}.
+	 * @param ctx the parse tree
+	 */
+	void enterQueryLabel(JavaQueryParser.QueryLabelContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaQueryParser#queryLabel}.
+	 * @param ctx the parse tree
+	 */
+	void exitQueryLabel(JavaQueryParser.QueryLabelContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JavaQueryParser#decl}.
 	 * @param ctx the parse tree
 	 */

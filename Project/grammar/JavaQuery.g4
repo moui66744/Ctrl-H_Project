@@ -41,8 +41,11 @@ queryInput
 
 subQuery
     : (notOp = '\\' )? queryInput
+    | queryLabel queryInput
     ;
-
+queryLabel
+    : '[' integerLiteral ']'
+    ;
 
 decl
     : classLikeDecl
@@ -468,7 +471,7 @@ recordBody
 // STATEMENTS / BLOCKS
 
 block
-    : '{' subQuery *  '}'
+    : '{' ( | subQuery ('$' subQuery )* )  '}'
     ;
 
 blockStatement
