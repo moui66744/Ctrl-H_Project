@@ -19,8 +19,7 @@ import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -156,7 +155,11 @@ public class SearchToolWindow {
         findButton.addActionListener(e -> {
 //            searchResults = ReadResult.getSearchResultsByCsv(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.csv");
             try {
-                searchResults=ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.json");
+                String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
+//                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json");
+                RunJar.runSingle("java -jar C:/Users/Keelo/Desktop/ctrl-h/ctrl-h-plugin/TestEnv/Project.jar -t \"while(){}\" -p \"/Users/Keelo/Desktop/ctrl-h/ctrl-h-plugin/TestEnv/test/DummyTest.java\" -d \"/Users/Keelo/Desktop/ctrl-h/ctrl-h-plugin/TestEnv/out/res.json\"");
+//                RunJar.runSingle("java -version");
+                searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/out/" + "res.json");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

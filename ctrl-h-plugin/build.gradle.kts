@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.5.2"
 }
 
-dependencies{
+dependencies {
     implementation(fileTree("lib/ctrl-h.jar"))
     implementation("com.google.code.gson:gson:2.8.2")
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.2")
@@ -34,6 +34,7 @@ tasks {
     withType<JavaCompile> {
         sourceCompatibility = "11"
         targetCompatibility = "11"
+        options.encoding = "UTF-8"
     }
 
     patchPluginXml {

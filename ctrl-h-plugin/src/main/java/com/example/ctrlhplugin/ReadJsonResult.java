@@ -27,21 +27,41 @@ public class ReadJsonResult {
         public int eindex;
     }
 
-    public static List<JsonResult> getJsonResult(String jsonPath) throws IOException {
+    static class Result {
+        public int sr;
+        public int sc;
+        public int er;
+        public int ec;
+        public int si;
+        public int ei;
+    }
+
+    static class Results {
+        String path;
+        List<Result> result;
+    }
+
+    static class Obj {
+        List<Results> results;
+    }
+
+    public static List<Results> getJsonResult(String jsonPath) throws IOException {
         File file = new File(jsonPath);
         String jsonString = new String(Files.readAllBytes(Paths.get(file.getPath())));
         GsonBuilder builder = new GsonBuilder();
         builder.setPrettyPrinting();
 
         Gson gson = builder.create();
-        return gson.fromJson(jsonString, new TypeToken<List<JsonResult>>() {
-        }.getType());
+        Obj obj = gson.fromJson(jsonString, Obj.class);
+        return obj.results;
     }
 
-    public static SearchResults jsonResult2SearchResults(List<JsonResult> jsonResults) {
+    public static SearchResults jsonResult2SearchResults(List<Results> resultsList) {
         SearchResults searchResults = new SearchResults();
-        for (JsonResult jsonResult : jsonResults) {
-            searchResults.addSearchResult(new SearchResult(jsonResult.attr.path, jsonResult.attr.sr, jsonResult.attr.sc, jsonResult.attr.sindex, jsonResult.attr.eindex));
+        for (Results results : resultsList) {
+            for (Result result : results.result) {
+                searchResults.addSearchResult(new SearchResult(results.path, result.sr, result.sc, result.si, result.ei));
+            }
         }
         return searchResults;
     }
@@ -51,6 +71,7 @@ public class ReadJsonResult {
     }
 
     public static void main(String[] args) throws IOException {
+        List<Results> jsonResult = getJsonResult("test.json");
         SearchResults searchResultsByJson = getSearchResultsByJson("test.json");
     }
 }

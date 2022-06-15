@@ -168,7 +168,9 @@ public class ReplaceToolWindow {
         findButton.addActionListener(e -> {
 //            searchResults = ReadResult.getSearchResultsByCsv(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.csv");
             try {
-                searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.json");
+                String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
+                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json");
+                searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/out/" + "res.json");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
@@ -212,6 +214,7 @@ public class ReplaceToolWindow {
                 searchResults.results.remove(index);
                 resultsList.setListData(searchResults.getStringInfos());
             } else if (resultsList.getSelectedIndices().length > 1) {
+
                 String replaceText = replaceTextArea.getText();
                 Project project = ProjectManager.getInstance().getOpenProjects()[0];
                 List<SearchResult> unselectedResults = new ArrayList<>();
