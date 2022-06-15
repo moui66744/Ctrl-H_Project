@@ -39,7 +39,7 @@ public class Print {
             String filePath = entry.getKey().getPath().replace('\\','/');
             str.append("{\"path\":" + "\"").append(filePath).append("\",\"path_res\":[");
             for (var item : entry.getValue().entrySet()){
-                str.append("{\"label\":" + "\"").append(item.getKey()).append("\",\"label_res\":[");
+                str.append("{\"label\":").append(item.getKey()).append(",\"label_res\":[");
                 for(var res: item.getValue()){
                     str.append(res.makeJson()).append(',');
                 }
