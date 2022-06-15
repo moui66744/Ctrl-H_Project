@@ -40,6 +40,18 @@ public class JavaQueryBaseListener implements JavaQueryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterQueryLabel(JavaQueryParser.QueryLabelContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitQueryLabel(JavaQueryParser.QueryLabelContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDecl(JavaQueryParser.DeclContext ctx) { }
 	/**
 	 * {@inheritDoc}

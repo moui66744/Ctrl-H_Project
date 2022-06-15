@@ -5,11 +5,14 @@ import JavaQuery.QueryTreeInfo;
 import Visitor.StmtVisitor;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
+import util.QueryResult;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class CLI {
     // 输入参数
@@ -79,10 +82,14 @@ public class CLI {
             Print.printJson(result);
         }
         else {
-            // 输出查询结果列表
-            Print.printResult(result);
-            // 交互式允许用户查看详细的查找结果
-            openDetail(result);
+//            // 输出查询结果列表
+            Map<AstInfo,List<ParserRuleContext>> res = new HashMap<>();
+            for (var item : result.entrySet()){
+                res.put(item.getKey(),item.getValue().get(0).stream().map(QueryResult::getParserRuleContext).collect(Collectors.toList()));
+            }
+            Print.printResult(res);
+//            // 交互式允许用户查看详细的查找结果
+            openDetail(res);
         }
     }
 
@@ -165,7 +172,7 @@ public class CLI {
         // 模拟用户输入参数
         String[] Args = new String[]{
                 "-p",
-                "test//DummyTest.java",
+                "../../antlr4/",
                 "-t",
                 "if(){}",
                 "-d","out/res.json"
@@ -173,7 +180,7 @@ public class CLI {
         CLI cli = new CLI();
         cli.setOptions();
         try {
-            cli.parseArgs(args);
+            cli.parseArgs(Args);
             cli.exec();
         } catch (IOException e) {
             System.err.println("No such file or directory: " + e.getMessage());

@@ -2,6 +2,7 @@ package runtime;
 
 import AstGenerator.AstInfo;
 import org.antlr.v4.runtime.ParserRuleContext;
+import util.QueryResult;
 
 import java.io.*;
 import java.util.List;
@@ -30,21 +31,20 @@ public class Print {
         System.out.println("After replacement:");
         System.out.println("\u001b[32m" + after + "\u001b[0m");
     }
-    public static String makeJson(Map<AstInfo,List<ParserRuleContext>> resultMap) {
+    public static String makeJson(Map<AstInfo, Map<Integer,List<QueryResult>>> resultMap) {
 
         StringBuilder str = new StringBuilder();
         str.append("{\"results\":[");
-        for (Map.Entry<AstInfo, List<ParserRuleContext>> entry : resultMap.entrySet()) {
+        for (Map.Entry<AstInfo, Map<Integer,List<QueryResult>>> entry : resultMap.entrySet()) {
             String filePath = entry.getKey().getPath().replace('\\','/');
-            str.append("{\"path\":" + "\"").append(filePath).append("\",\"result\":[");
-            for (ParserRuleContext parserRuleContext : entry.getValue()) {
-                int sr = parserRuleContext.start.getLine();
-                int sc = parserRuleContext.start.getCharPositionInLine();
-                int er = parserRuleContext.stop.getLine();
-                int ec = parserRuleContext.stop.getCharPositionInLine();
-                int si = parserRuleContext.start.getTokenIndex();
-                int ei = parserRuleContext.stop.getTokenIndex();
-                str.append("{\"sr\":").append(sr).append(",\"sc\":").append(sc).append(",\"er\":").append(er).append(",\"ec\":").append(ec).append(",\"si\":").append(si).append(",\"ei\":").append(ei).append("},");
+            str.append("{\"path\":" + "\"").append(filePath).append("\",\"path_res\":[");
+            for (var item : entry.getValue().entrySet()){
+                str.append("{\"label\":" + "\"").append(item.getKey()).append("\",\"label_res\":[");
+                for(var res: item.getValue()){
+                    str.append(res.makeJson()).append(',');
+                }
+                str.deleteCharAt(str.length() - 1);
+                str.append("]},");
             }
             str.deleteCharAt(str.length() - 1);
             str.append("]},");
@@ -53,11 +53,11 @@ public class Print {
         str.append("]}");
         return str.toString();
     }
-    public static void printJson(Map<AstInfo,List<ParserRuleContext>> resultMap){
+    public static void printJson(Map<AstInfo, Map<Integer,List<QueryResult>>> resultMap){
         System.out.println(makeJson(resultMap));
     }
 
-    public static void printJsonFile(Map<AstInfo,List<ParserRuleContext>> resultMap, String Path) throws IOException {
+    public static void printJsonFile(Map<AstInfo, Map<Integer,List<QueryResult>>> resultMap, String Path) throws IOException {
         File f ;
         if (Path != null)f= new File(Path); else f = new File("out/res.json");
         FileOutputStream fileOutputStream = new FileOutputStream(f);

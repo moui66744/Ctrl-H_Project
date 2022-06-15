@@ -2,6 +2,7 @@ package JavaQuery;
 
 import JavaQueryParser.JavaQueryLexer;
 import JavaQueryParser.JavaQueryParser;
+import JavaQueryParser.QueryChecker;
 import org.antlr.v4.runtime.*;
 
 import java.io.IOException;
@@ -16,9 +17,10 @@ public class QueryTreeInfo {
         lexer = new JavaQueryLexer(input);
         tokenStream = new CommonTokenStream(lexer);
         parser = new JavaQueryParser(tokenStream);
+        parser.addParseListener(new QueryChecker());
         root = parser.queryInput();
     }
-    public QueryTreeInfo(String queryLanguage) throws IOException {
+    public QueryTreeInfo(String queryLanguage) {
         this(CharStreams.fromString(queryLanguage));
     }
     public JavaQueryParser.QueryInputContext getRoot(){

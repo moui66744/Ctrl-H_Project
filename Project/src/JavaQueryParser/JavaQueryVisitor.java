@@ -23,6 +23,12 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSubQuery(JavaQueryParser.SubQueryContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JavaQueryParser#queryLabel}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitQueryLabel(JavaQueryParser.QueryLabelContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JavaQueryParser#decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
