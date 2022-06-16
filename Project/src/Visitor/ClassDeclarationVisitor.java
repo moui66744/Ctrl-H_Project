@@ -1,15 +1,13 @@
 package Visitor;
 
-import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import Info.ClassInfo;
-import Info.DeclarationBaseInfo;
 import JavaParser.JavaBaseVisitor;
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -82,14 +80,14 @@ public class ClassDeclarationVisitor extends JavaBaseVisitor<List<ClassInfo>> {
 
     public static void main(String[] args) throws IOException {
         //        main method is just for testing
-        AstInfo astInfo = new AstInfo("test/DummyTestBackup.java");
-        var root = astInfo.getRoot();
+        JavaAstInfo javaAstInfo = new JavaAstInfo("test/DummyTestBackup.java");
+        var root = javaAstInfo.getRoot();
         ClassDeclarationVisitor vis = new ClassDeclarationVisitor();
         List<ClassInfo> classInfos = vis.visitCompilationUnit(root);
 //        List<ClassInfo> classInfos1 = ClassInfo.classInfoFilter(classInfos, "DummyTest", true);
 //        classInfos = ClassInfo.classInfoFilterByModifier(classInfos, List.of(DeclarationBaseInfo.ModifierType.PRIVATE));
         for (var iNode : classInfos) {
-            System.out.println(astInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
+            System.out.println(javaAstInfo.getTokenStream().getText(iNode.Context.start, iNode.Context.stop));
         }
 
     }

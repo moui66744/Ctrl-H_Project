@@ -1,11 +1,9 @@
-package JavaQuery;
+package Query;
 
 import JavaQueryParser.JavaQueryLexer;
 import JavaQueryParser.JavaQueryParser;
 import JavaQueryParser.QueryChecker;
 import org.antlr.v4.runtime.*;
-
-import java.io.IOException;
 
 public class QueryTreeInfo {
     JavaQueryLexer lexer;

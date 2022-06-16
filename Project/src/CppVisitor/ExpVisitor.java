@@ -1,9 +1,10 @@
-package Visitor;
+package CppVisitor;
 
-import AstGenerator.JavaAstInfo;
-import JavaParser.JavaBaseVisitor;
-import JavaParser.JavaLexer;
-import JavaParser.JavaParser;
+import AstGenerator.CppAstInfo;
+import CppParser.CppBaseVisitor;
+import CppParser.CppLexer;
+import CppParser.CppParser;
+import CppParser.CppParser.*;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Pair;
 
@@ -12,13 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContext>> {
-
+public class ExpVisitor extends CppBaseVisitor<List<ExpressionContext>> {
     List<Pair<Token,Integer>> patternNext;
-    JavaParser.ExpressionContext patternExp;
+    ExpressionContext patternExp;
     TokenStream patternTokenStream;
     @Override
-    protected List<JavaParser.ExpressionContext> aggregateResult(List<JavaParser.ExpressionContext> aggregate, List<JavaParser.ExpressionContext> nextResult) {
+    protected List<ExpressionContext> aggregateResult(List<ExpressionContext> aggregate, List<ExpressionContext> nextResult) {
         if (aggregate == null) return nextResult;
         if (nextResult == null) return aggregate;
         aggregate.addAll(nextResult);
@@ -26,25 +26,10 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
     }
 
     @Override
-    protected List<JavaParser.ExpressionContext> defaultResult() {
-        return super.defaultResult();
-    }
-
-    @Override
-    public List<JavaParser.ExpressionContext> visitExpression(JavaParser.ExpressionContext ctx) {
-        List<JavaParser.ExpressionContext> result = new ArrayList<>();
+    public List<ExpressionContext> visitExpression(ExpressionContext ctx) {
+        List<ExpressionContext> result = new ArrayList<>();
         result.add(ctx);
         return result;
-    }
-
-    @Override
-    public List<JavaParser.ExpressionContext> visitExpressionList(JavaParser.ExpressionListContext ctx) {
-        return ctx.expression();
-    }
-
-    @Override
-    public List<JavaParser.ExpressionContext> visitParExpression(JavaParser.ParExpressionContext ctx) {
-        return super.visitParExpression(ctx);
     }
 
     // the supported mode
@@ -52,14 +37,14 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         FullMatch,
         PartialMatch
     }
-    private MatchMode matchMode;
+    private Visitor.ExpVisitor.MatchMode matchMode;
 
     /**
      * this method is used to set the mode when user not specifies the mode
      */
     private void checkMode() {
         if (matchMode == null) {
-            matchMode = MatchMode.PartialMatch;
+            matchMode = Visitor.ExpVisitor.MatchMode.PartialMatch;
         }
     }
 
@@ -67,7 +52,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
      * the setter of mode
      * @param matchMode:mode
      */
-    public void setMatchMode(MatchMode matchMode) {
+    public void setMatchMode(Visitor.ExpVisitor.MatchMode matchMode) {
         this.matchMode = matchMode;
     }
 
@@ -81,14 +66,14 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
      * This method will eventually call the other method with the same name
      */
     @Deprecated
-    public List<JavaParser.ExpressionContext> filter(List<JavaParser.ExpressionContext> input, String expr, TokenStream userStream){
+    public List<ExpressionContext> filter(List<ExpressionContext> input, String expr, TokenStream userStream){
         //parsing the expression
         CharStream charStream = CharStreams.fromString(expr);
-        JavaLexer lexer = new JavaLexer(charStream);
+        CppLexer lexer = new CppLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        JavaParser javaParser = new JavaParser(tokenStream);
+        CppParser CppParser = new CppParser(tokenStream);
         try {
-            JavaParser.ExpressionContext ctx = javaParser.expression();
+            ExpressionContext ctx = CppParser.expression();
             patternTokenStream = tokenStream;
             patternExp = ctx;
             return filter(input, userStream);
@@ -105,14 +90,14 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
      *  return the list of expression after filter
      *
      */
-    public List<JavaParser.ExpressionContext> filter(List<JavaParser.ExpressionContext> input, TokenStream stream) {
+    public List<ExpressionContext> filter(List<ExpressionContext> input, TokenStream stream) {
         checkMode();//set the mode if the mode is null, the default mode is partial matching
-        List<JavaParser.ExpressionContext> output = null;
+        List<ExpressionContext> output = null;
         if (input == null) return null;
         var ctx = patternExp;
-        if (matchMode == MatchMode.FullMatch)
+        if (matchMode == Visitor.ExpVisitor.MatchMode.FullMatch)
             output = input.stream().filter(item -> item.getText().equals(ctx.getText())).collect(Collectors.toList());
-        else if (matchMode == MatchMode.PartialMatch){
+        else if (matchMode == Visitor.ExpVisitor.MatchMode.PartialMatch){
             if(patternNext == null )patternPreCompile(ctx,patternTokenStream);
             output = input.stream().filter(item -> subTokenOf(item,stream)).collect(Collectors.toList());
         }
@@ -125,11 +110,11 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
 
     public void patternPreCompile(String expr){
         CharStream charStream = CharStreams.fromString(expr);
-        JavaLexer lexer = new JavaLexer(charStream);
+        CppLexer lexer = new CppLexer(charStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
-        JavaParser javaParser = new JavaParser(tokenStream);
+        CppParser CppParser = new CppParser(tokenStream);
         try {
-            JavaParser.ExpressionContext ctx = javaParser.expression();
+            ExpressionContext ctx = CppParser.expression();
             patternExp = ctx;
             patternTokenStream = tokenStream;
             patternPreCompile(ctx,tokenStream);
@@ -170,7 +155,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         }
         patternNext = next;
     }
-    private boolean subTokenOf(JavaParser.ExpressionContext ctx, TokenStream stream) {
+    private boolean subTokenOf(ExpressionContext ctx, TokenStream stream) {
         var tar = ctx.start.getTokenIndex();
         List<Pair<Token,Integer>> next = patternNext;
         final int stop = ctx.stop.getTokenIndex() + 1;
@@ -194,24 +179,19 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
         }
         return false;
     }
-    public List<JavaParser.ExpressionContext> filterByExp(List<JavaParser.ExpressionContext> input, String pattern, TokenStream mainTokenStream){
+    public List<ExpressionContext> filterByExp(List<ExpressionContext> input, String pattern, TokenStream mainTokenStream){
         patternPreCompile(pattern);
         return filter(input,mainTokenStream);
     }
-    public List<JavaParser.ExpressionContext> filterByExp(List<JavaParser.ExpressionContext> input, String pattern){
+    public List<ExpressionContext> filterByExp(List<ExpressionContext> input, String pattern){
 //        patternPreCompile(pattern);
         return input.stream().filter(item -> item.getText().equals(pattern)).collect(Collectors.toList());
     }
-}
 
-
-
-class ExpVisitorTest {
-    static String inputFileName = "test/DummyTestBackup.java";
-    public static void main(String [] argv) throws IOException {
-        JavaAstInfo ast = new JavaAstInfo(inputFileName);
+    public static void main(String[] args) throws IOException {
+        CppAstInfo ast = new CppAstInfo("Project/test/CppTest/test.cpp");
         ExpVisitor expVisitor = new ExpVisitor();
-        List<JavaParser.ExpressionContext> allExp = expVisitor.visitCompilationUnit(ast.getRoot());
+        List<ExpressionContext> allExp = expVisitor.visit(ast.getRoot());
         //test 1: find all expression
         for (var item :allExp){
             System.out.println(item.getText());
@@ -220,19 +200,17 @@ class ExpVisitorTest {
         System.out.println("//////////////////////////////\n Partial Match Filter");
 
         var partialMatchResult = expVisitor.filterByExp(allExp,"1*2", ast.getTokenStream());
-        System.out.println(expVisitor.patternNext.size());
         for (var item : partialMatchResult) {
             System.out.println(item.getText());
         }
         System.out.println("//////////////////////////////\n Full Match Filter");
-        expVisitor.setMatchMode(ExpVisitor.MatchMode.FullMatch);
+        expVisitor.setMatchMode(Visitor.ExpVisitor.MatchMode.FullMatch);
         expVisitor.patternPreCompile("1*2");
         var fullMatchResult = expVisitor.filter(allExp, ast.getTokenStream());
 
         for (var item : fullMatchResult) {
             System.out.println(item.getText());
         }
-
 
     }
 }

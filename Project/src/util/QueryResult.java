@@ -3,7 +3,6 @@ package util;
 import java.util.ArrayList;
 import java.util.List;
 
-import JavaQuery.Query;
 import org.antlr.v4.runtime.ParserRuleContext;
 public class QueryResult {
     static int instCount = 0;
@@ -104,6 +103,7 @@ public class QueryResult {
     }
 
     public QueryResult addSubNode(ParserRuleContext t){
+        if (t == null) return this;
         subNodes.add(new Position(
                 t.start.getLine(),
                 t.start.getCharPositionInLine(),
@@ -119,6 +119,7 @@ public class QueryResult {
         return this;
     }
     public <T extends ParserRuleContext>QueryResult addSubNodes(List<T> l){
+        if (l == null) return this;
         for (var t : l){
             subNodes.add(new Position(
                     t.start.getLine(),
