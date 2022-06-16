@@ -95,8 +95,8 @@ public class QueryResult {
                 t.start.getCharPositionInLine(),
                 t.stop.getLine(),
                 t.stop.getCharPositionInLine(),
-                t.start.getTokenIndex(),
-                t.stop.getTokenIndex()
+                t.start.getStartIndex(),
+                t.stop.getStopIndex()
         );
         parserRuleContext = t;
         subNodes = new ArrayList<>();
@@ -109,8 +109,8 @@ public class QueryResult {
                 t.start.getCharPositionInLine(),
                 t.stop.getLine(),
                 t.stop.getCharPositionInLine(),
-                t.start.getTokenIndex(),
-                t.stop.getTokenIndex()
+                t.start.getStartIndex(),
+                t.stop.getStopIndex()
         ));
         return this;
     }
@@ -139,8 +139,8 @@ public class QueryResult {
                 t.start.getCharPositionInLine(),
                 t.stop.getLine(),
                 t.stop.getCharPositionInLine(),
-                t.start.getTokenIndex(),
-                t.stop.getTokenIndex()
+                t.start.getStartIndex(),
+                t.stop.getStopIndex()
         );
     }
 
