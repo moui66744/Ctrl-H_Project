@@ -86,11 +86,9 @@ public class Query {
         else {
             System.out.println("unimplemented");
         }
-
-        if (isNot && result == null)
-            result = new ArrayList<>(List.of(new QueryResult(ctx)));
-        else if (isNot)
-            result = null;
+        if (result != null && result.isEmpty()) result = null;
+        if (isNot)
+            return result == null ? new ArrayList<>(List.of(new QueryResult(ctx))) : null;
         return result;
     }
      protected JavaQueryParser.IfStmtContext qIfStmtCtx(JavaQueryParser.QueryInputContext qCtx) {

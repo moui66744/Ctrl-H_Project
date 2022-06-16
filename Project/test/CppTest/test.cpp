@@ -32,6 +32,7 @@ void main() {
             a = 0;
             b = 0;
         }
+        a = 0;
         System.out.print(i);
     }
     System.out.print("\n");
@@ -102,6 +103,7 @@ void main() {
         }
         if (d == 0) {
         }
+        a=0;
     }
 
     if (a == 0) {

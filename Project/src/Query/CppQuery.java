@@ -37,7 +37,7 @@ public class CppQuery extends Query{
         }
     }
 
-    @Override
+
     protected List<QueryResult> queryHandler(
             ParserRuleContext ctx,
             JavaQueryParser.QueryInputContext qCtx,
@@ -78,73 +78,72 @@ public class CppQuery extends Query{
             System.out.println("unimplemented");
         }
 
-        if (isNot && result == null)
-            result = new ArrayList<>(List.of(new QueryResult(ctx)));
-        else if (isNot)
-            result = null;
+        if (result != null && result.isEmpty()) result = null;
+        if (isNot)
+            return result == null ? new ArrayList<>(List.of(new QueryResult(ctx))) : null;
         return result;
     }
 
-    @Override
+
     protected JavaQueryParser.IfStmtContext qIfStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().ifStmt();
     }
 
-    @Override
+
     protected JavaQueryParser.SwitchStmtContext qSwitchStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().switchStmt();
     }
-    @Override
+
 	protected JavaQueryParser.CaseStmtContext qCaseStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().caseStmt();
     }
-    @Override
+
 	protected JavaQueryParser.ForStmtContext qForStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().forStmt();
     }
-    @Override
+
 	protected JavaQueryParser.WhileStmtContext qWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().whileStmt();
     }
-    @Override
+
 	protected JavaQueryParser.DoWhileStmtContext qDoWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().doWhileStmt();
     }
-    @Override
+
 	protected JavaQueryParser.BreakStmtContext qBreakStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().breakStmt();
     }
-    @Override
+
 	protected JavaQueryParser.ContinueStmtContext qContinueStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().continueStmt();
     }
-    @Override
+
 	protected JavaQueryParser.ReturnStmtContext qReturnStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().returnStmt();
     }
-    @Override
+
 	protected JavaQueryParser.ExpressionContext qExpressionStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().statementExpression;
     }
-    @Override
+
 	protected JavaQueryParser.MethodDeclContext qMethodDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().methodDecl();
     }
-    @Override
+
 	protected JavaQueryParser.VarDeclContext qVarDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().varDecl();
     }
-    @Override
+
 	protected JavaQueryParser.ExpressionContext qExpr(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.expression();
     }
 
-    @Override
+
 	protected String tryGetText(ParserRuleContext ctx) {
         return ctx == null ? null : ctx.getText();
     }
 
-    @Override
+
 	protected List<QueryResult> queryIf(
             ParserRuleContext ctx,
             JavaQueryParser.IfStmtContext queryIfStmtCtx
@@ -204,7 +203,7 @@ public class CppQuery extends Query{
         return result;
     }
 
-    @Override
+
 	protected List<QueryResult> querySwitch(
             ParserRuleContext ctx,
             JavaQueryParser.SwitchStmtContext querySwiStmtCtx
@@ -237,7 +236,7 @@ public class CppQuery extends Query{
         return result;
     }
 
-    @Override
+
 	protected List<QueryResult> queryCase(
             ParserRuleContext ctx,
             JavaQueryParser.CaseStmtContext queryCaseStmtCtx
@@ -245,7 +244,7 @@ public class CppQuery extends Query{
         return null;
     }
 
-    @Override
+
 	protected List<QueryResult> queryFor(
             ParserRuleContext ctx,
             JavaQueryParser.ForStmtContext queryForStmtCtx
@@ -300,7 +299,7 @@ public class CppQuery extends Query{
         }
     }
 
-    @Override
+
 	protected List<QueryResult> queryWhile(
             ParserRuleContext ctx,
             JavaQueryParser.WhileStmtContext queryWhileStmtCtx
@@ -332,7 +331,7 @@ public class CppQuery extends Query{
         return result;
     }
 
-    @Override
+
 	protected List<QueryResult> queryDoWhile(
             ParserRuleContext ctx,
             JavaQueryParser.DoWhileStmtContext queryDoWhileStmtCtx
@@ -364,7 +363,7 @@ public class CppQuery extends Query{
         return result;
     }
     
-    @Override
+
 	protected List<QueryResult> queryBreak(
             ParserRuleContext ctx,
             JavaQueryParser.BreakStmtContext queryBrkStmtCtx
@@ -377,7 +376,7 @@ public class CppQuery extends Query{
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    @Override
+
 	protected List<QueryResult> queryContinue(
             ParserRuleContext ctx,
             JavaQueryParser.ContinueStmtContext queryContinueStmtCtx
@@ -390,7 +389,7 @@ public class CppQuery extends Query{
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    @Override
+
 	protected List<QueryResult> queryReturn(
             ParserRuleContext ctx,
             JavaQueryParser.ReturnStmtContext queryReturnStmtCtx
@@ -406,7 +405,7 @@ public class CppQuery extends Query{
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    @Override
+
 	protected List<QueryResult> queryExprStmt(
             ParserRuleContext ctx,
             JavaQueryParser.ExpressionContext queryExprCtx
@@ -414,7 +413,7 @@ public class CppQuery extends Query{
         return queryExpr(ctx, queryExprCtx);
     }
 
-    @Override
+
 	protected List<QueryResult> queryMethodDecl(
             ParserRuleContext ctx,
             JavaQueryParser.MethodDeclContext qMethodDeclCtx
@@ -449,7 +448,7 @@ public class CppQuery extends Query{
         return result;
     }
 
-    @Override
+
 	protected List<QueryResult> queryVarDecl(
             ParserRuleContext ctx,
             JavaQueryParser.VarDeclContext qVarDeclCtx
@@ -468,7 +467,7 @@ public class CppQuery extends Query{
         return list.stream().map(QueryResult::new).toList();
     }
 
-    @Override
+
 	protected List<QueryResult> queryExpr(
             ParserRuleContext ctx,
             JavaQueryParser.ExpressionContext qExprCtx
