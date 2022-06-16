@@ -160,20 +160,38 @@ public class CppQuery extends Query{
         for (CppParser.StatementContext stmtCtx : stmtCtxs) {// 或逻辑, 每一个查询到的if
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext0 = queryIfStmtCtx.block(0);
-            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext0.subQuery()) {
-                if (subQuery(stmtCtx.ifStmt().statement(0), subQueryContext) == null) {
-                    flag = false;// 某一subQuery匹配失败, 则该if匹配失败
-                    break;
+            var constrainContext = blockContext0.blockConstraint();
+            if (constrainContext != null ){
+                if (constrainContext.EMPTY_BLOCK() != null) {
+                    flag = stmtCtx.ifStmt().statement(0).compoundStatement() == null || stmtCtx.ifStmt().statement(0).compoundStatement().statementSeq().isEmpty();
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext0.subQuery()) {
+                    if (subQuery(stmtCtx.ifStmt().statement(0), subQueryContext) == null) {
+                        flag = false;// 某一subQuery匹配失败, 则该if匹配失败
+                        break;
+                    }
                 }
             }
             if (!flag) continue;
             if (queryIfStmtCtx.ELSE() != null) {
-                if (stmtCtx.ifStmt().Else() == null) continue;
                 JavaQueryParser.BlockContext blockContext1 = queryIfStmtCtx.block(1);
-                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
-                    if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
-                        flag = false;// 某一subQuery匹配失败, 则该if匹配失败
-                        break;
+                constrainContext = blockContext1.blockConstraint();
+                if (constrainContext != null){
+                    if (constrainContext.NULL_BLOCK() != null){
+                        flag = stmtCtx.ifStmt().Else() == null;
+                    } else if (constrainContext.EMPTY_BLOCK() != null){
+                        if (stmtCtx.ifStmt().statement(1).compoundStatement() != null )
+                            flag = stmtCtx.ifStmt().statement(1).compoundStatement().statementSeq().isEmpty();
+                        else
+                            flag = false;
+                    }
+                } else {
+                    for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
+                        if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
+                            flag = false;// 某一subQuery匹配失败, 则该if匹配失败
+                            break;
+                        }
                     }
                 }
             }
@@ -266,10 +284,20 @@ public class CppQuery extends Query{
         for (CppParser.StatementContext stmtCtx : stmtCtxs) {
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext = queryForStmtCtx.block();
-            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
-                if (subQuery(stmtCtx.forStmt().statement(), subQueryContext) == null) {
-                    flag = false;
-                    break;
+            var constraint = blockContext.blockConstraint();
+            if (constraint != null){
+                if (constraint.EMPTY_BLOCK() != null){
+                    if (stmtCtx.forStmt().statement().compoundStatement() != null)
+                        flag = stmtCtx.forStmt().statement().compoundStatement().statementSeq().isEmpty();
+                    else
+                        flag = false;
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
+                    if (subQuery(stmtCtx.forStmt().statement(), subQueryContext) == null) {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             if (flag) {
@@ -316,6 +344,15 @@ public class CppQuery extends Query{
         for (CppParser.StatementContext stmtCtx : stmtCtxs) {
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext = queryWhileStmtCtx.block();
+            var constraint = blockContext.blockConstraint();
+            if (constraint != null) {
+                if (constraint.EMPTY_BLOCK() != null){
+                    if (stmtCtx.whileStmt().statement().compoundStatement() != null)
+                        flag = stmtCtx.whileStmt().statement().compoundStatement().statementSeq().isEmpty();
+                    else
+                        flag = false;
+                }
+            }
             for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
                 if (subQuery(stmtCtx.whileStmt().statement(), subQueryContext) == null) {
                     flag = false;
@@ -420,7 +457,7 @@ public class CppQuery extends Query{
     ) {
         DeclVisitor declVisitor = new DeclVisitor();
         // name filter
-        String ident = qMethodDeclCtx.identifier().getText();
+        String ident = qMethodDeclCtx.identifier().WILDCARD() == null ? qMethodDeclCtx.identifier().getText() : null;
         // type filter
         String type = qMethodDeclCtx.typeTypeOrVoid() == null ? null : qMethodDeclCtx.typeTypeOrVoid().getText();
         // parameter filter
@@ -435,9 +472,16 @@ public class CppQuery extends Query{
         List<QueryResult> result = new ArrayList<>();
         for (CppParser.BlockDeclarationContext blockDeclCtx : list) {
             boolean flag = true;
-            for (JavaQueryParser.SubQueryContext subQueryContext : qMethodDeclCtx.block().subQuery()) {
-                if (subQuery(blockDeclCtx.functionDefinition().functionBody(), subQueryContext) == null) {
-                    flag = false;
+            var constraint = qMethodDeclCtx.block().blockConstraint();
+            if (constraint != null){
+                if (constraint.EMPTY_BLOCK() != null){
+                    flag = blockDeclCtx.functionDefinition().functionBody().compoundStatement().statementSeq().isEmpty();
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : qMethodDeclCtx.block().subQuery()) {
+                    if (subQuery(blockDeclCtx.functionDefinition().functionBody(), subQueryContext) == null) {
+                        flag = false;
+                    }
                 }
             }
             if (flag) {
@@ -455,7 +499,7 @@ public class CppQuery extends Query{
     ) {
         DeclVisitor declVisitor = new DeclVisitor();
         // name filter
-        String name = qVarDeclCtx.identifier().getText();
+        String name = qVarDeclCtx.identifier().WILDCARD() == null ? qVarDeclCtx.identifier().getText() : null;
         // type filter
         String type = qVarDeclCtx.typeTypeOrVoid().getText();
         List<CppParser.BlockDeclarationContext> list = declVisitor.varDeclFilter(

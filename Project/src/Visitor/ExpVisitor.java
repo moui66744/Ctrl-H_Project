@@ -200,6 +200,7 @@ public class ExpVisitor extends JavaBaseVisitor<List<JavaParser.ExpressionContex
     }
     public List<JavaParser.ExpressionContext> filterByExp(List<JavaParser.ExpressionContext> input, String pattern){
 //        patternPreCompile(pattern);
+        if (input ==  null) return null;
         return input.stream().filter(item -> item.getText().equals(pattern)).collect(Collectors.toList());
     }
 }

@@ -1024,6 +1024,18 @@ public class JavaQueryBaseListener implements JavaQueryListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterBlockConstraint(JavaQueryParser.BlockConstraintContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitBlockConstraint(JavaQueryParser.BlockConstraintContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterBlockStatement(JavaQueryParser.BlockStatementContext ctx) { }
 	/**
 	 * {@inheritDoc}

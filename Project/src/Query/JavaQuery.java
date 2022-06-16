@@ -215,20 +215,43 @@ public class JavaQuery extends Query{
         for (JavaParser.StatementContext stmtCtx : stmtCtxs) {// 或逻辑, 每一个查询到的if
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext0 = queryIfStmtCtx.block(0);
-            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext0.subQuery()) {
-                if (subQuery(stmtCtx.ifStmt().statement(0), subQueryContext) == null) {
-                    flag = false;// 某一subQuery匹配失败, 则该if匹配失败
-                    break;
+            if (blockContext0.blockConstraint() != null){
+                if (blockContext0.blockConstraint().EMPTY_BLOCK() != null){
+                    if (stmtCtx.ifStmt().statement(0).block() != null) {
+                        flag = stmtCtx.ifStmt().statement(0).block().blockStatement().isEmpty();
+                    } else {
+                        flag = false;
+                    }
+                }
+            }else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext0.subQuery()) {
+                    if (subQuery(stmtCtx.ifStmt().statement(0), subQueryContext) == null) {
+                        flag = false;// 某一subQuery匹配失败, 则该if匹配失败
+                        break;
+                    }
                 }
             }
             if (!flag) continue;
             if (queryIfStmtCtx.ELSE() != null) {
-                if (stmtCtx.ifStmt().ELSE() == null) continue;
                 JavaQueryParser.BlockContext blockContext1 = queryIfStmtCtx.block(1);
-                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
-                    if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
-                        flag = false;// 某一subQuery匹配失败, 则该if匹配失败
-                        break;
+                JavaQueryParser.BlockConstraintContext constraint;
+                if ((constraint = blockContext1.blockConstraint()) != null ){
+                    if (constraint.NULL_BLOCK() != null){
+                        flag = stmtCtx.ifStmt().ELSE() == null;
+                    } else if (constraint.EMPTY_BLOCK() != null){
+                        if (stmtCtx.ifStmt().statement(1).block() != null) {
+                            flag = stmtCtx.ifStmt().statement(1).block().blockStatement().isEmpty();
+                        } else {
+                            flag = false;
+                        }
+                    }
+                }
+                else{
+                    for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
+                        if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
+                            flag = false;// 某一subQuery匹配失败, 则该if匹配失败
+                            break;
+                        }
                     }
                 }
             }
@@ -341,10 +364,21 @@ public class JavaQuery extends Query{
         for (JavaParser.StatementContext stmtCtx : stmtCtxs) {
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext = queryForStmtCtx.block();
-            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
-                if (subQuery(stmtCtx.forStmt().statement(), subQueryContext) == null) {
-                    flag = false;
-                    break;
+            if (blockContext.blockConstraint() != null){
+                if (blockContext.blockConstraint().EMPTY_BLOCK() != null){
+                    if (stmtCtx.forStmt().statement().block() != null) {
+                        flag = stmtCtx.forStmt().statement().block().blockStatement().isEmpty();
+                    } else {
+                        flag = false;
+                    }
+                }
+            }
+            else{
+                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
+                    if (subQuery(stmtCtx.forStmt().statement(), subQueryContext) == null) {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             if (flag) {
@@ -388,10 +422,20 @@ public class JavaQuery extends Query{
         for (JavaParser.StatementContext stmtCtx : stmtCtxs) {
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext = queryWhileStmtCtx.block();
-            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
-                if (subQuery(stmtCtx.whileStmt().statement(), subQueryContext) == null) {
-                    flag = false;
-                    break;
+            if (blockContext.blockConstraint() != null){
+                if (blockContext.blockConstraint().EMPTY_BLOCK() != null){
+                    if (stmtCtx.whileStmt().statement().block() != null) {
+                        flag = stmtCtx.whileStmt().statement().block().blockStatement().isEmpty();
+                    } else {
+                        flag = false;
+                    }
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
+                    if (subQuery(stmtCtx.whileStmt().statement(), subQueryContext) == null) {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             if (flag) {
@@ -435,10 +479,20 @@ public class JavaQuery extends Query{
         for (JavaParser.StatementContext stmtCtx : stmtCtxs) {
             boolean flag = true;
             JavaQueryParser.BlockContext blockContext = queryDoWhileStmtCtx.block();
-            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
-                if (subQuery(stmtCtx.doWhileStmt().statement(), subQueryContext) == null) {
-                    flag = false;
-                    break;
+            if (blockContext.blockConstraint() != null){
+                if (blockContext.blockConstraint().EMPTY_BLOCK() != null){
+                    if (stmtCtx.doWhileStmt().statement().block() != null) {
+                        flag = stmtCtx.doWhileStmt().statement().block().blockStatement().isEmpty();
+                    } else {
+                        flag = false;
+                    }
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
+                    if (subQuery(stmtCtx.doWhileStmt().statement(), subQueryContext) == null) {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             if (flag) {
@@ -658,7 +712,7 @@ public class JavaQuery extends Query{
         ClassDeclarationVisitor classDeclarationVisitor = new ClassDeclarationVisitor();
         List<ClassInfo> list = classDeclarationVisitor.visit(ctx);
         // name filter
-        String ident = queryClassDeclCtx.identifier().getText();
+        String ident = queryClassDeclCtx.identifier().WILDCARD() == null ? queryClassDeclCtx.identifier().getText() : null;
         list = ClassInfo.classInfosFilterByName(list, ident);
         // modifier filter
         List<JavaQueryParser.ModifierContext> modifier = queryClassDeclCtx.modifiers().modifier();
@@ -682,11 +736,18 @@ public class JavaQuery extends Query{
         List<QueryResult> result = new ArrayList<>();
         for (ClassInfo classInfo : list) {
             JavaParser.ClassBodyContext classBodyContext = classInfo.getClassBody();
+            JavaQueryParser.BlockConstraintContext constraintContext = queryClassDeclCtx.block().blockConstraint();
             boolean flag = true;
-            for (JavaQueryParser.SubQueryContext subQueryContext : queryClassDeclCtx.block().subQuery()) {
-                if (subQuery(classBodyContext, subQueryContext) == null) {
-                    flag = false;
-                    break;
+            if (constraintContext != null){
+                if (constraintContext.EMPTY_BLOCK() != null){
+                    flag = classBodyContext.classBodyDeclaration().isEmpty();
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : queryClassDeclCtx.block().subQuery()) {
+                    if (subQuery(classBodyContext, subQueryContext) == null) {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             if (flag) {
@@ -714,7 +775,7 @@ public class JavaQuery extends Query{
         InterfaceDeclarationVisitor interfaceDeclarationVisitor = new InterfaceDeclarationVisitor();
         List<ClassInfo> list = interfaceDeclarationVisitor.visit(ctx);
         // name filter
-        String ident = queryInterfaceDeclCtx.identifier().getText();
+        String ident = queryInterfaceDeclCtx.identifier().WILDCARD() == null ? queryInterfaceDeclCtx.identifier().getText() : null;
         list = ClassInfo.classInfosFilterByName(list, ident);
         // modifier filter
         List<JavaQueryParser.ModifierContext> modifiers = queryInterfaceDeclCtx.modifiers().modifier();
@@ -738,11 +799,18 @@ public class JavaQuery extends Query{
         List<QueryResult> result = new ArrayList<>();
         for (ClassInfo classInfo : list) {
             JavaParser.InterfaceBodyContext interfaceBodyContext = classInfo.getInterfaceBody();
+            JavaQueryParser.BlockConstraintContext constraintContext = queryInterfaceDeclCtx.block().blockConstraint();
             boolean flag = true;
-            for (JavaQueryParser.SubQueryContext subQueryContext : queryInterfaceDeclCtx.block().subQuery()) {
-                if (subQuery(interfaceBodyContext, subQueryContext) == null) {
-                    flag = false;
-                    break;
+            if (constraintContext != null){
+                if (constraintContext.EMPTY_BLOCK() != null ){
+                    flag = interfaceBodyContext.interfaceBodyDeclaration().isEmpty();
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : queryInterfaceDeclCtx.block().subQuery()) {
+                    if (subQuery(interfaceBodyContext, subQueryContext) == null) {
+                        flag = false;
+                        break;
+                    }
                 }
             }
             if (flag) {
@@ -774,7 +842,7 @@ public class JavaQuery extends Query{
 //        ).toList();
 //        list = MethodInfo.methodInfoFilterByModifier(list, modifierTypes);
         // name filter
-        String ident = qMethodDeclCtx.identifier().getText();
+        String ident = qMethodDeclCtx.identifier().WILDCARD() == null ? qMethodDeclCtx.identifier().getText() : null;
         list = MethodInfo.methodInfoFilterByName(list, ident);
         // type filter
         if (qMethodDeclCtx.typeTypeOrVoid() != null) {
@@ -791,12 +859,19 @@ public class JavaQuery extends Query{
             String typeParameters = qMethodDeclCtx.typeParameters().getText();
             list = MethodInfo.methodInfoFilterByTypeParamters(list, typeParameters);
         }
-        List<QueryResult> result = null;
+        List<QueryResult> result = new ArrayList<>();
         for (MethodInfo methodInfo : list) {
             boolean flag = true;
-            for (JavaQueryParser.SubQueryContext subQueryContext : qMethodDeclCtx.block().subQuery()) {
-                if (subQuery(methodInfo.getMethodBody(), subQueryContext) == null) {
-                    flag = false;
+            JavaQueryParser.BlockConstraintContext constraintContext = qMethodDeclCtx.block().blockConstraint();
+            if (constraintContext != null){
+                if (constraintContext.EMPTY_BLOCK() != null){
+                    flag = methodInfo.getMethodBody().block().blockStatement().isEmpty();
+                }
+            } else {
+                for (JavaQueryParser.SubQueryContext subQueryContext : qMethodDeclCtx.block().subQuery()) {
+                    if (subQuery(methodInfo.getMethodBody(), subQueryContext) == null) {
+                        flag = false;
+                    }
                 }
             }
             if (flag) {
@@ -812,6 +887,7 @@ public class JavaQuery extends Query{
                 ));
             }
         }
+        if (result.isEmpty()) return null;
         return result;
     }
 
@@ -822,7 +898,7 @@ public class JavaQuery extends Query{
         // search
         List<VariableInfo> list = VariableDeclaratorVisitor.getVariableDeclarator(ctx);
         // name filter
-        String name = qVarDeclCtx.identifier().getText();
+        String name = qVarDeclCtx.identifier().WILDCARD() == null ? qVarDeclCtx.identifier().getText() : null;
         list = VariableInfo.variableInfoFilterByName(list, name);
         // TODO: modifier filter
 
@@ -839,8 +915,9 @@ public class JavaQuery extends Query{
             JavaQueryParser.ExpressionContext qExprCtx
     ) {
         ExpVisitor expVisitor = new ExpVisitor();
-        return expVisitor.filterByExp(expVisitor.visit(ctx), qExprCtx.getText())
-                .stream().map(QueryResult::new).toList();
+        var res = expVisitor.filterByExp(expVisitor.visit(ctx), qExprCtx.getText());
+        if (res == null)return null;
+        return res.stream().map(QueryResult::new).toList();
     }
 
 
@@ -857,13 +934,13 @@ public class JavaQuery extends Query{
 //}
 //""",
 """
-if (a == 0) {
-    \\if (b == 0) {
-    }
-    [1] a=0;
-    [1] b=0
-}
+public class <<>> {}
 """,
+//"""
+//retinput(){
+//<<empty>>
+//}
+//""",
 //"""
 //for (i = 0; i < 5; i++) {
 //    if (a == 0) {

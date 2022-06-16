@@ -94,7 +94,7 @@ public class DeclarationBaseInfo {
     }
 
     public boolean nameMatch(String s) {
-        return this.name.equals(s);
+        return s == null || this.name.equals(s);
     }
 
     /**

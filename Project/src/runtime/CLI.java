@@ -89,7 +89,7 @@ public class CLI {
             queryLanguage = cliInfo.queryInput;
         else
             queryLanguage= inputQueryLanguage();
-        System.out.println(queryLanguage);
+//        System.out.println(queryLanguage);
         QueryTreeInfo queryTreeInfo = new QueryTreeInfo(queryLanguage);
         // 查找
         var result = Search.execSearch(cliInfo, queryTreeInfo);
@@ -99,7 +99,7 @@ public class CLI {
             Print.printJsonFile(result,cliInfo.outputDir);
 
             //for debug
-            Print.printJson(result);
+//            Print.printJson(result);
         }
         else {
 //            // 输出查询结果列表
@@ -192,11 +192,12 @@ public class CLI {
         // 模拟用户输入参数
         String[] Args = new String[]{
                 "-p",
-                "../../antlr4/",
+//                "../../antlr4/",
+                "test/",
                 "-t",
-                "if(){}",
+                "if(){[1]if(){} $ [2] a = 0}",
                 "-d","out/res.json",
-                "-l","java"
+                "-l","cpp"
         };
         CLI cli = new CLI();
         cli.setOptions();
