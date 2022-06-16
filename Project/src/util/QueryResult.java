@@ -150,7 +150,7 @@ public class QueryResult {
 
     public String makeJson(){
         StringBuilder b = new StringBuilder();
-        b.append("{ \"position\":").append(contextPosition.makeJson()).append(",\"subNode\":[");
+        b.append("{ \"position\":").append(contextPosition.makeJson()).append(",\"subNode\":[ ");
         for (var i: subNodes){
             b.append(i.makeJson()).append(",");
         }

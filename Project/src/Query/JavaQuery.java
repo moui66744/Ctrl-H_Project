@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 public class JavaQuery extends Query{
-    Map<Integer, List<QueryResult>> queryResult;
     JavaAstInfo javaAstInfo;
 
     public JavaQuery(JavaAstInfo info){
@@ -111,10 +110,10 @@ public class JavaQuery extends Query{
             System.out.println("unimplemented");
         }
 
-        if (isNot && result == null)
-            result = new ArrayList<>(List.of(new QueryResult(ctx)));
-        else if (isNot)
-            result = null;
+
+        if (result != null && result.isEmpty()) result = null;
+        if (isNot)
+            return result == null ? new ArrayList<>(List.of(new QueryResult(ctx))) : null;
         return result;
     }
 
