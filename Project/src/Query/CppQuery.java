@@ -1,4 +1,4 @@
-package CppQuery;
+package Query;
 
 import AstGenerator.CppAstInfo;
 import CppParser.CppParser;
@@ -7,34 +7,43 @@ import JavaQueryParser.*;
 import CppVisitor.StmtVisitor;
 import CppVisitor.ExpVisitor;
 import org.antlr.v4.runtime.*;
+import util.QueryResult;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class CppQuery {
-    public List<ParserRuleContext> query(
+public class CppQuery extends Query{
+
+    CppAstInfo astInfo;
+
+    public CppQuery(CppAstInfo astInfo){
+        this.astInfo = astInfo;
+        queryResult = new HashMap<>();
+    }
+
+    public Map<Integer, List<QueryResult>> query(
             CppParser.TranslationUnitContext ctx,
             JavaQueryParser.QueryInputContext qCtx
     ) {
-        return queryHandler(ctx, qCtx, false);
+        var res = queryHandler(ctx, qCtx, false);
+        if(res == null){
+            return null;
+        } else {
+            queryResult.put(0,res);
+            return queryResult;
+        }
     }
 
-    private List<ParserRuleContext> subQuery(
-            ParserRuleContext ctx,
-            JavaQueryParser.SubQueryContext subQueryCtx
-    ) {
-        JavaQueryParser.QueryInputContext qCtx = subQueryCtx.queryInput();
-        boolean isNot = subQueryCtx.notOp != null;
-        return queryHandler(ctx, qCtx, isNot);
-    }
-
-    private List<ParserRuleContext> queryHandler(
+    @Override
+    protected List<QueryResult> queryHandler(
             ParserRuleContext ctx,
             JavaQueryParser.QueryInputContext qCtx,
             boolean isNot
     ) {
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = null;
 
         ParserRuleContext qTypeCtx;
         if ((qTypeCtx = qIfStmtCtx(qCtx)) != null) {
@@ -70,61 +79,77 @@ public class CppQuery {
         }
 
         if (isNot && result == null)
-            result = new ArrayList<>(List.of(ctx));
+            result = new ArrayList<>(List.of(new QueryResult(ctx)));
         else if (isNot)
             result = null;
         return result;
     }
 
-    private JavaQueryParser.IfStmtContext qIfStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+    protected JavaQueryParser.IfStmtContext qIfStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().ifStmt();
     }
-    private JavaQueryParser.SwitchStmtContext qSwitchStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+
+    @Override
+    protected JavaQueryParser.SwitchStmtContext qSwitchStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().switchStmt();
     }
-    private JavaQueryParser.CaseStmtContext qCaseStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.CaseStmtContext qCaseStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().caseStmt();
     }
-    private JavaQueryParser.ForStmtContext qForStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.ForStmtContext qForStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().forStmt();
     }
-    private JavaQueryParser.WhileStmtContext qWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.WhileStmtContext qWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().whileStmt();
     }
-    private JavaQueryParser.DoWhileStmtContext qDoWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.DoWhileStmtContext qDoWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().doWhileStmt();
     }
-    private JavaQueryParser.BreakStmtContext qBreakStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.BreakStmtContext qBreakStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().breakStmt();
     }
-    private JavaQueryParser.ContinueStmtContext qContinueStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.ContinueStmtContext qContinueStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().continueStmt();
     }
-    private JavaQueryParser.ReturnStmtContext qReturnStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.ReturnStmtContext qReturnStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().returnStmt();
     }
-    private JavaQueryParser.ExpressionContext qExpressionStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.ExpressionContext qExpressionStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().statementExpression;
     }
-    private JavaQueryParser.MethodDeclContext qMethodDecl(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.MethodDeclContext qMethodDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().methodDecl();
     }
-    private JavaQueryParser.VarDeclContext qVarDecl(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.VarDeclContext qVarDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().varDecl();
     }
-    private JavaQueryParser.ExpressionContext qExpr(JavaQueryParser.QueryInputContext qCtx) {
+    @Override
+	protected JavaQueryParser.ExpressionContext qExpr(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.expression();
     }
 
-    private String tryGetText(ParserRuleContext ctx) {
+    @Override
+	protected String tryGetText(ParserRuleContext ctx) {
         return ctx == null ? null : ctx.getText();
     }
 
-    private List<ParserRuleContext> queryIf(
+    @Override
+	protected List<QueryResult> queryIf(
             ParserRuleContext ctx,
             JavaQueryParser.IfStmtContext queryIfStmtCtx
     ) {
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = new ArrayList<>();
         String cond = tryGetText(queryIfStmtCtx.parExpression().expression());
 
         StmtVisitor stmtVisitor = new StmtVisitor();
@@ -154,18 +179,37 @@ public class CppQuery {
                 }
             }
             if (flag) {// 与逻辑, 只有两个block中的subQuery都满足, 才认为匹配成功
-                if (result == null) result = new ArrayList<>();
-                result.add(stmtCtx);
+                var node = new QueryResult(stmtCtx);
+                for (var item : stmtCtx.ifStmt().statement()){
+                    if (item.compoundStatement() != null){
+                        var start = astInfo.getTokenStream().get(item.compoundStatement().LeftBrace().getSymbol().getTokenIndex() + 1);
+                        var stop = astInfo.getTokenStream().get(item.compoundStatement().RightBrace().getSymbol().getTokenIndex() - 1);
+                        node.addSubNode(
+                                start.getLine(),
+                                start.getCharPositionInLine(),
+                                stop.getLine(),
+                                stop.getCharPositionInLine(),
+                                start.getStartIndex(),
+                                stop.getStopIndex()
+
+                        );
+                    } else {
+                        node.addSubNode(item);
+                    }
+                }
+                result.add(node);
             }
         }
+        if (result.isEmpty())return null;
         return result;
     }
 
-    private List<ParserRuleContext> querySwitch(
+    @Override
+	protected List<QueryResult> querySwitch(
             ParserRuleContext ctx,
             JavaQueryParser.SwitchStmtContext querySwiStmtCtx
     ) {
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = new ArrayList<>();
         String cond = tryGetText(querySwiStmtCtx.parExpression().expression());
 
         StmtVisitor stmtVisitor = new StmtVisitor();
@@ -185,49 +229,28 @@ public class CppQuery {
                 }
             }
             if (flag) {
-                if (result == null) result = new ArrayList<>();
-                result.add(stmtCtx);
+                var subBlockContext = stmtCtx.switchStmt().statement().compoundStatement();
+                addStatementToSubNode(result, stmtCtx, subBlockContext, stmtCtx.switchStmt().statement());
             }
         }
+        if (result.isEmpty())return null;
         return result;
     }
 
-    private List<ParserRuleContext> queryCase(
+    @Override
+	protected List<QueryResult> queryCase(
             ParserRuleContext ctx,
             JavaQueryParser.CaseStmtContext queryCaseStmtCtx
     ) {
-//        List<ParserRuleContext> result = null;
-//        String cond = tryGetText(queryCaseStmtCtx.expression());
-//
-//        StmtVisitor stmtVisitor = new StmtVisitor();
-//        List<CppParser.StatementContext> stmtCtxs = stmtVisitor.caseStmtFilter(
-//                stmtVisitor.caseStmtVisitor(ctx),
-//                cond
-//        );
-//        if (stmtCtxs == null) return null;
-//        for (CppParser.StatementContext stmtCtx : stmtCtxs) {
-//            JavaQueryParser.BlockContext blockContext = querySwiStmtCtx.block();
-//            CppParser.SwitchContentContext switchContentContext = stmtCtx.switchStmt().switchContent();
-//            boolean flag = true;
-//            for (JavaQueryParser.SubQueryContext subQueryContext : blockContext.subQuery()) {
-//                if (subQuery(switchContentContext, subQueryContext) == null) {
-//                    flag = false;
-//                    break;
-//                }
-//            }
-//            if (flag) {
-//                if (result == null) result = new ArrayList<>();
-//                result.add(stmtCtx);
-//            }
-//        }
         return null;
     }
 
-    private List<ParserRuleContext> queryFor(
+    @Override
+	protected List<QueryResult> queryFor(
             ParserRuleContext ctx,
             JavaQueryParser.ForStmtContext queryForStmtCtx
     ) {
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = new ArrayList<>();
         JavaQueryParser.ForControlContext forControl = queryForStmtCtx.forControl();
         String forInit = tryGetText(forControl.forInit());
         String cond = tryGetText(forControl.expression());
@@ -251,18 +274,38 @@ public class CppQuery {
                 }
             }
             if (flag) {
-                if (result == null) result = new ArrayList<>();
-                result.add(stmtCtx);
+                var subBlockContext = stmtCtx.forStmt().statement().compoundStatement();
+                addStatementToSubNode(result, stmtCtx, subBlockContext,stmtCtx.forStmt().statement());
             }
         }
+        if (result.isEmpty()) return null;
         return result;
     }
 
-    private List<ParserRuleContext> queryWhile(
+    private <T extends ParserRuleContext>void addStatementToSubNode(List<QueryResult> result, T stmtCtx, CppParser.CompoundStatementContext subBlockContext, T subNodeContext) {
+        if (subBlockContext != null){
+            var start = astInfo.getTokenStream().get(subBlockContext.LeftBrace().getSymbol().getTokenIndex() + 1);
+            var stop = astInfo.getTokenStream().get(subBlockContext.RightBrace().getSymbol().getTokenIndex() - 1);
+            result.add(new QueryResult(stmtCtx).addSubNode(
+                    start.getLine(),
+                    start.getCharPositionInLine(),
+                    stop.getLine(),
+                    stop.getCharPositionInLine(),
+                    start.getStartIndex(),
+                    stop.getStopIndex()
+
+            ));
+        } else {
+            result.add(new QueryResult(stmtCtx).addSubNode(subNodeContext));
+        }
+    }
+
+    @Override
+	protected List<QueryResult> queryWhile(
             ParserRuleContext ctx,
             JavaQueryParser.WhileStmtContext queryWhileStmtCtx
     ) {
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = new ArrayList<>();
         String cond = tryGetText(queryWhileStmtCtx.parExpression().expression());
 
         StmtVisitor stmtVisitor = new StmtVisitor();
@@ -281,18 +324,20 @@ public class CppQuery {
                 }
             }
             if (flag) {
-                if (result == null) result = new ArrayList<>();
-                result.add(stmtCtx);
+                var subBlockContext = stmtCtx.whileStmt().statement().compoundStatement();
+                addStatementToSubNode(result, stmtCtx, subBlockContext,stmtCtx.whileStmt());
             }
         }
+        if (result.isEmpty()) return null;
         return result;
     }
 
-    private List<ParserRuleContext> queryDoWhile(
+    @Override
+	protected List<QueryResult> queryDoWhile(
             ParserRuleContext ctx,
             JavaQueryParser.DoWhileStmtContext queryDoWhileStmtCtx
     ) {
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = new ArrayList<>();
         String cond = tryGetText(queryDoWhileStmtCtx.parExpression().expression());
 
         StmtVisitor stmtVisitor = new StmtVisitor();
@@ -311,14 +356,16 @@ public class CppQuery {
                 }
             }
             if (flag) {
-                if (result == null) result = new ArrayList<>();
-                result.add(stmtCtx);
+                var subBlockContext = stmtCtx.doWhileStmt().statement().compoundStatement();
+                addStatementToSubNode(result, stmtCtx, subBlockContext,stmtCtx.doWhileStmt());
             }
         }
+        if (result.isEmpty()) return null;
         return result;
     }
     
-    private List<ParserRuleContext> queryBreak(
+    @Override
+	protected List<QueryResult> queryBreak(
             ParserRuleContext ctx,
             JavaQueryParser.BreakStmtContext queryBrkStmtCtx
     ) {
@@ -327,10 +374,11 @@ public class CppQuery {
         StmtVisitor stmtVisitor = new StmtVisitor();
         List<CppParser.StatementContext> stmtCtxs = stmtVisitor.breakStmtVisitor(ctx);
         if (stmtCtxs == null) return null;
-        return stmtCtxs.stream().map(stmt -> (ParserRuleContext)stmt).toList();
+        return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<ParserRuleContext> queryContinue(
+    @Override
+	protected List<QueryResult> queryContinue(
             ParserRuleContext ctx,
             JavaQueryParser.ContinueStmtContext queryContinueStmtCtx
     ) {
@@ -339,10 +387,11 @@ public class CppQuery {
         StmtVisitor stmtVisitor = new StmtVisitor();
         List<CppParser.StatementContext> stmtCtxs = stmtVisitor.continueStmtVisitor(ctx);
         if (stmtCtxs == null) return null;
-        return stmtCtxs.stream().map(stmt -> (ParserRuleContext) stmt).toList();
+        return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<ParserRuleContext> queryReturn(
+    @Override
+	protected List<QueryResult> queryReturn(
             ParserRuleContext ctx,
             JavaQueryParser.ReturnStmtContext queryReturnStmtCtx
     ) {
@@ -354,17 +403,19 @@ public class CppQuery {
                 expr
         );
         if (stmtCtxs == null) return null;
-        return stmtCtxs.stream().map(stmt -> (ParserRuleContext)stmt).toList();
+        return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<ParserRuleContext> queryExprStmt(
+    @Override
+	protected List<QueryResult> queryExprStmt(
             ParserRuleContext ctx,
             JavaQueryParser.ExpressionContext queryExprCtx
     ) {
         return queryExpr(ctx, queryExprCtx);
     }
 
-    private List<ParserRuleContext> queryMethodDecl(
+    @Override
+	protected List<QueryResult> queryMethodDecl(
             ParserRuleContext ctx,
             JavaQueryParser.MethodDeclContext qMethodDeclCtx
     ) {
@@ -382,7 +433,7 @@ public class CppQuery {
                 formalParameters
         );
         if (list == null) return null;
-        List<ParserRuleContext> result = null;
+        List<QueryResult> result = new ArrayList<>();
         for (CppParser.BlockDeclarationContext blockDeclCtx : list) {
             boolean flag = true;
             for (JavaQueryParser.SubQueryContext subQueryContext : qMethodDeclCtx.block().subQuery()) {
@@ -391,14 +442,15 @@ public class CppQuery {
                 }
             }
             if (flag) {
-                if (result == null) result = new ArrayList<>();
-                result.add(blockDeclCtx);
+                var subBlockContext = blockDeclCtx.functionDefinition().functionBody().compoundStatement();
+                addStatementToSubNode(result, blockDeclCtx, subBlockContext,null);
             }
         }
         return result;
     }
 
-    private List<ParserRuleContext> queryVarDecl(
+    @Override
+	protected List<QueryResult> queryVarDecl(
             ParserRuleContext ctx,
             JavaQueryParser.VarDeclContext qVarDeclCtx
     ) {
@@ -413,16 +465,17 @@ public class CppQuery {
                 name
         );
         if (list == null) return null;
-        return new ArrayList<>(list);
+        return list.stream().map(QueryResult::new).toList();
     }
 
-    private List<ParserRuleContext> queryExpr(
+    @Override
+	protected List<QueryResult> queryExpr(
             ParserRuleContext ctx,
             JavaQueryParser.ExpressionContext qExprCtx
     ) {
         ExpVisitor expVisitor = new ExpVisitor();
         return expVisitor.filterByExp(expVisitor.visit(ctx), qExprCtx.getText())
-                .stream().map(c -> (ParserRuleContext) c).toList();
+                .stream().map(QueryResult::new).toList();
     }
 
 
@@ -498,10 +551,14 @@ for (i = 0; i < 5; i++) {
             CommonTokenStream commonTokenStream = new CommonTokenStream(javaQueryLexer);
             JavaQueryParser javaQueryParser = new JavaQueryParser(commonTokenStream);
 
-            List<ParserRuleContext> query = new CppQuery().query(astInfo.getRoot(), javaQueryParser.queryInput());
+            var query = new CppQuery(astInfo).query(astInfo.getRoot(), javaQueryParser.queryInput());
 
             if (query != null)
-                query.stream().map(RuleContext::getText).forEach(System.out::println);
+                for (var i : query.entrySet()) {
+                    System.out.println("["+i.getKey()+"]");
+                    i.getValue().stream().map(QueryResult::getText).forEach(System.out::println);
+                }
+            System.out.println();
             System.out.println();
         }
     }

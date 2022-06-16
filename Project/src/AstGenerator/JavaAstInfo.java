@@ -1,65 +1,59 @@
 package AstGenerator;
 
-import CppParser.CppLexer;
-import CppParser.CppParser;
+import JavaParser.JavaLexer;
+import JavaParser.JavaParser;
 import org.antlr.v4.runtime.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class CppAstInfo implements AstInfo{
+public class JavaAstInfo implements AstInfo {
     String path;
-    CppLexer lexer;
-    CppParser parser;
+    JavaLexer lexer;
+    JavaParser parser;
     CommonTokenStream tokenStream;
-    CppParser.TranslationUnitContext root;
+    JavaParser.CompilationUnitContext root;
     TokenStreamRewriter tokenStreamRewriter;
-
-    public CppAstInfo(CharStream input) {
-        lexer = new CppLexer(input);
+    public JavaAstInfo(CharStream input) {
+        lexer = new JavaLexer(input);
         tokenStream = new CommonTokenStream(lexer);
-        parser = new CppParser(tokenStream);
-        root = parser.translationUnit();
+        parser = new JavaParser(tokenStream);
+        root = parser.compilationUnit();
         tokenStreamRewriter = new TokenStreamRewriter(tokenStream);
     }
-    public CppAstInfo(File inputFile) throws IOException {
+    public JavaAstInfo(File inputFile) throws IOException {
         this(CharStreams.fromPath(Paths.get(inputFile.getPath())));
-
     }
-    public CppAstInfo(String inputFileName) throws IOException {
+
+    public JavaAstInfo(String inputFileName) throws IOException {
         this(CharStreams.fromFileName(inputFileName));
-         path = inputFileName;
+        path = inputFileName;
     }
 
     public String getPath() {
         return path;
     }
-
-    public CppLexer getLexer() {
-        return lexer;
+    public JavaParser.CompilationUnitContext getRoot(){
+        return root;
     }
-
-    public CppParser getParser() {
-        return parser;
-    }
-
     public CommonTokenStream getTokenStream() {
         return tokenStream;
     }
 
-    public CppParser.TranslationUnitContext getRoot() {
-        return root;
+    public JavaLexer getLexer() {
+        return lexer;
+    }
+    public JavaParser getParser() {
+        return parser;
     }
 
     public TokenStreamRewriter getTokenStreamRewriter() {
         return tokenStreamRewriter;
     }
-
     public <T extends ParserRuleContext> void replace(T context, String text) {
-        tokenStreamRewriter.replace(context.start, context.stop, text);
+        tokenStreamRewriter.replace(context.start,context.stop, text);
     }
-
     public String getText(ParserRuleContext ctx) {
         return this.tokenStream.getText(ctx.start, ctx.stop);
     }

@@ -1,6 +1,6 @@
 package Visitor;
 
-import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import Info.MethodInfo;
 import JavaParser.JavaBaseVisitor;
 import JavaParser.JavaParser;
@@ -82,9 +82,9 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
 
     public static void main(String[] args) throws IOException {
 //        main method is just for testing
-        AstInfo astInfo = new AstInfo("test/DummyTest.java");
+        JavaAstInfo javaAstInfo = new JavaAstInfo("test/DummyTest.java");
         MethodDeclVisitor methodDeclVisitor = new MethodDeclVisitor();
-        var root = astInfo.getRoot();
+        var root = javaAstInfo.getRoot();
         List<MethodInfo> methodDecls = getMethodDeclaration(root);
 //        JavaParser.BlockContext methodBody = getMethodBody(root);
 //        System.out.println(methodBody.getText());

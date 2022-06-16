@@ -1,6 +1,7 @@
 package runtime;
 
 import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.List;

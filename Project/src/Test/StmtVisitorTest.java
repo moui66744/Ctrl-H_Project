@@ -1,6 +1,6 @@
 package Test;
 
-import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import JavaParser.JavaParser;
 import Visitor.StmtVisitor;
 
@@ -22,8 +22,8 @@ public class StmtVisitorTest {
      * */
     public static void main(String[] args) throws IOException {
         String fileName = "Project/test/DummyTest.java";
-        AstInfo astInfo = new AstInfo(fileName);
-        JavaParser.CompilationUnitContext root = astInfo.getRoot();
+        JavaAstInfo javaAstInfo = new JavaAstInfo(fileName);
+        JavaParser.CompilationUnitContext root = javaAstInfo.getRoot();
         StmtVisitor stmtVisitor = new StmtVisitor();
 
         System.out.println("\n\u001b[36;4m@ if statement test\u001b[0m");

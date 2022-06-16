@@ -1,6 +1,6 @@
-package JavaQuery;
+package Query;
 
-import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import Info.ClassInfo;
 import Info.DeclarationBaseInfo;
 import Info.MethodInfo;
@@ -15,20 +15,18 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import util.QueryResult;
 
 import java.io.IOException;
-import java.lang.invoke.MethodHandle;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class Query {
+public class JavaQuery extends Query{
     Map<Integer, List<QueryResult>> queryResult;
-    AstInfo astInfo;
+    JavaAstInfo javaAstInfo;
 
-    public Query(AstInfo info){
+    public JavaQuery(JavaAstInfo info){
         queryResult = new HashMap<>();
-        astInfo = info;
+        javaAstInfo = info;
     }
 
     /**
@@ -55,35 +53,6 @@ public class Query {
 
     // ****************************** 以下对外隐藏 ******************************
 
-    /**
-     * 递归在子树上处理subQuery
-     * @param ctx: 语法树上结点
-     * @param subQueryCtx: 查询树上一个subQueryContext
-     * @return 子树上满足查询子树的结点
-     * */
-    private Map<Integer, List<QueryResult>> subQuery(
-            ParserRuleContext ctx,
-            JavaQueryParser.SubQueryContext subQueryCtx
-    ) {
-        JavaQueryParser.QueryInputContext qCtx = subQueryCtx.queryInput();
-        boolean isNot = subQueryCtx.notOp != null;
-        var queryHandlerResult = queryHandler(ctx, qCtx, isNot);
-
-        if (queryHandlerResult == null)
-            return null;
-        int label ;
-        if (subQueryCtx.queryLabel() == null){
-            return queryResult;
-        }
-        label = Integer.parseInt(subQueryCtx.queryLabel().integerLiteral().getText());
-        queryResult.merge(label, queryHandlerResult,(oldValue,newValue)-> {
-            List<QueryResult> a = new ArrayList<>();
-            a.addAll(oldValue);
-            a.addAll(newValue);
-            return a;
-        });
-        return queryResult;
-    }
 
     /**
      * 完成一次query/subQuery中的具体查询类型的分发和处理
@@ -91,7 +60,8 @@ public class Query {
      * @param qCtx: 查询树上一QueryInput结点, 代表一次query/subQuery
      * @return query/subQuery的查询结果(对于subQuery的查询结果, 目前未使用)
      */
-    private List<QueryResult> queryHandler(
+    @Override
+    protected List<QueryResult> queryHandler(
             ParserRuleContext ctx,
             JavaQueryParser.QueryInputContext qCtx,
             boolean isNot
@@ -148,7 +118,7 @@ public class Query {
         return result;
     }
 
-    private String tryGetText(ParserRuleContext ctx) {
+    protected String tryGetText(ParserRuleContext ctx) {
         return ctx == null ? null : ctx.getText();
     }
 
@@ -161,58 +131,58 @@ public class Query {
      * @param qCtx: QueryInput
      * @return 如果QueryInput中有ifStmt, 则返回; 否则返回null
      */
-    private JavaQueryParser.IfStmtContext qIfStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.IfStmtContext qIfStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().ifStmt();
     }
-    private JavaQueryParser.SwitchStmtContext qSwitchStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.SwitchStmtContext qSwitchStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().switchStmt();
     }
-    private JavaQueryParser.CaseStmtContext qCaseStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.CaseStmtContext qCaseStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().caseStmt();
     }
-    private JavaQueryParser.ForStmtContext qForStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ForStmtContext qForStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().forStmt();
     }
-    private JavaQueryParser.WhileStmtContext qWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.WhileStmtContext qWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().whileStmt();
     }
-    private JavaQueryParser.DoWhileStmtContext qDoWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.DoWhileStmtContext qDoWhileStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().doWhileStmt();
     }
-    private JavaQueryParser.TryStmtContext qTryStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.TryStmtContext qTryStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().tryStmt();
     }
-    private JavaQueryParser.ThrowStmtContext qThrowStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ThrowStmtContext qThrowStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().throwStmt();
     }
-    private JavaQueryParser.BreakStmtContext qBreakStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.BreakStmtContext qBreakStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().breakStmt();
     }
-    private JavaQueryParser.ContinueStmtContext qContinueStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ContinueStmtContext qContinueStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().continueStmt();
     }
-    private JavaQueryParser.ReturnStmtContext qReturnStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ReturnStmtContext qReturnStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().returnStmt();
     }
-    private JavaQueryParser.AssertStmtContext qAssertStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.AssertStmtContext qAssertStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().assertStmt();
     }
-    private JavaQueryParser.ExpressionContext qExpressionStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ExpressionContext qExpressionStmtCtx(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.statement() == null ? null : qCtx.statement().statementExpression;
     }
-    private JavaQueryParser.ImportDeclarationContext qImportDecl(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ImportDeclarationContext qImportDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.importDeclaration();
     }
-    private JavaQueryParser.ClassLikeDeclContext qClassLikeDecl(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ClassLikeDeclContext qClassLikeDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().classLikeDecl();
     }
-    private JavaQueryParser.MethodDeclContext qMethodDecl(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.MethodDeclContext qMethodDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().methodDecl();
     }
-    private JavaQueryParser.VarDeclContext qVarDecl(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.VarDeclContext qVarDecl(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.decl() == null ? null : qCtx.decl().varDecl();
     }
-    private JavaQueryParser.ExpressionContext qExpr(JavaQueryParser.QueryInputContext qCtx) {
+    protected JavaQueryParser.ExpressionContext qExpr(JavaQueryParser.QueryInputContext qCtx) {
         return qCtx.expression();
     }
 
@@ -229,7 +199,7 @@ public class Query {
      * @param queryIfStmtCtx: 查询树上ifStmt结点
      * @return 与当前语法树子树上与查询树子树匹配的if语句
      */
-    private List<QueryResult> queryIf(
+    protected List<QueryResult> queryIf(
             ParserRuleContext ctx,
             JavaQueryParser.IfStmtContext queryIfStmtCtx
     ) {
@@ -267,8 +237,8 @@ public class Query {
                 var node = new QueryResult(stmtCtx);
                 for (var item : stmtCtx.ifStmt().statement()){
                     if (item.block() != null){
-                        var start = astInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
-                        var stop = astInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
+                        var start = javaAstInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
+                        var stop = javaAstInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
                         node.addSubNode(
                                 start.getLine(),
                                 start.getCharPositionInLine(),
@@ -290,7 +260,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> querySwitch(
+    protected List<QueryResult> querySwitch(
             ParserRuleContext ctx,
             JavaQueryParser.SwitchStmtContext querySwiStmtCtx
     ) {
@@ -320,7 +290,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryCase(
+    protected List<QueryResult> queryCase(
             ParserRuleContext ctx,
             JavaQueryParser.CaseStmtContext queryCaseStmtCtx
     ) {
@@ -351,7 +321,7 @@ public class Query {
         return null;
     }
 
-    private List<QueryResult> queryFor(
+    protected List<QueryResult> queryFor(
             ParserRuleContext ctx,
             JavaQueryParser.ForStmtContext queryForStmtCtx
     ) {
@@ -382,8 +352,8 @@ public class Query {
                 var node = new QueryResult(stmtCtx);
                 var item = stmtCtx.forStmt().statement();
                 if (item.block() != null){
-                    var start = astInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
-                    var stop = astInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
+                    var start = javaAstInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
+                    var stop = javaAstInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
                     node.addSubNode(
                             start.getLine(),
                             start.getCharPositionInLine(),
@@ -403,7 +373,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryWhile(
+    protected List<QueryResult> queryWhile(
             ParserRuleContext ctx,
             JavaQueryParser.WhileStmtContext queryWhileStmtCtx
     ) {
@@ -429,8 +399,8 @@ public class Query {
                 var node = new QueryResult(stmtCtx);
                 var item = stmtCtx.whileStmt().statement();
                 if (item.block() != null){
-                    var start = astInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
-                    var stop = astInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
+                    var start = javaAstInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
+                    var stop = javaAstInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
                     node.addSubNode(
                             start.getLine(),
                             start.getCharPositionInLine() ,
@@ -450,7 +420,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryDoWhile(
+    protected List<QueryResult> queryDoWhile(
             ParserRuleContext ctx,
             JavaQueryParser.DoWhileStmtContext queryDoWhileStmtCtx
     ) {
@@ -476,8 +446,8 @@ public class Query {
                 var node = new QueryResult(stmtCtx);
                 var item = stmtCtx.doWhileStmt().statement();
                 if (item.block() != null){
-                    var start = astInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
-                    var stop = astInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
+                    var start = javaAstInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
+                    var stop = javaAstInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
                     node.addSubNode(
                             start.getLine(),
                             start.getCharPositionInLine(),
@@ -495,7 +465,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryTry(
+    protected List<QueryResult> queryTry(
             ParserRuleContext ctx,
             JavaQueryParser.TryStmtContext queryTryStmtCtx
     ) {
@@ -537,8 +507,8 @@ public class Query {
                 var node = new QueryResult(stmtCtx);
                 if (stmtCtx.tryStmt().catchClause() != null) {
                     for (var item : stmtCtx.tryStmt().catchClause()){
-                        var start = astInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
-                        var stop = astInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
+                        var start = javaAstInfo.getTokenStream().get(item.block().LBRACE().getSymbol().getTokenIndex() + 1);
+                        var stop = javaAstInfo.getTokenStream().get(item.block().RBRACE().getSymbol().getTokenIndex() -1);
                         node.addSubNode(
                                 start.getLine(),
                                 start.getCharPositionInLine(),
@@ -551,8 +521,8 @@ public class Query {
                 }
                 var finallyContext = stmtCtx.tryStmt().finallyBlock();
                 if (finallyContext != null ){
-                    var start = astInfo.getTokenStream().get(finallyContext.block().LBRACE().getSymbol().getTokenIndex() + 1);
-                    var stop = astInfo.getTokenStream().get(finallyContext.block().RBRACE().getSymbol().getTokenIndex() -1);
+                    var start = javaAstInfo.getTokenStream().get(finallyContext.block().LBRACE().getSymbol().getTokenIndex() + 1);
+                    var stop = javaAstInfo.getTokenStream().get(finallyContext.block().RBRACE().getSymbol().getTokenIndex() -1);
                     node.addSubNode(
                             start.getLine(),
                             start.getCharPositionInLine(),
@@ -569,7 +539,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryThrow(
+    protected List<QueryResult> queryThrow(
         ParserRuleContext ctx,
         JavaQueryParser.ThrowStmtContext queryThrowStmtCtx
     ) {
@@ -584,7 +554,7 @@ public class Query {
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<QueryResult> queryBreak(
+    protected List<QueryResult> queryBreak(
         ParserRuleContext ctx,
         JavaQueryParser.BreakStmtContext queryBrkStmtCtx
     ) {
@@ -599,7 +569,7 @@ public class Query {
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<QueryResult> queryContinue(
+    protected List<QueryResult> queryContinue(
         ParserRuleContext ctx,
         JavaQueryParser.ContinueStmtContext queryContinueStmtCtx
     ) {
@@ -614,7 +584,7 @@ public class Query {
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<QueryResult> queryReturn(
+    protected List<QueryResult> queryReturn(
         ParserRuleContext ctx,
         JavaQueryParser.ReturnStmtContext queryReturnStmtCtx
     ) {
@@ -629,7 +599,7 @@ public class Query {
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<QueryResult> queryAssert(
+    protected List<QueryResult> queryAssert(
         ParserRuleContext ctx,
         JavaQueryParser.AssertStmtContext queryAssertStmtCtx
     ) {
@@ -645,14 +615,14 @@ public class Query {
         return stmtCtxs.stream().map(QueryResult::new).toList();
     }
 
-    private List<QueryResult> queryExprStmt(
+    protected List<QueryResult> queryExprStmt(
             ParserRuleContext ctx,
             JavaQueryParser.ExpressionContext queryExprCtx
     ) {
         return queryExpr(ctx, queryExprCtx);
     }
 
-    private List<QueryResult> queryImport(
+    protected List<QueryResult> queryImport(
         ParserRuleContext ctx,
         JavaQueryParser.ImportDeclarationContext queryImportDeclCtx
     ) {
@@ -667,7 +637,7 @@ public class Query {
         return importCtx.stream().map(QueryResult::new).toList();
     }
 
-    private List<QueryResult> queryClassLike(
+    protected List<QueryResult> queryClassLike(
             ParserRuleContext ctx,
             JavaQueryParser.ClassLikeDeclContext queryClassLikeDeclCtx
     ) {
@@ -681,7 +651,7 @@ public class Query {
         }
     }
 
-    private List<QueryResult> queryClass(
+    protected List<QueryResult> queryClass(
             ParserRuleContext ctx,
             JavaQueryParser.ClassLikeDeclContext queryClassDeclCtx
     ) {
@@ -721,8 +691,8 @@ public class Query {
                 }
             }
             if (flag) {
-                var start = astInfo.getTokenStream().get(classBodyContext.LBRACE().getSymbol().getTokenIndex() + 1);
-                var stop = astInfo.getTokenStream().get(classBodyContext.RBRACE().getSymbol().getTokenIndex() -1);
+                var start = javaAstInfo.getTokenStream().get(classBodyContext.LBRACE().getSymbol().getTokenIndex() + 1);
+                var stop = javaAstInfo.getTokenStream().get(classBodyContext.RBRACE().getSymbol().getTokenIndex() -1);
                 result.add(new QueryResult(classInfo.Context).addSubNode(
                         start.getLine(),
                         start.getCharPositionInLine(),
@@ -737,7 +707,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryInterface(
+    protected List<QueryResult> queryInterface(
             ParserRuleContext ctx,
             JavaQueryParser.ClassLikeDeclContext queryInterfaceDeclCtx
     ) {
@@ -777,8 +747,8 @@ public class Query {
                 }
             }
             if (flag) {
-                var start = astInfo.getTokenStream().get(interfaceBodyContext.LBRACE().getSymbol().getTokenIndex() + 1);
-                var stop = astInfo.getTokenStream().get(interfaceBodyContext.RBRACE().getSymbol().getTokenIndex() -1);
+                var start = javaAstInfo.getTokenStream().get(interfaceBodyContext.LBRACE().getSymbol().getTokenIndex() + 1);
+                var stop = javaAstInfo.getTokenStream().get(interfaceBodyContext.RBRACE().getSymbol().getTokenIndex() -1);
                 result.add(new QueryResult(classInfo.Context).addSubNode(
                         start.getLine(),
                         start.getCharPositionInLine(),
@@ -793,7 +763,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryMethodDecl(
+    protected List<QueryResult> queryMethodDecl(
             ParserRuleContext ctx,
             JavaQueryParser.MethodDeclContext qMethodDeclCtx
     ) {
@@ -831,8 +801,8 @@ public class Query {
                 }
             }
             if (flag) {
-                var start = astInfo.getTokenStream().get(methodInfo.getMethodBody().block().LBRACE().getSymbol().getTokenIndex() + 1);
-                var stop = astInfo.getTokenStream().get(methodInfo.getMethodBody().block().RBRACE().getSymbol().getTokenIndex() - 1);
+                var start = javaAstInfo.getTokenStream().get(methodInfo.getMethodBody().block().LBRACE().getSymbol().getTokenIndex() + 1);
+                var stop = javaAstInfo.getTokenStream().get(methodInfo.getMethodBody().block().RBRACE().getSymbol().getTokenIndex() - 1);
                 result.add(new QueryResult(methodInfo.Context).addSubNode(
                         start.getLine(),
                         start.getCharPositionInLine(),
@@ -846,7 +816,7 @@ public class Query {
         return result;
     }
 
-    private List<QueryResult> queryVarDecl(
+    protected List<QueryResult> queryVarDecl(
             ParserRuleContext ctx,
             JavaQueryParser.VarDeclContext qVarDeclCtx
     ) {
@@ -862,14 +832,10 @@ public class Query {
         list = VariableInfo.variableInfoFilterByType(list, type);
 
         if (list == null) return null;
-        List<QueryResult> result = new ArrayList<>();
-        for (VariableInfo variableInfo : list) {
-            result.add(new QueryResult(variableInfo.Context));
-        }
-        return result;
+        return list.stream().map(item -> new QueryResult(item.Context)).toList();
     }
 
-    private List<QueryResult> queryExpr(
+    protected List<QueryResult> queryExpr(
             ParserRuleContext ctx,
             JavaQueryParser.ExpressionContext qExprCtx
     ) {
@@ -880,7 +846,7 @@ public class Query {
 
 
     public static void main(String[] args) throws IOException {
-        AstInfo astInfo = new AstInfo("test/DummyTest.java");
+        JavaAstInfo javaAstInfo = new JavaAstInfo("test/DummyTest.java");
 
         String[] needle = {
 //"""
@@ -985,7 +951,7 @@ if (a == 0) {
             QueryChecker javaQueryBaseListener = new QueryChecker();
             javaQueryParser.addParseListener(javaQueryBaseListener);
 
-            var query = new Query(astInfo).query(astInfo.getRoot(), javaQueryParser.queryInput());
+            var query = new JavaQuery(javaAstInfo).query(javaAstInfo.getRoot(), javaQueryParser.queryInput());
 
             if (query != null)
                 for (var i : query.entrySet()) {

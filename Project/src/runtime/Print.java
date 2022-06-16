@@ -1,6 +1,7 @@
 package runtime;
 
 import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import org.antlr.v4.runtime.ParserRuleContext;
 import util.QueryResult;
 
@@ -60,7 +61,8 @@ public class Print {
     public static void printJsonFile(Map<AstInfo, Map<Integer,List<QueryResult>>> resultMap, String Path) throws IOException {
         File f ;
         if (Path != null)f= new File(Path); else f = new File("out/res.json");
-        FileOutputStream fileOutputStream = new FileOutputStream(f);
-        fileOutputStream.write(makeJson(resultMap).getBytes());
+        try (FileOutputStream fileOutputStream = new FileOutputStream(f)){
+            fileOutputStream.write(makeJson(resultMap).getBytes());
+        }
     }
 }

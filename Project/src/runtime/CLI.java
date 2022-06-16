@@ -1,8 +1,8 @@
 package runtime;
 
 import AstGenerator.AstInfo;
-import JavaQuery.QueryTreeInfo;
-import Visitor.StmtVisitor;
+import AstGenerator.JavaAstInfo;
+import Query.QueryTreeInfo;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.apache.commons.cli.*;
 import util.QueryResult;
@@ -20,6 +20,8 @@ public class CLI {
     private Option cmdOpt;
 
     private Option dirOpt;
+
+    private Option langOpt;
     private final Options options = new Options();
     // 输入参数解析
     private final DefaultParser parser = new DefaultParser();
@@ -34,9 +36,12 @@ public class CLI {
                 "use the terminal,with the query language");
         dirOpt = new Option("d", "dir", true,
                             "specified the out put directory of query result");
+        langOpt = new Option("l","lang",true,
+                "Choose the subQuery Language");
         options.addOption(pathOpt);
         options.addOption(cmdOpt);
         options.addOption(dirOpt);
+        options.addOption(langOpt);
     }
 
     public void parseArgs(String[] args) throws ParseException, IllegalArgumentException {
@@ -58,12 +63,27 @@ public class CLI {
                 throw new ParseException("no output dir");
             }
         }
+        if (cmd.hasOption(langOpt)) {
+            var tmp = cmd.getOptionValue(langOpt);
+            if (tmp == null) {
+                throw new ParseException("no input language");
+            }else {
+                if (tmp.equals("cpp")){
+                    cliInfo.langType = CLIInfo.LanguageType.CPP;
+                } else if (tmp.equals("java")){
+                    cliInfo.langType = CLIInfo.LanguageType.JAVA;
+                }
+            }
+        }
     }
 
     // 完成S/R任务的分派, 具体接口调用交给Search/Replace
     public void exec() throws Exception {
         // 打开 路径下所有文件 / 文件
-        IO.readFile(cliInfo.path);
+        if (cliInfo.langType == CLIInfo.LanguageType.JAVA)
+            IO.readJavaFile(cliInfo.path);
+        else if (cliInfo.langType == CLIInfo.LanguageType.CPP)
+            IO.readCppFile(cliInfo.path);
         String queryLanguage;
         if (cliInfo.cmd)
             queryLanguage = cliInfo.queryInput;
@@ -175,7 +195,8 @@ public class CLI {
                 "../../antlr4/",
                 "-t",
                 "if(){}",
-                "-d","out/res.json"
+                "-d","out/res.json",
+                "-l","java"
         };
         CLI cli = new CLI();
         cli.setOptions();
