@@ -239,7 +239,9 @@ public class JavaQuery extends Query{
                     if (constraint.NULL_BLOCK() != null){
                         flag = stmtCtx.ifStmt().ELSE() == null;
                     } else if (constraint.EMPTY_BLOCK() != null){
-                        if (stmtCtx.ifStmt().statement(1).block() != null) {
+                        if (stmtCtx.ifStmt().ELSE() == null) {
+                            flag = false;
+                        }else if (stmtCtx.ifStmt().statement(1).block() != null) {
                             flag = stmtCtx.ifStmt().statement(1).block().blockStatement().isEmpty();
                         } else {
                             flag = false;
@@ -934,10 +936,10 @@ public class JavaQuery extends Query{
 //}
 //""",
 """
-public class <<>> {}
+if (){}else {<<empty>>}
 """,
 //"""
-//retinput(){
+//<<>>(){
 //<<empty>>
 //}
 //""",
