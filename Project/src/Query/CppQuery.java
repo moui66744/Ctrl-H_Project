@@ -181,7 +181,9 @@ public class CppQuery extends Query{
                     if (constrainContext.NULL_BLOCK() != null){
                         flag = stmtCtx.ifStmt().Else() == null;
                     } else if (constrainContext.EMPTY_BLOCK() != null){
-                        if (stmtCtx.ifStmt().statement(1).compoundStatement() != null )
+                        if (stmtCtx.ifStmt().Else() == null)
+                            flag = false;
+                        else if (stmtCtx.ifStmt().statement(1).compoundStatement() != null )
                             flag = stmtCtx.ifStmt().statement(1).compoundStatement().statementSeq().isEmpty();
                         else
                             flag = false;
