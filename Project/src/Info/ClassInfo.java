@@ -25,7 +25,11 @@ public class ClassInfo extends DeclarationBaseInfo {
     }
 
     public JavaParser.ClassBodyContext getClassBody() {
-        return ((JavaParser.TypeDeclarationContext)(this.Context)).classDeclaration().classBody();
+        try{
+            return ((JavaParser.TypeDeclarationContext)(this.Context)).classDeclaration().classBody();
+        } catch (ClassCastException e){
+            return ((JavaParser.LocalTypeDeclarationContext)(this.Context)).classDeclaration().classBody();
+        }
     }
 
     public JavaParser.InterfaceBodyContext getInterfaceBody() {

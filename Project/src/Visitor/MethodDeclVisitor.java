@@ -19,13 +19,14 @@ public class MethodDeclVisitor extends JavaBaseVisitor<List<JavaParser.MemberDec
      */
     private static MethodInfo getMethodInfo(JavaParser.MemberDeclarationContext member) {
         try { // 当其为泛型方法时
-            if (member.genericMethodDeclaration() != null) {
+            if (member.genericMethodDeclaration() != null && member.genericMethodDeclaration().methodDeclaration() !=  null) {
                 return new MethodInfo(member.genericMethodDeclaration().methodDeclaration().identifier().IDENTIFIER(), // 方法名称标识符所在的终结节点
                         null,// TODO: 2022/5/7 修饰符
                         member, // 该子树的根节点
                         member.genericMethodDeclaration().methodDeclaration().typeTypeOrVoid().getText(), // 方法类型
                         member.genericMethodDeclaration().methodDeclaration().formalParameters().getText(), // 方法的参数
-                        member.genericMethodDeclaration().typeParameters().getText(), // 方法的typeParameters
+//                        member.genericMethodDeclaration().typeParameters().getText(), // 方法的typeParameters
+                        null,
                         member.genericMethodDeclaration().methodDeclaration().methodBody().block()); // 方法的主体
             }
         } catch (Exception ignored) {
