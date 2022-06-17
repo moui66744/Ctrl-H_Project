@@ -189,7 +189,9 @@ public class CppQuery extends Query{
                             flag = false;
                     }
                 } else {
-                    for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
+                    if (stmtCtx.ifStmt().Else() == null )
+                        flag = false;
+                    else for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
                         if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
                             flag = false;// 某一subQuery匹配失败, 则该if匹配失败
                             break;

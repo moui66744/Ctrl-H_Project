@@ -249,12 +249,16 @@ public class JavaQuery extends Query{
                     }
                 }
                 else{
-                    for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
-                        if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
-                            flag = false;// 某一subQuery匹配失败, 则该if匹配失败
-                            break;
+                    if (stmtCtx.ifStmt().ELSE() == null)
+                        flag = false;
+                    else
+                        for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
+                            if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
+                                flag = false;// 某一subQuery匹配失败, 则该if匹配失败
+                                break;
+                            }
                         }
-                    }
+
                 }
             }
             if (flag) {// 与逻辑, 只有两个block中的subQuery都满足, 才认为匹配成功
@@ -936,7 +940,7 @@ public class JavaQuery extends Query{
 //}
 //""",
 """
-if (){}else {<<empty>>}
+if (){}else {}
 """,
 //"""
 //<<>>(){
