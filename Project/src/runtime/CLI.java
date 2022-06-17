@@ -195,9 +195,9 @@ public class CLI {
 //                "../../antlr4/",
                 "test/",
                 "-t",
-                "if(){[1]if(){} $ [2] a = 0}",
+                "if(){}",
                 "-d","out/res.json",
-                "-l","cpp"
+                "-l","java"
         };
         CLI cli = new CLI();
         cli.setOptions();
