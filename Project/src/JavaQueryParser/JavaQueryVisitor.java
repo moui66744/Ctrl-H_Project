@@ -515,6 +515,12 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitBlock(JavaQueryParser.BlockContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link JavaQueryParser#blockConstraint}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBlockConstraint(JavaQueryParser.BlockConstraintContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link JavaQueryParser#blockStatement}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -737,7 +743,7 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodCall(JavaQueryParser.MethodCallContext ctx);
 	/**
-	 * Visit a parse tree produced by .
+	 * Visit a parse tree produced by {@link JavaQueryParser}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
@@ -785,7 +791,7 @@ public interface JavaQueryVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSwitchLabeledRule(JavaQueryParser.SwitchLabeledRuleContext ctx);
 	/**
-	 * Visit a parse tree produced by .
+	 * Visit a parse tree produced by {@link JavaQueryParser}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

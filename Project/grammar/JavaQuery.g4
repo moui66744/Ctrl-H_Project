@@ -66,6 +66,7 @@ classLikeKeyWord
     : CLASS
     | INTERFACE
     | ENUM
+    | STRUCT
     | '@' INTERFACE
     ;
 
@@ -472,6 +473,12 @@ recordBody
 
 block
     : '{' ( | subQuery ('$' subQuery )* )  '}'
+    | '{' blockConstraint'}'
+    ;
+
+blockConstraint
+    : NULL_BLOCK
+    | EMPTY_BLOCK
     ;
 
 blockStatement
@@ -501,6 +508,7 @@ identifier
     | PERMITS
     | RECORD
     | VAR
+    | WILDCARD
     ;
 
 localTypeDeclaration
@@ -912,6 +920,15 @@ RECORD:             'record';
 SEALED:             'sealed';
 PERMITS:            'permits';
 NON_SEALED:         'non-sealed';
+STRUCT:             'struct';
+
+
+//block constraint
+NULL_BLOCK: '<<null>>';
+EMPTY_BLOCK: '<<empty>>';
+
+//wildcard
+WILDCARD : '<<>>';
 
 // Literals
 
@@ -988,17 +1005,13 @@ LSHIFT_ASSIGN:      '<<=';
 RSHIFT_ASSIGN:      '>>=';
 URSHIFT_ASSIGN:     '>>>=';
 
-// Java 8 tokens
 
 ARROW:              '->';
 COLONCOLON:         '::';
 
-// Additional symbols not defined in the lexical specification
 
 AT:                 '@';
 ELLIPSIS:           '...';
-
-// Whitespace and comments
 
 WS:                 [ \t\r\n\u000C]+ -> channel(HIDDEN);
 COMMENT:            '/*' .*? '*/'    -> channel(HIDDEN);

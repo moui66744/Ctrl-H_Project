@@ -848,6 +848,16 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitBlock(JavaQueryParser.BlockContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link JavaQueryParser#blockConstraint}.
+	 * @param ctx the parse tree
+	 */
+	void enterBlockConstraint(JavaQueryParser.BlockConstraintContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link JavaQueryParser#blockConstraint}.
+	 * @param ctx the parse tree
+	 */
+	void exitBlockConstraint(JavaQueryParser.BlockConstraintContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link JavaQueryParser#blockStatement}.
 	 * @param ctx the parse tree
 	 */
@@ -1218,12 +1228,12 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitMethodCall(JavaQueryParser.MethodCallContext ctx);
 	/**
-	 * Enter a parse tree produced by .
+	 * Enter a parse tree produced by {@link JavaQueryParser}.
 	 * @param ctx the parse tree
 	 */
 	void enterExpression(JavaQueryParser.ExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by .
+	 * Exit a parse tree produced by {@link JavaQueryParser}.
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(JavaQueryParser.ExpressionContext ctx);
@@ -1298,12 +1308,12 @@ public interface JavaQueryListener extends ParseTreeListener {
 	 */
 	void exitSwitchLabeledRule(JavaQueryParser.SwitchLabeledRuleContext ctx);
 	/**
-	 * Enter a parse tree produced by .
+	 * Enter a parse tree produced by {@link JavaQueryParser}.
 	 * @param ctx the parse tree
 	 */
 	void enterGuardedPattern(JavaQueryParser.GuardedPatternContext ctx);
 	/**
-	 * Exit a parse tree produced by .
+	 * Exit a parse tree produced by {@link JavaQueryParser}.
 	 * @param ctx the parse tree
 	 */
 	void exitGuardedPattern(JavaQueryParser.GuardedPatternContext ctx);
