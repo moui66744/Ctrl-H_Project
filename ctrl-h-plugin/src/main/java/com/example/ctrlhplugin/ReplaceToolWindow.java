@@ -35,8 +35,8 @@ public class ReplaceToolWindow {
      */
     public ReplaceToolWindow(ToolWindow toolWindow) {
 //        initTest();
-        languageComboBox.addItem("Java");
-        languageComboBox.addItem("C");
+        languageComboBox.addItem("java");
+        languageComboBox.addItem("cpp");
     }
 
     SearchResults searchResults;
@@ -169,7 +169,7 @@ public class ReplaceToolWindow {
 //            searchResults = ReadResult.getSearchResultsByCsv(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.csv");
             try {
                 String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
-                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json");
+                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json", languageComboBox.getSelectedItem().toString());
                 searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/out/" + "res.json");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -288,7 +288,7 @@ public class ReplaceToolWindow {
         importButton.addActionListener(e -> {
             try {
                 String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
-                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json");
+                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json", languageComboBox.getSelectedItem().toString());
                 searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/out/" + "res.json");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

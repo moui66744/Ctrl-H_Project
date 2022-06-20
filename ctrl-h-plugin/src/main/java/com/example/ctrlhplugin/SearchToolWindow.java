@@ -36,8 +36,8 @@ public class SearchToolWindow {
      */
     public SearchToolWindow(ToolWindow toolWindow) {
 //        initTest();
-        this.languageComboBox.addItem("Java");
-        this.languageComboBox.addItem("C");
+        this.languageComboBox.addItem("java");
+        this.languageComboBox.addItem("cpp");
     }
 
     SearchResults searchResults;
@@ -157,8 +157,7 @@ public class SearchToolWindow {
             try {
                 String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
 //                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json");
-                RunJar.runSingle("java -jar C:/Users/Keelo/Desktop/ctrl-h/ctrl-h-plugin/TestEnv/Project.jar -t \"while(){}\" -p \"/Users/Keelo/Desktop/ctrl-h/ctrl-h-plugin/TestEnv/test/DummyTest.java\" -d \"/Users/Keelo/Desktop/ctrl-h/ctrl-h-plugin/TestEnv/out/res.json\"");
-//                RunJar.runSingle("java -version");
+                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json", languageComboBox.getSelectedItem().toString());
                 searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/out/" + "res.json");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

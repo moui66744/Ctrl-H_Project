@@ -3,11 +3,12 @@ package com.example.ctrlhplugin;
 import java.io.*;
 
 public class RunJar {
-    public static void run(String jarPath, String query, String target, String destination) {
-        runSingle("java -jar " + jarPath + "/Project.jar " +
+    public static void run(String jarPath, String query, String target, String destination, String language) {
+        runSingle("c:/Java/jdk-16.0.2/bin/java -jar " + jarPath + "/Project.jar " +
                 "-t \"" + query + "\" " +
                 "-p \"" + target + "\" " +
-                "-d \"" + destination + "\"");
+                "-d \"" + destination + "\" " +
+                "-l \"" + language + "\"");
     }
 
     public static void runSingle(String cmd) {
