@@ -42,7 +42,7 @@ public class MethodInfo extends DeclarationBaseInfo {
     public JavaParser.BlockContext body;
 
     public boolean typeMatch(String s) {
-        return this.type.equals(s);
+        if (this.type == null )return false; else return this.type.equals(s);
     }
 
     public boolean formalParametersMatch(String s) {
@@ -54,7 +54,10 @@ public class MethodInfo extends DeclarationBaseInfo {
     }
 
     public JavaParser.MethodBodyContext getMethodBody() {
-        return ((JavaParser.MemberDeclarationContext)(this.Context)).methodDeclaration().methodBody();
+        if (((JavaParser.MemberDeclarationContext)(this.Context)).methodDeclaration() != null)
+            return ((JavaParser.MemberDeclarationContext)(this.Context)).methodDeclaration().methodBody();
+        else
+            return null;
     }
 
     public static List<MethodInfo> methodInfoFilterByType(List<MethodInfo> t, String type) {

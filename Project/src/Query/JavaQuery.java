@@ -249,12 +249,16 @@ public class JavaQuery extends Query{
                     }
                 }
                 else{
-                    for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
-                        if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
-                            flag = false;// 某一subQuery匹配失败, 则该if匹配失败
-                            break;
+                    if (stmtCtx.ifStmt().ELSE() == null)
+                        flag = false;
+                    else
+                        for (JavaQueryParser.SubQueryContext subQueryContext : blockContext1.subQuery()) {
+                            if (subQuery(stmtCtx.ifStmt().statement(1), subQueryContext) == null) {
+                                flag = false;// 某一subQuery匹配失败, 则该if匹配失败
+                                break;
+                            }
                         }
-                    }
+
                 }
             }
             if (flag) {// 与逻辑, 只有两个block中的subQuery都满足, 才认为匹配成功
@@ -864,6 +868,14 @@ public class JavaQuery extends Query{
         List<QueryResult> result = new ArrayList<>();
         for (MethodInfo methodInfo : list) {
             boolean flag = true;
+            if (methodInfo.getMethodBody() == null){
+                if (qMethodDeclCtx.block().subQuery() != null){
+                    continue;
+                } else {
+                    result.add(new QueryResult(methodInfo.Context));
+                    continue;
+                }
+            }
             JavaQueryParser.BlockConstraintContext constraintContext = qMethodDeclCtx.block().blockConstraint();
             if (constraintContext != null){
                 if (constraintContext.EMPTY_BLOCK() != null){
@@ -877,16 +889,20 @@ public class JavaQuery extends Query{
                 }
             }
             if (flag) {
-                var start = javaAstInfo.getTokenStream().get(methodInfo.getMethodBody().block().LBRACE().getSymbol().getTokenIndex() + 1);
-                var stop = javaAstInfo.getTokenStream().get(methodInfo.getMethodBody().block().RBRACE().getSymbol().getTokenIndex() - 1);
-                result.add(new QueryResult(methodInfo.Context).addSubNode(
-                        start.getLine(),
-                        start.getCharPositionInLine(),
-                        stop.getLine(),
-                        stop.getCharPositionInLine(),
-                        start.getStartIndex(),
-                        stop.getStopIndex()
-                ));
+                if (methodInfo.getMethodBody().block() != null) {
+                    var start = javaAstInfo.getTokenStream().get(methodInfo.getMethodBody().block().LBRACE().getSymbol().getTokenIndex() + 1);
+                    var stop = javaAstInfo.getTokenStream().get(methodInfo.getMethodBody().block().RBRACE().getSymbol().getTokenIndex() - 1);
+                    result.add(new QueryResult(methodInfo.Context).addSubNode(
+                            start.getLine(),
+                            start.getCharPositionInLine(),
+                            stop.getLine(),
+                            stop.getCharPositionInLine(),
+                            start.getStartIndex(),
+                            stop.getStopIndex()
+                    ));
+                } else {
+                    result.add(new QueryResult(methodInfo.Context));
+                }
             }
         }
         if (result.isEmpty()) return null;
@@ -936,7 +952,7 @@ public class JavaQuery extends Query{
 //}
 //""",
 """
-if (){}else {<<empty>>}
+if (){}else {}
 """,
 //"""
 //<<>>(){
