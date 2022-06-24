@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="ctrl-h:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="403193a9-408f-4f15-811d-133335f60af1" name="Changes" comment="支持表达式，增加ExpressionSatement。查询表达式可以用分号">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Project/ctrl-h.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Project/ctrl-h.iml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="UPDATE_TYPE" value="REBASE" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectId" id="28PyXIPEiZgtxvuLwgWd0GeFdNI" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "D:/coding/Java_practive/ctrl-h/Project/lib",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15701668",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\coding\Java_practive\ctrl-h\Project\lib" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\coding\Java_practive\ctrl-h\Project\lib" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.CLI">
+    <configuration name="AstInfoTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test.AstInfoTest" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="CLI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="runtime.CLI" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="runtime.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ExpVisitorTest" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Visitor.ExpVisitorTest" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Visitor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Query" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="JavaQuery.Query" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="JavaQuery.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StmtVisitor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Test.StmtVisitor" />
+      <module name="ctrl-h" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.CLI" />
+        <item itemvalue="Application.Query" />
+        <item itemvalue="Application.ExpVisitorTest" />
+        <item itemvalue="Application.StmtVisitor" />
+        <item itemvalue="Application.AstInfoTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="403193a9-408f-4f15-811d-133335f60af1" name="Changes" comment="" />
+      <created>1651132556566</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1651132556566</updated>
+      <workItem from="1651132558687" duration="97000" />
+      <workItem from="1651377885040" duration="453000" />
+      <workItem from="1651378360286" duration="2413000" />
+      <workItem from="1651387187590" duration="6061000" />
+      <workItem from="1651394650153" duration="3911000" />
+      <workItem from="1651452475488" duration="92000" />
+      <workItem from="1651493447836" duration="5661000" />
+      <workItem from="1651643238028" duration="3079000" />
+      <workItem from="1651647459507" duration="625000" />
+      <workItem from="1651650954678" duration="6677000" />
+      <workItem from="1651713597532" duration="10183000" />
+      <workItem from="1651731059039" duration="12584000" />
+      <workItem from="1653376444563" duration="9507000" />
+      <workItem from="1653391704814" duration="212000" />
+      <workItem from="1653391952385" duration="13200000" />
+      <workItem from="1653441655164" duration="11627000" />
+    </task>
+    <task id="LOCAL-00001" summary="修改ClassInfo，增加获取ClassBody/InterfaceBody的接口。将TerminalNodeToModifierType改为静态方法">
+      <created>1653389302327</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1653389302327</updated>
+    </task>
+    <task id="LOCAL-00002" summary="增加import查询和过滤">
+      <created>1653389369128</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1653389369128</updated>
+    </task>
+    <task id="LOCAL-00003" summary="增加break/continue/return/assert查询和过滤，当前支持11种语句">
+      <created>1653390193265</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1653390193265</updated>
+    </task>
+    <task id="LOCAL-00004" summary="移除InterfaceInfo">
+      <created>1653390284608</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1653390284608</updated>
+    </task>
+    <task id="LOCAL-00005" summary="支持11种语句、类/接口/方法/变量的嵌套查询. 方法和变量仍不支持修饰符">
+      <created>1653402872963</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1653402872963</updated>
+    </task>
+    <task id="LOCAL-00006" summary="完善DummyTest, 支持第二阶段测试">
+      <created>1653402941543</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1653402941543</updated>
+    </task>
+    <task id="LOCAL-00007" summary="重写基类name/modifier过滤器, 增加getMethodBody">
+      <created>1653403063681</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1653403063681</updated>
+    </task>
+    <task id="LOCAL-00008" summary="classLikeDecl中增加identifer, 展平modifier">
+      <created>1653403235529</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1653403235529</updated>
+    </task>
+    <task id="LOCAL-00009" summary="classLikeDecl中增加identifer, 展平modifier">
+      <created>1653403248450</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1653403248450</updated>
+    </task>
+    <task id="LOCAL-00010" summary="完善DummyTest, 支持第二阶段测试">
+      <created>1653447420253</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1653447420253</updated>
+    </task>
+    <task id="LOCAL-00011" summary="支持表达式，增加ExpressionSatement。查询表达式可以用分号">
+      <created>1653447602112</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1653447602112</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="实现语句查询&#10;1.增加StmtVisitor类, 用于语句查询&#10;2.增加SourcePosition类, 用于获取结点在源码中的位置" />
+    <MESSAGE value="实现语句查询&#10;1.增加StmtVisitor类, 用于语句查询&#10;2.增加SourcePosition类, 用于获取结点在源码中的位置&#10;3.完善DummyTest类, 以体现语句查询效果" />
+    <MESSAGE value="修改ClassInfo，增加获取ClassBody/InterfaceBody的接口。将TerminalNodeToModifierType改为静态方法" />
+    <MESSAGE value="增加import查询和过滤" />
+    <MESSAGE value="classlike中增加identifier，展平modifier" />
+    <MESSAGE value="增加break/continue/return/assert查询和过滤，当前支持11种语句" />
+    <MESSAGE value="移除InterfaceInfo" />
+    <MESSAGE value="支持11种语句、类/接口/方法/变量的嵌套查询. 方法和变量仍不支持修饰符" />
+    <MESSAGE value="重写基类name/modifier过滤器, 增加getMethodBody" />
+    <MESSAGE value="classLikeDecl中增加identifer, modifier展平" />
+    <MESSAGE value="classLikeDecl中增加identifer, 展平modifier" />
+    <MESSAGE value="完善DummyTest, 支持第二阶段测试" />
+    <MESSAGE value="支持表达式，增加ExpressionSatement。查询表达式可以用分号" />
+    <option name="LAST_COMMIT_MESSAGE" value="支持表达式，增加ExpressionSatement。查询表达式可以用分号" />
+  </component>
+</project>
