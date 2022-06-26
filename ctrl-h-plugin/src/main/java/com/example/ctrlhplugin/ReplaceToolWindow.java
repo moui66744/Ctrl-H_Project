@@ -54,12 +54,12 @@ public class ReplaceToolWindow {
     private final JLabel resultsLabel = new JBLabel("Results");
     //    中部
     private final JPanel textAreaPanel = new JBPanel<>(new GridLayout(1, 2));
-    //    private final EditorTextField searchTextArea = new EditorTextField();
     private final JTextArea searchTextArea = new JTextArea();
 
-    //    private final EditorTextField replaceTextArea = new EditorTextField();
     private final JTextArea replaceTextArea = new JTextArea();
     private final JList<String> resultsList = new JBList<>();
+    private final JScrollPane jScrollPane = new JScrollPane(resultsList);
+
 
     {
         // 修改中间区域组件的样式
@@ -89,7 +89,7 @@ public class ReplaceToolWindow {
 //                new FileChooserDescriptor(true, false, false, false, false, false);
                 // 打开对应的文件
 //                File file = new File(project.getBasePath() + result.file.substring(1));
-                File file = new File(project.getBasePath() + "/" + result.file);
+                File file = new File(result.file);
                 VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
                 assert virtualFile != null;
                 OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
@@ -101,7 +101,6 @@ public class ReplaceToolWindow {
                 // 获取其中的插入符/光标
                 CaretModel caretModel = editor.getCaretModel();
                 // 将光标设置到搜索结果的对应位置
-//                caretModel.moveToLogicalPosition(new LogicalPosition(result.lineStart, result.columnStart));
                 caretModel.moveToOffset(result.offsetStart);
                 // 确保其在视野范围内
                 editor.getScrollingModel().scrollToCaret(ScrollType.CENTER_DOWN);
@@ -121,9 +120,6 @@ public class ReplaceToolWindow {
     private final JPanel pathPanel = new JBPanel<>(new GridBagLayout());
     private final JPanel findPanel = new JBPanel<>(new GridBagLayout());
     private final TextFieldWithBrowseButton directoryTextField = new TextFieldWithBrowseButton();
-    // TODO: 2022/5/21 为 BrowseButton 设置选择结构
-//    private final JCheckBox recursiveCheckBox = new JBCheckBox();
-//    private final JLabel recursiveLabel = new JBLabel("Recursive");
     private final JButton findButton = new JButton("Find");
     private final JButton replaceSelectedButton = new JButton("Replace");
     private final JButton importButton = new JButton("Import");
@@ -146,10 +142,6 @@ public class ReplaceToolWindow {
         importButton.setFont(new Font(importButton.getFont().getName(), Font.BOLD, importButton.getFont().getSize()));
 
         // 初始情况下默认为选择 directory
-        // TODO: 2022/5/21 目前仅支持 directory 模式，需要进一步讨论 in project 模式的设计和实现
-
-//        findPanel.add(recursiveCheckBox);
-//        findPanel.add(recursiveLabel);
         findPanel.add(findButton, new GridBagConstraints(GridBagConstraints.RELATIVE, GridBagConstraints.RELATIVE, 1, 1, 0, 0, GridBagConstraints.SOUTHEAST, GridBagConstraints.VERTICAL, JBUI.emptyInsets(), 0, 0));
         findPanel.add(replaceSelectedButton, new GridBagConstraints(GridBagConstraints.RELATIVE, GridBagConstraints.RELATIVE, 1, 1, 0, 0, GridBagConstraints.SOUTHEAST, GridBagConstraints.VERTICAL, JBUI.emptyInsets(), 0, 0));
         findPanel.add(importButton, new GridBagConstraints(GridBagConstraints.RELATIVE, GridBagConstraints.RELATIVE, 1, 1, 0, 0, GridBagConstraints.SOUTHEAST, GridBagConstraints.VERTICAL, JBUI.emptyInsets(), 0, 0));
@@ -166,7 +158,6 @@ public class ReplaceToolWindow {
             directoryTextField.setEnabled(true);
         });
         findButton.addActionListener(e -> {
-//            searchResults = ReadResult.getSearchResultsByCsv(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + "search_result.csv");
             try {
                 String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
                 RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json", languageComboBox.getSelectedItem().toString());
@@ -175,11 +166,6 @@ public class ReplaceToolWindow {
                 throw new RuntimeException(ex);
             }
             resultsList.setListData(searchResults.getStringInfos());
-//            try {
-//                SearchResults query = FindAction.findAllByQuery(searchTextArea.getText(), ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/" + directoryTextField.getText());
-//            } catch (IOException ex) {
-//                throw new RuntimeException(ex);
-//            }
 
         });
 
@@ -197,7 +183,7 @@ public class ReplaceToolWindow {
 
             try { // 加载所有请求
                 for (ReadJsonResult.Results result : jsonResult.results) {
-                    File file = new File(basePath + "/" + result.path);
+                    File file = new File(result.path);
                     VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
                     assert virtualFile != null;
                     OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
@@ -215,7 +201,6 @@ public class ReplaceToolWindow {
                             queryText += m.group();
                         }
 
-//                    queryText = queryText.replaceAll("[^\\s\"]+|\"\"\"[^\"]*\"\"\"", "");
                         ReplaceQuery newReplaceQuery = new ReplaceQuery(queryText);
                         replaceAction = ReplaceAction.mergeReplaceAction(replaceAction, ReplaceAction.getReplaceActionByQuery(newReplaceQuery, result, allText));
                     }
@@ -229,66 +214,11 @@ public class ReplaceToolWindow {
             }
 
 
-//            {
-//                if (resultsList.getSelectedIndices().length == 1) {
-//                    String replaceText = replaceTextArea.getText();
-//                    int index = resultsList.getSelectedIndex();
-//                    SearchResult result = searchResults.results.get(index);
-//                    // TODO: 2022/5/22 此处实际应该是调用对应的函数得到字符串
-//                    Project project = ProjectManager.getInstance().getOpenProjects()[0];
-////            new FileChooserDescriptor(true, false, false, false, false, false);
-//                    File file = new File(project.getBasePath() + "/" + result.file);
-//                    VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
-//                    assert virtualFile != null;
-//                    OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-//                    Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-//                    assert editor != null;
-//
-//                    Document document = editor.getDocument();
-//                    WriteCommandAction.runWriteCommandAction(project, () -> document.replaceString(result.offsetStart, result.offsetEnd, replaceText));
-//                    editor.getCaretModel().getPrimaryCaret().moveToOffset(result.offsetStart);
-//                    editor.getSelectionModel().setSelection(result.offsetStart, result.offsetStart + replaceText.length());
-//
-//                    // TODO: 2022/5/22 暂未成功实现代码格式化
-//                    PsiFile psiFile = PsiManager.getInstance(project).findFile(virtualFile);
-//                    assert psiFile != null;
-//                    PsiElement reformat = CodeStyleManager.getInstance(project).reformat(psiFile);
-//
-//                    searchResults.results.remove(index);
-//                    resultsList.setListData(searchResults.getStringInfos());
-//                } else if (resultsList.getSelectedIndices().length > 1) {
-//
-//                    String replaceText = replaceTextArea.getText();
-//                    Project project = ProjectManager.getInstance().getOpenProjects()[0];
-//                    List<SearchResult> unselectedResults = new ArrayList<>();
-//                    int tmpSelectedIndex = 0;
-//                    for (var index : resultsList.getSelectedIndices()) {
-//                        SearchResult result = searchResults.results.get(index);
-//                        File file = new File(project.getBasePath() + "/" + result.file);
-//                        VirtualFile virtualFile = VfsUtil.findFileByIoFile(file, true);
-//                        assert virtualFile != null;
-//                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, virtualFile);
-//                        Editor editor = FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
-//                        assert editor != null;
-//
-//                        Document document = editor.getDocument();
-//                        WriteCommandAction.runWriteCommandAction(project, () -> document.replaceString(result.offsetStart, result.offsetEnd, replaceText));
-//                        editor.getCaretModel().getPrimaryCaret().moveToOffset(result.offsetStart);
-//                        editor.getCaretModel().getPrimaryCaret().removeSelection();
-//                        unselectedResults.addAll(searchResults.results.subList(tmpSelectedIndex, index));
-//                        tmpSelectedIndex = index + 1;
-//                    }
-//                    searchResults.results = unselectedResults;
-//                    resultsList.setListData(searchResults.getStringInfos());
-//                }
-//            }
-
         });
 
         importButton.addActionListener(e -> {
             try {
                 String basePath = ProjectManager.getInstance().getOpenProjects()[0].getBasePath();
-                RunJar.run(basePath, searchTextArea.getText(), basePath + "/" + directoryTextField.getText(), basePath + "/out/res.json", languageComboBox.getSelectedItem().toString());
                 searchResults = ReadJsonResult.getSearchResultsByJson(ProjectManager.getInstance().getOpenProjects()[0].getBasePath() + "/out/" + "res.json");
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
@@ -310,7 +240,7 @@ public class ReplaceToolWindow {
         toolWindowPanel.add(pathPanel, new GridBagConstraints(0, 2, 2, 1, 0.68, 0.02, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, JBUI.emptyInsets(), 0, 0));
         toolWindowPanel.add(findPanel, new GridBagConstraints(2, 2, 1, 1, 0.02, 0.02, GridBagConstraints.EAST, GridBagConstraints.NONE, JBUI.emptyInsets(), 0, 0));
         toolWindowPanel.add(resultsLabel, new GridBagConstraints(3, 0, 1, 1, 0.3, 0.02, GridBagConstraints.WEST, GridBagConstraints.NONE, JBUI.emptyInsets(), 0, 0));
-        toolWindowPanel.add(resultsList, new GridBagConstraints(3, 1, 1, 2, 0.3, 0.98, GridBagConstraints.CENTER, GridBagConstraints.BOTH, JBUI.insets(0, 0, 0, 0), 0, 0));
+        toolWindowPanel.add(jScrollPane, new GridBagConstraints(3, 1, 1, 2, 0.3, 0.98, GridBagConstraints.CENTER, GridBagConstraints.BOTH, JBUI.insets(0, 0, 0, 0), 0, 0));
     }
 
     private void initTest() {

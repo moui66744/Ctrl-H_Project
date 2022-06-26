@@ -3,6 +3,14 @@ package com.example.ctrlhplugin;
 import java.io.*;
 
 public class RunJar {
+    /**
+     * 根据信息组合出用于执行的字符串并将其作为指令执行
+     * @param jarPath 待运行的jar包路径
+     * @param query 查询语句内容
+     * @param target 目标文件/文件夹路径
+     * @param destination 输出json的路径
+     * @param language 查询目标语言
+     */
     public static void run(String jarPath, String query, String target, String destination, String language) {
         runSingle("c:/Java/jdk-16.0.2/bin/java -jar " + jarPath + "/Project.jar " +
                 "-t \"" + query + "\" " +
@@ -11,6 +19,10 @@ public class RunJar {
                 "-l \"" + language + "\"");
     }
 
+    /**
+     * 运行单个指令
+     * @param cmd 指令名称
+     */
     public static void runSingle(String cmd) {
         try {
             Process process = Runtime.getRuntime().exec(cmd);
