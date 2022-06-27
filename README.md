@@ -1,39 +1,41 @@
 # Ctrl-H
 
-#### 介绍
-{**以下是 Gitee 平台说明，您可以替换此简介**
-Gitee 是 OSCHINA 推出的基于 Git 的代码托管平台（同时支持 SVN）。专为开发者提供稳定、高效、安全的云端软件开发协作平台
-无论是个人、团队、或是企业，都能够用 Gitee 实现代码托管、项目管理、协作开发。企业项目请看 [https://gitee.com/enterprises](https://gitee.com/enterprises)}
+Ctrl-H代码结构化查询与替换工具旨在解决现有代码查询方式在精确度、实用性上有所不足的问题，通过在现有工具基础上对于代码语言进行进一步分析，从而帮助用户更精准地进行查询及替换。
 
-#### 软件架构
-软件架构说明
+该项目由北京科技大学Ctrl-H团队进行开发并提供支持，由北京科技大学软件工程教学团队提出需求并进行验收与检查。
 
+## 项目结构
 
-#### 安装教程
+```
+.
+├── Project							// 后端部分
+│   ├── Makefile
+│   ├── grammar						// ANTLR语法文件
+│   │   ├── Cpp.g4					// C/C++语法
+│   │   ├── Java.g4					// Java语法
+│   │   └── JavaQuery.g4			// 查询语言语法
+│   ├── lib							// 后端依赖文件
+│   ├── src							// 后端源码
+│   │   ├── AstGenerator			// 语法树构造模块
+│   │   ├── CppParser				// C/C++语法分析器（ANTLR自动生成）
+│   │   ├── CppVisitor				// C/C++语法树解析模块
+│   │   ├── Info					
+│   │   ├── JavaParser				// Java语法分析器（ANTLR自动生成）
+│   │   ├── JavaQueryParser			// 查询语言语法分析器（ANTLR自动生成）
+│   │   ├── Query					// 查询语言执行模块
+│   │   ├── Test					// 测试代码
+│   │   ├── Visitor					// Java语法树解析模块
+│   │   ├── runtime					// CLI
+│   │   └── util					// 工具包，含JSON生成模块
+│   └── test						// 测试用目标文件夹
+├── README.md						// 本文档
+├── ctrl-h-plugin					// 前端：IDEA/CLion插件项目
+├── ctrl-h-plugin-1.0-SNAPSHOT.zip	// IDEA/CLion插件安装包
+├── doc								// 相关文档
+└── vscode-extension				// 前端：VSCode插件项目
+    ├── README.md					
+    ├── demo.md
+    ├── lib							// 后端依赖文件
+    └── src							// VSCode插件核心源码
+```
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 参与贡献
-
-1.  Fork 本仓库
-2.  新建 Feat_xxx 分支
-3.  提交代码
-4.  新建 Pull Request
-
-
-#### 特技
-
-1.  使用 Readme\_XXX.md 来支持不同的语言，例如 Readme\_en.md, Readme\_zh.md
-2.  Gitee 官方博客 [blog.gitee.com](https://blog.gitee.com)
-3.  你可以 [https://gitee.com/explore](https://gitee.com/explore) 这个地址来了解 Gitee 上的优秀开源项目
-4.  [GVP](https://gitee.com/gvp) 全称是 Gitee 最有价值开源项目，是综合评定出的优秀开源项目
-5.  Gitee 官方提供的使用手册 [https://gitee.com/help](https://gitee.com/help)
-6.  Gitee 封面人物是一档用来展示 Gitee 会员风采的栏目 [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)

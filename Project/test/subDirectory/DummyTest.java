@@ -1,11 +1,32 @@
-// a single test containing all the situations need to be realized in stage 1
+// a single test containing all the situations need to be realized in stage 1 & 2
+
+
+import JavaParser.JavaBaseVisitor;
+import JavaParser.JavaParser;
+import JavaParser.JavaParser.StatementContext;
+import org.antlr.v4.runtime.ParserRuleContext;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //test class declaration
-public class DummyTest {
+public class DummyTest extends Class1 implements impl1, impl2 {
     final int data = 0;
     final int a[] /* test */ = {0, 1, 2, 3};
+    var ab = 123;
 
     public static int retinput(int input) {
+        int i;
+        return input;
+    }
+
+    public static int retinput(String input) {
+        int i;
+        return input;
+    }
+
+    public static int retinput(boolean input) {
+        int i;
         return input;
     }
 
@@ -23,6 +44,10 @@ public class DummyTest {
 
 //        test "for"
         for (i = 0; i < 5; i++) {
+            if (a == 0) {
+                a = 0;
+                b = 0;
+            }
             System.out.print(i);
         }
         System.out.print("\n");
@@ -36,6 +61,7 @@ public class DummyTest {
             while (j < 10) {
                 System.out.print(j);
                 j++;
+                continue;
             }
         }
         System.out.print("\n");
@@ -45,13 +71,24 @@ public class DummyTest {
         do {
             System.out.print(i);
             i++;
+            if (a == 0) {
+                a = 0;
+                break;
+            }
         }
         while (i < 5);
         System.out.print("\n");
 
 //        test "if with else"
-        if (i == 0) System.out.print("i==0\n");
-        else System.out.print("i!=0\n");
+        if (i == 0) {
+            System.out.print("i!=0\n");
+        } else {
+            System.out.print("i!=1\n");
+        }
+        if (i == 0) {
+            System.out.print("i!=0\n");
+        } else {
+        }
 
 //        test "if without else"
         if (i == 1) System.out.print("i==1\n");
@@ -83,6 +120,9 @@ public class DummyTest {
             }
             default: {
                 fun();
+                if (a == 0) {
+                    assert a == 0;
+                }
                 break;
             }
         }
@@ -91,7 +131,42 @@ public class DummyTest {
         if ((a > 0 && b == 0) || c < 0) {
             doSth();
         } else {
-            doSth();
+            doEls();
         }
+
+        if (a == 0) {
+            if (b == 0) {
+                if (c == 0) {
+                }
+            }
+            if (d == 0) {
+            }
+        }
+
+        if (a == 0) {
+            if (b == 0) {
+            }
+        }
+
+        if (a == 0) {
+            if (c == 0) {
+            }
+        }
+
+        for (int i = 0; i < 1; i++)
+            i++;
+
     }
 }
+
+class DummyTestMember {
+    String Name;
+}
+
+public interface inter1 extends inter2 {
+    public static void main(String[] args) {
+        System.out.printf("This is inter1");
+    }
+}
+
+
