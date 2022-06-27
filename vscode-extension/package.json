@@ -1,0 +1,82 @@
+{
+    "name": "ctrl-h",
+    "displayName": "Ctrl-H",
+    "description": "",
+    "version": "0.0.3",
+    "engines": {
+        "vscode": "^1.67.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "repository": {
+        "url": "https://github.com/moui66744/ctrl-h"
+    },
+    "author": {
+        "name": "moui66744"
+    },
+    "publisher": "moui66744",
+    "activationEvents": [
+        "onView:result-view.tree",
+        "onCommand:ctrl-h-webview",
+        "onCommand:result-view.showJSON"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "ctrl-h-webview",
+                "title": "Ctrl-H"
+            },
+            {
+                "command": "result-view.showJSON",
+                "title": "Ctrl-H.showJSON"
+            }
+        ],
+        "viewsWelcome": [
+            {
+                "view":"result-view.tree",
+                "contents": "Please press Ctrl+Shift+P and enter 'Ctrl-H', or click \n [Run](command:ctrl-h-webview) \n to run Ctrl-H.",
+                "when": "true"
+            }
+        ],
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "result-view",
+                    "title": "Ctrl-H Result",
+                    "icon": "$(references)"
+                }
+            ]
+        },
+        "views": {
+            "result-view": [
+                {
+                    "id": "result-view.tree",
+                    "name": "Results"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "pretest": "npm run compile && npm run lint",
+        "lint": "eslint src --ext ts",
+        "test": "node ./out/test/runTest.js"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.67.0",
+        "@types/glob": "^7.2.0",
+        "@types/mocha": "^9.1.1",
+        "@types/node": "14.x",
+        "@typescript-eslint/eslint-plugin": "^5.21.0",
+        "@typescript-eslint/parser": "^5.21.0",
+        "eslint": "^8.14.0",
+        "glob": "^8.0.1",
+        "mocha": "^9.2.2",
+        "typescript": "^4.6.4",
+        "@vscode/test-electron": "^2.1.3"
+    }
+}

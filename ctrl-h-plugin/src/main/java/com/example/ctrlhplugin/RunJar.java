@@ -12,7 +12,7 @@ public class RunJar {
      * @param language 查询目标语言
      */
     public static void run(String jarPath, String query, String target, String destination, String language) {
-        runSingle("c:/Java/jdk-16.0.2/bin/java -jar " + jarPath + "/Project.jar " +
+        runSingle("cmd /c start java -jar " + jarPath + "/Project.jar " +
                 "-t \"" + query + "\" " +
                 "-p \"" + target + "\" " +
                 "-d \"" + destination + "\" " +
