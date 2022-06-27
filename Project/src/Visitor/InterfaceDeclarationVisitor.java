@@ -1,12 +1,9 @@
 package Visitor;
 
-import AstGenerator.AstInfo;
 import Info.ClassInfo;
 import JavaParser.JavaBaseVisitor;
 import JavaParser.JavaParser;
-import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

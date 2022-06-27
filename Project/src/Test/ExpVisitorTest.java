@@ -1,6 +1,6 @@
 package Test;
 
-import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import JavaParser.JavaParser;
 import Visitor.ExpVisitor;
 
@@ -10,7 +10,7 @@ import java.util.List;
 public class ExpVisitorTest {
     static String inputFileName = "test/DummyTest.java";
     public static void main(String [] argv) throws IOException {
-        AstInfo ast = new AstInfo(inputFileName);
+        JavaAstInfo ast = new JavaAstInfo(inputFileName);
         ExpVisitor expVisitor = new ExpVisitor();
         List<JavaParser.ExpressionContext> allExp = expVisitor.visitCompilationUnit(ast.getRoot());
         //test 1: find all expression

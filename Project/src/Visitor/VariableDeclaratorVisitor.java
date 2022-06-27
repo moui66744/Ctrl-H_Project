@@ -1,13 +1,12 @@
 package Visitor;
 
-import AstGenerator.AstInfo;
+import AstGenerator.JavaAstInfo;
 import Info.VariableInfo;
 import JavaParser.JavaParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.List;
 
 public class VariableDeclaratorVisitor {
@@ -65,8 +64,8 @@ public class VariableDeclaratorVisitor {
 
     public static void main(String[] args) throws IOException {
         //        main method is just for testing
-        AstInfo astInfo = new AstInfo("test/DummyTest.java");
-        var root = astInfo.getRoot();
+        JavaAstInfo javaAstInfo = new JavaAstInfo("test/DummyTest.java");
+        var root = javaAstInfo.getRoot();
         List<VariableInfo> variableInfos = getVariableDeclarator(root);
 //        List<VariableInfo> variableInfos1 = VariableInfo.variableInfoFilter(variableInfos, "i", true);
 //        List<VariableInfo> variableInfos2 = VariableInfo.variableInfoTypeStringFilter(variableInfos, "int", true);
