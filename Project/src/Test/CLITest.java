@@ -26,10 +26,22 @@ public class CLITest {
                 "if () {} else {<<null>>}",
                 "while(){}",
                 "while(true){\\break;}",
-                "a == 0",
                 "i++",
-                "public class <<>> {}"
-
+                "while(){}",
+                "for(;;){[1]if(){}}",
+                "if (){[1]if(){}}",
+                "while(){if (){}}",
+                "while(){\\break;}",
+                "if (){if(){}}",
+                "public class <<>> { void <<>>(){}}",
+                "class <<>> {}",
+                "interface <<>> {}",
+                "public class <<>> {}",
+                "public interface <<>> {}",
+                "while (){[1]if (){} $ \\for(;;){}} ",
+                "void <<>> (){[1]while(){} $ [2]if(){}}",
+                "if (){}else {<<null>>}",
+                "String <<>>(){}"
           };
         for (var item : TestCase) {
             Args[index] = item;
